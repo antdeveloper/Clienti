@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    card_view:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/appbar_padding_top"
+        android:background="@color/colorBackgroundAccent">
+
+        <ImageView
+            android:id="@+id/imgMain"
+            android:layout_width="@dimen/img_md"
+            android:layout_height="@dimen/img_md"
+            android:src="@mipmap/ic_launcher"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
+
+
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name:"
+            android:textColor="@android:color/black"
+            android:layout_below="@id/imgMain"
+            android:layout_centerHorizontal="true"
+            android:singleLine="true"/>
+
+
+        <TextView
+            android:id="@+id/txtModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Model:"
+            android:textColor="@android:color/black"
+            android:layout_below="@id/txtName"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/txtTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total:"
+            android:textColor="@android:color/black"
+            android:layout_below="@id/txtModel"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/txtAbono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pagado:"
+            android:textColor="@android:color/black"
+            android:layout_below="@id/txtTotal"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/txtAdeudo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adeudo:"
+            android:textColor="@android:color/black"
+            android:layout_below="@id/txtAbono"
+            android:layout_centerHorizontal="true"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtAdeudo"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/txtCantidad"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cantidad: (x1)"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/black"/>
+
+            <ImageButton
+                android:id="@+id/imgSharePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_share"
+                android:background="@android:color/transparent"/>
+
+            <ImageButton
+                android:id="@+id/imgAddAbono"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_add"
+                android:background="@android:color/transparent"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtTipoVenta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Compra"
+            android:background="#bbffffff"
+            android:padding="2dp"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">Clienti</string>
+
+    <string name="login.title">Inicio de sesión</string>
+    <string name="login.message.username">Nombre de usuario</string>
+    <string name="login.message.email">Correo electrónico</string>
+    <string name="login.message.password">Password</string>
+    <string name="login.message.signin">Iniciar sesión</string>
+    <string name="login.message.register">Registrarse</string>
+    <string name="login.user.message.signin">Imposible iniciar sesión %s</string>
+
+    <string name="main.menu.action.singoff">Cerrar sesión</string>
+    <string name="main.title">Clientes</string>
+
+    <string name="addclient.message.title">Agregar cliente</string>
+    <string name="addclient.message.acept">Aceptar</string>
+    <string name="addclient.message.cancel">Cancelar</string>
+    <string name="addclient.message.clientadded">Cliente agregado exitosamente</string>
+    <string name="addclient.error.add">Imposible agregar usuario no existente</string>
+
+    <string name="signup.title">Crear cuenta</string>
+    <string name="signup.button.signup">Crear</string>
+    <string name="signup.notice.message.useradded">Usuario agregado exitosamente</string>
+    <string name="signup.error.useradded">Imposible registrar nuevo usuario %s</string>
+
+    <string name="productos.title.ventas">Ventas</string>
+    <string name="productos.title.compras">Proximamente</string>
+    <string name="productos.notice.upload.init">Producto en proceso de publicación</string>
+    <string name="productos.notice.upload.complete">Productos añadido exitosamente</string>
+    <string name="productos.error.dispatch.camera">Error al crear archivo</string>
+    <string name="productos.menu.action.logout">Cerrar sesión</string>
+    <string name="productos.message.picture.source">Selecciona una foto</string>
+    <string name="productos.hint.name">Nombre</string>
+    <string name="productos.hint.model">Modelo</string>
+    <string name="productos.hint.precio">Precio</string>
+    <string name="productos.hint.cantidad">Cantidad</string>
+    <string name="productos.hint.abono">Abono</string>
+
+    <string name="ventas.message.share">Compartir</string>
+
+    <string name="addabono.message.title">Agregar abono</string>
+    <string name="main.status.correct">En orden</string>
+    <string name="main.status.incorrect">Con adeudo</string>
+
+    <string name="productos.error.notfound">Fichero/recurso no encontrado.</string>
+    <string name="productos.message.titledialog">Añadir producto</string>
+    <string name="productos.error.required">Este campo es requerido</string>
+    <string name="productos.error.notphotoselect">Seleccione una fotografia para continuar.</string>
+
+    <string name="ventas.property.total">Total</string>
+    <string name="ventas.property.pagado">Pagado</string>
+    <string name="ventas.property.adeudo">Adeudo</string>
+    <string name="ventas.property.cantidad">Cantidad</string>
+
+    <string name="ventas.label.compra">Compra</string>
+    <string name="ventas.label.venta">Venta</string>
+    <string name="ventas.title.confirmdelete">Borrar producto</string>
+    <string name="ventas.message.confirmdelete">¿Estas seguro que quieres eliminar este producto?</string>
+
+</resources>
