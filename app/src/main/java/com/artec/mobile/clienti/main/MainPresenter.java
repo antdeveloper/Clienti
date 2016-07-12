@@ -8,7 +8,6 @@ import com.artec.mobile.clienti.main.events.MainEvent;
 public interface MainPresenter {
     void onCreate();
     void onDestroy();
-    void onPause();
     void onResume();
 
     void logout();

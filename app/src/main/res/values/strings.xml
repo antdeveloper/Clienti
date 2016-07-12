@@ -56,5 +56,6 @@
     <string name="ventas.label.venta">Venta</string>
     <string name="ventas.title.confirmdelete">Borrar producto</string>
     <string name="ventas.message.confirmdelete">¿Estas seguro que quieres eliminar este producto?</string>
+    <string name="addabono_message_abobboadded">Abono agregado exitosamente.</string>
 
 </resources>

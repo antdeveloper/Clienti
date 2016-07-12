@@ -101,14 +101,16 @@
 
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="@dimen/img_md" >
 
             <ImageView
                 android:id="@+id/imgPhotoProduct"
                 android:layout_width="@dimen/img_md"
-                android:layout_height="@dimen/img_md"
+                android:layout_height="wrap_content"
+                android:maxHeight="@dimen/img_md"
                 android:adjustViewBounds="true"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@mipmap/ic_launcher"
+                android:layout_gravity="center"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -132,5 +134,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 </RelativeLayout>

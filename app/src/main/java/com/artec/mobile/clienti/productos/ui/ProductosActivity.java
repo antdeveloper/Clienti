@@ -42,6 +42,7 @@ import com.artec.mobile.clienti.productos.ProductosPresenter;
 import com.artec.mobile.clienti.productos.ui.adapters.ProductosSectionPageAdapter;
 import com.artec.mobile.clienti.ventas.ui.VentasFragment;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -67,7 +68,7 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
     public static final String USERNAME_KEY = "username";
 
     private final static int REQUEST_PICTURE = 0;
-    private static final int PERMISSIONS_REQUEST_LOCATION = 2;
+    private static final int PERMISSIONS_REQUEST_STORAGE = 2;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -201,6 +202,7 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
         alertDialog.dismiss();
         photoPath = "";
         showSnackbar(R.string.productos_notice_upload_complete);
+        isSaving = false;
     }
 
     @Override
@@ -208,7 +210,9 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
         showSnackbar(error);
         isSaving = false;
         ProgressBar progressBar = (ProgressBar)(alertDialog).findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.GONE);
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -281,7 +285,8 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
                             producto.setPrecio(Double.valueOf(etPrecio.getText().toString()));
                             producto.setAbono(etAbono.getText().toString().isEmpty()? 0 :
                                     Double.valueOf(etAbono.getText().toString()));
-                            presenter.uploadPhoto(producto, photoPath, client);
+                            //presenter.uploadPhoto(producto, photoPath, client);
+                            presenter.uploadPhoto(producto, saveImageLocally(), client);
                         }
                     }
 
@@ -310,6 +315,30 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
 
                         return true;
                     }
+
+                    private String saveImageLocally() {
+                        imgPhotoProduct.buildDrawingCache();
+                        Bitmap _bitmap = imgPhotoProduct.getDrawingCache();
+
+                        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                        File outputFile = null;
+                        try {
+                            outputFile = File.createTempFile("tmp", ".jpg", storageDir);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            FileOutputStream out = new FileOutputStream(outputFile);
+                            _bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                            out.close();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        return outputFile.getAbsolutePath();
+                    }
                 });
                 Button btnCancelar = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                 btnCancelar.setOnClickListener(new View.OnClickListener() {
@@ -328,10 +357,17 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
-            case PERMISSIONS_REQUEST_LOCATION:{
+            case PERMISSIONS_REQUEST_STORAGE:{
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     takePicture();
                 }
+            }
+        }
+
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
         }
     }
@@ -341,7 +377,7 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
                 PackageManager.PERMISSION_GRANTED){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        PERMISSIONS_REQUEST_LOCATION);
+                        PERMISSIONS_REQUEST_STORAGE);
             }
             return;
         }

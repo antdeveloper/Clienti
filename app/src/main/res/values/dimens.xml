@@ -7,6 +7,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="recyclerview_margin_sm">8dp</dimen>
     <dimen name="padding_sm">16dp</dimen>
-    <dimen name="img_md">128dp</dimen>
+    <dimen name="img_md">144dp</dimen>
     <dimen name="padding_micro">4dp</dimen>
+    <dimen name="img_mdl">112dp</dimen>
 </resources>

@@ -109,12 +109,6 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        presenter.onPause();
-    }
-
-    @Override
     public void onClientAdded(Client client) {
         adapter.add(client);
     }

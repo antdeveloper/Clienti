@@ -140,7 +140,7 @@ public class AddAbonoFragment extends DialogFragment implements AddAbonoView,
     @Override
     public void abonoAdded(Client client) {
         ((ProductosActivity)getActivity()).client = client;
-        Toast.makeText(getActivity(), R.string.addclient_message_clientadded,
+        Toast.makeText(getActivity(), R.string.addabono_message_abobboadded,
                 Toast.LENGTH_SHORT).show();
         dismiss();
     }

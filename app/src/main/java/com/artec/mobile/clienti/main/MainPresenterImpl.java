@@ -36,11 +36,6 @@ public class MainPresenterImpl implements MainPresenter{
     }
 
     @Override
-    public void onPause() {
-        interactor.unsubscribe();
-    }
-
-    @Override
     public void onResume() {
         interactor.subscribe();
     }

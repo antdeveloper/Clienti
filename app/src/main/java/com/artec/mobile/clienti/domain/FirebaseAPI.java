@@ -15,13 +15,15 @@ import java.util.Map;
  */
 public class FirebaseAPI {
     private Firebase firebase;
+    private Firebase productsSubscribeReference;
+    private Firebase clientReference;
     private ChildEventListener productsEventListener;
     private ChildEventListener clientsEventListener;
 
     private final static String SEPARATOR = "___";
     private final static String USERS_PATH = "users";
     private final static String VENTAS_PATH = "products";
-    private final static String CONTACTS_PATH = "clients";
+    private final static String CLIENTS_PATH = "clients";
     private final static String FIREBASE_URL = "https://clienti.firebaseio.com/";
 
     public FirebaseAPI() {
@@ -33,7 +35,8 @@ public class FirebaseAPI {
     }
 
     public void checkForData(final FirebaseActionListenerCallback listenerCallback, String recipient){
-        getProductsReference(recipient).addListenerForSingleValueEvent(new ValueEventListener() {
+        Firebase productsReference = getProductsReference(recipient);
+        productsReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getChildrenCount() > 0){
@@ -77,13 +80,14 @@ public class FirebaseAPI {
                     listenerCallback.onCancelled(firebaseError);
                 }
             };
-            getProductsReference(recipient).addChildEventListener(productsEventListener);
+            productsSubscribeReference = getProductsReference(recipient);
+            productsSubscribeReference.addChildEventListener(productsEventListener);
         }
     }
 
     public void unsubscribe(){
         if (productsEventListener != null){
-            firebase.removeEventListener(productsEventListener);
+            productsSubscribeReference.removeEventListener(productsEventListener);
         }
     }
 
@@ -92,7 +96,6 @@ public class FirebaseAPI {
     }
 
     public void remove(Producto producto, FirebaseActionListenerCallback listenerCallback, String recipent){
-        //this.firebase.child(producto.getId()).removeValue();
         getProductsReference(recipent).child(producto.getId()).removeValue();
         listenerCallback.onSuccess();
     }
@@ -152,7 +155,9 @@ public class FirebaseAPI {
      * */
 
     public void checkForDataMain(final FirebaseActionListenerCallback listenerCallback){
-        firebase.addListenerForSingleValueEvent(new ValueEventListener() {
+        Firebase clientReference = getMyClientsReference();
+        //firebase.addListenerForSingleValueEvent(new ValueEventListener() {
+        clientReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getChildrenCount() > 0){
@@ -195,13 +200,16 @@ public class FirebaseAPI {
                     listenerCallback.onCancelled(firebaseError);
                 }
             };
-            getMyClientsReference().addChildEventListener(clientsEventListener);
+
+            clientReference = getMyClientsReference();
+            clientReference.addChildEventListener(clientsEventListener);
         }
     }
 
     public void unsubscribeMain(){
         if (clientsEventListener != null){
-            firebase.removeEventListener(clientsEventListener);
+            clientReference.removeEventListener(clientsEventListener);
+            clientsEventListener = null;
         }
     }
 
@@ -230,27 +238,22 @@ public class FirebaseAPI {
     }
 
     public Firebase getClientsReference(String email){
-        return getUserReference(email).child(CONTACTS_PATH);
+        return getUserReference(email).child(CLIENTS_PATH);
     }
 
     public Firebase getMyClientsReference(){
         return getClientsReference(getAuthUserEmail());
     }
 
-    public Firebase getOneClientReference(String mainEmail, String childEmail){
-        String childKey = childEmail.replace(".", "_");
-        return getUserReference(mainEmail).child(CONTACTS_PATH).child(childKey);
-    }
-
     public Firebase getProductsReference(String receiver){
         String keySender = getAuthUserEmail().replace(".", "_");
         String keyReceiver = receiver.replace(".", "_");
 
-        String keyChat = keySender + SEPARATOR + keyReceiver;
+        String keyProducts = keySender + SEPARATOR + keyReceiver;
         if (keySender.compareTo(keyReceiver) > 0){
-            keyChat = keyReceiver + SEPARATOR + keySender;
+            keyProducts = keyReceiver + SEPARATOR + keySender;
         }
-        return firebase.getRoot().child(VENTAS_PATH).child(keyChat);
+        return firebase.getRoot().child(VENTAS_PATH).child(keyProducts);
     }
 
     public void destroyMainListener(){

@@ -29,7 +29,7 @@ ext{
     compileSdkVersion = 23
     buildToolsVersion = '23.0.3'
 
-    supportLibraryVersion = '23.1.1'
+    supportLibraryVersion = '23.3.0'
 
     playServicesLocationVersion = '8.4.0'
     circleImageViewVersion = '2.0.0'
