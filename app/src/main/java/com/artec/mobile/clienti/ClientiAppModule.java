@@ -1,8 +1,12 @@
 package com.artec.mobile.clienti;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.artec.mobile.clienti.domain.FirebaseAPI;
+import com.google.firebase.database.DatabaseReference;
 
 import javax.inject.Singleton;
 

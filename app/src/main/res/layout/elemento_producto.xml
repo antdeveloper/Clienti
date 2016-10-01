@@ -3,22 +3,45 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
     card_view:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/appbar_padding_top"
+        android:paddingTop="@dimen/padding.sml"
+        android:padding="@dimen/padding.sml"
         android:background="@color/colorBackgroundAccent">
 
-        <ImageView
-            android:id="@+id/imgMain"
+        <android.support.v7.widget.CardView
+            android:id="@+id/cv_img"
             android:layout_width="match_parent"
             android:layout_height="@dimen/img_mdl"
-            android:src="@drawable/ic_file_image"
+            card_view:contentPadding="0dp"
+            app:elevation="0dp"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            card_view:cardBackgroundColor="@color/colorBackgroundAccent">
+            <ImageView
+                android:id="@+id/imgMain"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/img_mdl"
+                android:src="@drawable/ic_file_image"
+                android:layout_gravity="center"/>
 
+            <TextView
+                android:id="@+id/txtFechaVenta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="01/01/70"
+                android:textSize="12sp"
+                android:textColor="@android:color/black"
+                android:background="@drawable/background_text_transparent"
+                android:paddingLeft="@dimen/padding.nano"
+                android:paddingStart="@dimen/padding.nano"
+                android:paddingRight="@dimen/padding.nano"
+                android:paddingEnd="@dimen/padding.nano"/>
+        </android.support.v7.widget.CardView>
 
         <TextView
             android:id="@+id/txtName"
@@ -26,7 +49,7 @@
             android:layout_height="wrap_content"
             android:text="Name:"
             android:textColor="@android:color/black"
-            android:layout_below="@id/imgMain"
+            android:layout_below="@id/cv_img"
             android:layout_centerHorizontal="true"
             android:singleLine="true"/>
 
@@ -56,7 +79,8 @@
             android:text="Pagado:"
             android:textColor="@android:color/black"
             android:layout_below="@id/txtTotal"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/txtAdeudo"
@@ -80,30 +104,25 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Cantidad: (x1)"
+                android:textSize="12sp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@android:color/black"/>
 
             <ImageButton
                 android:id="@+id/imgSharePhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_share"
-                android:background="@android:color/transparent"/>
+                android:layout_width="@dimen/icon.sm"
+                android:layout_height="@dimen/icon.sm"
+                android:src="@drawable/ic_pencil_box"
+                android:tint="@color/gray_600_t"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
 
             <ImageButton
                 android:id="@+id/imgAddAbono"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_add"
-                android:background="@android:color/transparent"/>
+                android:layout_width="@dimen/icon.sm"
+                android:layout_height="@dimen/icon.sm"
+                android:src="@drawable/ic_plus_box"
+                android:tint="@color/gray_600_t"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/txtTipoVenta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Compra"
-            android:background="#bbffffff"
-            android:padding="2dp"/>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

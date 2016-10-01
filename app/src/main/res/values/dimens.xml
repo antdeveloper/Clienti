@@ -2,12 +2,15 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="contact_image_size">48dp</dimen>
-    <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="appbar.padding.top">8dp</dimen>
+    <dimen name="contact.image.size">48dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="recyclerview_margin_sm">8dp</dimen>
-    <dimen name="padding_sm">16dp</dimen>
+    <dimen name="icon.sm">24dp</dimen>
     <dimen name="img_md">144dp</dimen>
+    <dimen name="img_mdl">96dp</dimen>
+    <dimen name="padding.nano">2dp</dimen>
     <dimen name="padding_micro">4dp</dimen>
-    <dimen name="img_mdl">112dp</dimen>
+    <dimen name="padding.sml">8dp</dimen>
+    <dimen name="padding_sm">16dp</dimen>
+    <dimen name="recyclerview_margin_sm">8dp</dimen>
 </resources>

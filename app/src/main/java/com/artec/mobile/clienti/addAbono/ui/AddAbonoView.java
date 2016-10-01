@@ -11,6 +11,6 @@ public interface AddAbonoView {
     void showProgress();
     void hideProgress();
 
-    void abonoAdded(Client client);
+    void abonoAdded();
     void abonoNotAdded();
 }

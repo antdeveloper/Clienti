@@ -7,7 +7,6 @@ import com.artec.mobile.clienti.entities.Client;
  */
 public class AddAbonoEvent {
     boolean error = false;
-    Client client;
 
     public boolean isError() {
         return error;
@@ -15,13 +14,5 @@ public class AddAbonoEvent {
 
     public void setError(boolean error) {
         this.error = error;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
     }
 }

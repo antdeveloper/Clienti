@@ -1,5 +1,6 @@
 package com.artec.mobile.clienti.addAbono;
 
+import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 
@@ -14,7 +15,7 @@ public class AddAbonoInteractorImpl implements AddAbonoInteractor {
     }
 
     @Override
-    public void execute(Producto producto, double abono, Client client) {
+    public void execute(Producto producto, Abono abono, Client client) {
         repository.addAbono(producto, abono, client);
     }
 }

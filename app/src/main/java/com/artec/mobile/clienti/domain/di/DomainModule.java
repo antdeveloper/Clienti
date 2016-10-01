@@ -1,11 +1,13 @@
 package com.artec.mobile.clienti.domain.di;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Geocoder;
 
 import com.artec.mobile.clienti.domain.FirebaseAPI;
 import com.artec.mobile.clienti.domain.Util;
-import com.firebase.client.Firebase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import javax.inject.Singleton;
 
@@ -17,21 +19,26 @@ import dagger.Provides;
 @Module
 public class DomainModule {
     String firebaseURL;
+    Activity activity;
 
     public DomainModule(String firebaseURL) {
         this.firebaseURL = firebaseURL;
     }
 
-    @Provides
-    @Singleton
-    FirebaseAPI provideFirebaseAPI(Firebase firebase){
-        return new FirebaseAPI(firebase);
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
 
     @Provides
     @Singleton
-    Firebase provideFirebase(String firebaseURL){
-        return new Firebase(firebaseURL);
+    FirebaseAPI provideFirebaseAPI(DatabaseReference firebase){
+        return new FirebaseAPI(firebase, activity);
+    }
+
+    @Provides
+    @Singleton
+    DatabaseReference provideFirebase(String firebaseURL){
+        return FirebaseDatabase.getInstance().getReference();
     }
 
     @Provides

@@ -5,8 +5,9 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:2.2.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'com.google.gms:google-services:3.0.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -31,9 +32,10 @@ ext{
 
     supportLibraryVersion = '23.3.0'
 
-    playServicesLocationVersion = '8.4.0'
+    playServicesLocationVersion = '9.0.0'
     circleImageViewVersion = '2.0.0'
-    firebaseClientVersion = '2.5.0'
+    //firebaseClientVersion = '2.5.0'
+    firebaseVersion = '9.0.0'
     butterknifeVersion = '7.0.1'
     cloudinaryVersion = '1.1.2'
     eventbusVersion = '3.0.0'

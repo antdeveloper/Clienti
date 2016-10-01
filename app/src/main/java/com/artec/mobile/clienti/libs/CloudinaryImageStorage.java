@@ -50,4 +50,28 @@ public class CloudinaryImageStorage implements ImageStorage {
             }
         }.execute();
     }
+
+    @Override
+    public void delete(final String keyId, final ImageStorageFinishedListener listener) {
+        new AsyncTask<Void, Void, Void>(){
+            boolean success = false;
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    cloudinary.uploader().destroy(keyId, ObjectUtils.emptyMap());
+                    success = true;
+                }catch (IOException e){
+                    listener.onError(e.getLocalizedMessage());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if (success){
+                    listener.onSuccess();
+                }
+            }
+        }.execute();
+    }
 }

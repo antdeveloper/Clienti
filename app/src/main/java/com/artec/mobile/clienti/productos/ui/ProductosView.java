@@ -1,5 +1,6 @@
 package com.artec.mobile.clienti.productos.ui;
 
+import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
 
 /**
@@ -9,5 +10,5 @@ public interface ProductosView {
     void onUploadInit();
     void onUploadComplete();
     void onUploadError(String error);
-    void onClientChanged(Client client);
+    void onAbonoAdded(Abono abono);
 }

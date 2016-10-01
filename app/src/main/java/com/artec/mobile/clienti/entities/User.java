@@ -1,6 +1,6 @@
 package com.artec.mobile.clienti.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.firebase.database.Exclude;
 
 import java.util.Map;
 
@@ -8,10 +8,11 @@ import java.util.Map;
  * Created by ANICOLAS on 07/06/2016.
  */
 public class User {
-    @JsonIgnore
+    @Exclude
     private String id;
     String email;
     String username;
+    //String imgUrl;
     Map<String, Client> clients;
 
     public User() {

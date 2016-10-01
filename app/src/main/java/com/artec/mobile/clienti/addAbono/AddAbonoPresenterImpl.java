@@ -2,6 +2,7 @@ package com.artec.mobile.clienti.addAbono;
 
 import com.artec.mobile.clienti.addAbono.events.AddAbonoEvent;
 import com.artec.mobile.clienti.addAbono.ui.AddAbonoView;
+import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.base.EventBus;
@@ -34,7 +35,7 @@ public class AddAbonoPresenterImpl implements AddAbonoPresenter {
     }
 
     @Override
-    public void addAbono(Producto producto, double abono, Client client) {
+    public void addAbono(Producto producto, Abono abono, Client client) {
         if (view != null){
             view.hideInput();
             view.showProgress();
@@ -52,7 +53,7 @@ public class AddAbonoPresenterImpl implements AddAbonoPresenter {
             if (event.isError()){
                 view.abonoNotAdded();
             }else {
-                view.abonoAdded(event.getClient());
+                view.abonoAdded();
             }
         }
     }

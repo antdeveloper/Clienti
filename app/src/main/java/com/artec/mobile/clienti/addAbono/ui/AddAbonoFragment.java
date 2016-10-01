@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.addAbono.AddAbonoPresenter;
+import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.productos.ui.ProductosActivity;
@@ -97,7 +98,9 @@ public class AddAbonoFragment extends DialogFragment implements AddAbonoView,
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    double abono = Double.valueOf(editTxtAbono.getText().toString());
+                    Abono abono = new Abono();
+                    abono.setValor(Double.valueOf(editTxtAbono.getText().toString()));
+                    abono.setFecha(System.currentTimeMillis());
 
                     presenter.addAbono(producto, abono,
                             ((ProductosActivity)getActivity()).client);
@@ -138,8 +141,7 @@ public class AddAbonoFragment extends DialogFragment implements AddAbonoView,
     }
 
     @Override
-    public void abonoAdded(Client client) {
-        ((ProductosActivity)getActivity()).client = client;
+    public void abonoAdded() {
         Toast.makeText(getActivity(), R.string.addabono_message_abobboadded,
                 Toast.LENGTH_SHORT).show();
         dismiss();

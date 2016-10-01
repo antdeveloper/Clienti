@@ -5,10 +5,10 @@ import com.artec.mobile.clienti.domain.FirebaseAPI;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.User;
 import com.artec.mobile.clienti.libs.base.EventBus;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by ANICOLAS on 03/07/2016.
@@ -23,18 +23,19 @@ public class AddClientRepositoryImpl implements AddClientRepository {
     }
 
     @Override
-    public void addContact(final String email, final String username) {
+    public void addClient(final String email, final String username) {
         final String key = email.replace(".", "_");
-        Firebase userReference = firebaseAPI.getUserReference(email);
+        DatabaseReference userReference = firebaseAPI.getUserReference(email);
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 if (user != null){
                     Client client = new Client();
-                    Firebase myContactReference = firebaseAPI.getMyClientsReference();
+                    DatabaseReference myContactReference = firebaseAPI.getMyClientsReference();
                     client.setEmail(email);
                     client.setUsername(user.getUsername());
+                    client.setPartner(false);
                     myContactReference.child(key).setValue(client);
 
                     String currentUserKey = firebaseAPI.getAuthUserEmail();
@@ -44,7 +45,7 @@ public class AddClientRepositoryImpl implements AddClientRepository {
 
                     iClient.setEmail(firebaseAPI.getAuthUserEmail());
                     iClient.setUsername(username);
-                    Firebase reverseContactReference = firebaseAPI.getClientsReference(email);
+                    DatabaseReference reverseContactReference = firebaseAPI.getClientsReference(email);
                     reverseContactReference.child(currentUserKey).setValue(iClient);
 
                     postSuccess();
@@ -54,7 +55,7 @@ public class AddClientRepositoryImpl implements AddClientRepository {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
                 postError();
             }
         });

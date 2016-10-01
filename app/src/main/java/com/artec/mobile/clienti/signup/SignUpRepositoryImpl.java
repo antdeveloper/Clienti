@@ -5,10 +5,10 @@ import com.artec.mobile.clienti.domain.FirebaseActionListenerCallback;
 import com.artec.mobile.clienti.entities.User;
 import com.artec.mobile.clienti.libs.base.EventBus;
 import com.artec.mobile.clienti.signup.events.SignUpEvent;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by ANICOLAS on 07/06/2016.
@@ -16,7 +16,7 @@ import com.firebase.client.ValueEventListener;
 public class SignUpRepositoryImpl implements SignUpRepository {
     private EventBus eventBus;
     private FirebaseAPI firebaseAPI;
-    private Firebase myUserReference;
+    private DatabaseReference myUserReference;
 
     public SignUpRepositoryImpl(EventBus eventBus, FirebaseAPI firebaseAPI) {
         this.eventBus = eventBus;
@@ -33,8 +33,8 @@ public class SignUpRepositoryImpl implements SignUpRepository {
             }
 
             @Override
-            public void onError(FirebaseError error) {
-                postEvent(SignUpEvent.onSignInError, error.getMessage());
+            public void onError(String error) {
+                postEvent(SignUpEvent.onSignInError, error);
             }
         });
     }
@@ -49,8 +49,8 @@ public class SignUpRepositoryImpl implements SignUpRepository {
                 }
 
                 @Override
-                public void onError(FirebaseError error) {
-                    postEvent(SignUpEvent.onSignInError, error.getMessage());
+                public void onError(String error) {
+                    postEvent(SignUpEvent.onSignInError, error);
                 }
             });
         }else{
@@ -62,7 +62,7 @@ public class SignUpRepositoryImpl implements SignUpRepository {
                 }
 
                 @Override
-                public void onError(FirebaseError error) {
+                public void onError(String error) {
                     postEvent(SignUpEvent.onFailedToRecoverSession);
                 }
             });
@@ -83,7 +83,7 @@ public class SignUpRepositoryImpl implements SignUpRepository {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
 
             }
         });

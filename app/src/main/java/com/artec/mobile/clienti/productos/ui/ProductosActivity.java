@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.compras.ui.ComprasFragment;
+import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.productos.ProductosPresenter;
@@ -216,8 +217,8 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
     }
 
     @Override
-    public void onClientChanged(Client client) {
-        this.client = client;
+    public void onAbonoAdded(Abono abono) {
+        //this.client = abono;
     }
 
     @OnClick(R.id.fab)
@@ -283,10 +284,15 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
                             producto.setModelo(etModel.getText().toString());
                             producto.setCantidad(Integer.valueOf(etCantidad.getText().toString()));
                             producto.setPrecio(Double.valueOf(etPrecio.getText().toString()));
-                            producto.setAbono(etAbono.getText().toString().isEmpty()? 0 :
-                                    Double.valueOf(etAbono.getText().toString()));
+                            producto.setFechaVenta(System.currentTimeMillis());
+                            /*producto.setAbono(etAbono.getText().toString().isEmpty()? 0 :
+                                    Double.valueOf(etAbono.getText().toString()));*/
                             //presenter.uploadPhoto(producto, photoPath, client);
-                            presenter.uploadPhoto(producto, saveImageLocally(), client);
+                            Abono abono = new Abono();
+                            abono.setValor(etAbono.getText().toString().isEmpty()? 0 :
+                                    Double.valueOf(etAbono.getText().toString()));
+                            abono.setFecha(System.currentTimeMillis());
+                            presenter.uploadPhoto(producto, abono, saveImageLocally(), client);
                         }
                     }
 
@@ -307,16 +313,20 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
                             etPrecio.setError(getString(R.string.productos_error_required));
                             return false;
                         }
-                        if (photoPath == null || photoPath.isEmpty()){
+                        /*if (photoPath == null || photoPath.isEmpty()){
                             Toast.makeText(ProductosActivity.this, R.string.productos_error_notphotoselect,
                                     Toast.LENGTH_SHORT).show();
                             return false;
-                        }
+                        }*/
 
                         return true;
                     }
 
                     private String saveImageLocally() {
+                        if (photoPath == null || photoPath.isEmpty()){
+                            return "";
+                        }
+
                         imgPhotoProduct.buildDrawingCache();
                         Bitmap _bitmap = imgPhotoProduct.getDrawingCache();
 

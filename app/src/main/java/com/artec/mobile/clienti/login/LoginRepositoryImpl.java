@@ -5,10 +5,10 @@ import com.artec.mobile.clienti.domain.FirebaseActionListenerCallback;
 import com.artec.mobile.clienti.entities.User;
 import com.artec.mobile.clienti.libs.base.EventBus;
 import com.artec.mobile.clienti.login.events.LoginEvent;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by ANICOLAS on 07/06/2016.
@@ -16,7 +16,7 @@ import com.firebase.client.ValueEventListener;
 public class LoginRepositoryImpl implements LoginRepository{
     private EventBus eventBus;
     private FirebaseAPI firebaseAPI;
-    private Firebase myUserReference;
+    private DatabaseReference myUserReference;
 
     public LoginRepositoryImpl(EventBus eventBus, FirebaseAPI firebaseAPI) {
         this.eventBus = eventBus;
@@ -34,8 +34,8 @@ public class LoginRepositoryImpl implements LoginRepository{
                 }
 
                 @Override
-                public void onError(FirebaseError error) {
-                    postEvent(LoginEvent.onSignInError, error.getMessage(), null);
+                public void onError(String error) {
+                    postEvent(LoginEvent.onSignInError, error, null);
                 }
             });
         }else{
@@ -47,7 +47,7 @@ public class LoginRepositoryImpl implements LoginRepository{
                 }
 
                 @Override
-                public void onError(FirebaseError error) {
+                public void onError(String error) {
                     postEvent(LoginEvent.onFailedToRecoverSession);
                 }
             });
@@ -67,7 +67,7 @@ public class LoginRepositoryImpl implements LoginRepository{
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
 
             }
         });

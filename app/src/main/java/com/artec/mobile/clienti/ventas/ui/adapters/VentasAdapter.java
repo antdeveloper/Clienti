@@ -10,10 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.artec.mobile.clienti.R;
-import com.artec.mobile.clienti.domain.Util;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.base.ImageLoader;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -48,7 +50,11 @@ public class VentasAdapter extends RecyclerView.Adapter<VentasAdapter.ViewHolder
         Producto currentProducto = productoList.get(position);
         double total = currentProducto.getPrecio()* currentProducto.getCantidad();
         holder.setOnItemClickListener(currentProducto, onItemClickListener);
-        imageLoader.load(holder.imgMain, currentProducto.getUrl());
+        if (currentProducto.getUrl().isEmpty()) {
+            holder.imgMain.setImageResource(R.drawable.ic_file_image);
+        }else {
+            imageLoader.load(holder.imgMain, currentProducto.getUrl());
+        }
         holder.txtName.setText( context.getString(R.string.productos_hint_name) +": " +
                 currentProducto.getName());
         holder.txtModel.setText( context.getString(R.string.productos_hint_model) + ": " +
@@ -61,16 +67,8 @@ public class VentasAdapter extends RecyclerView.Adapter<VentasAdapter.ViewHolder
                 String.format(Locale.getDefault(), "%.2f", total- currentProducto.getAbono()));
         holder.txtCantidad.setText(context.getString(R.string.ventas_property_cantidad) + ": (x" +
                 String.format(Locale.getDefault(), "%d", currentProducto.getCantidad()) + ")");
-
-        holder.txtTipoVenta.setText(currentProducto.isPublishByMe()?
-                context.getString(R.string.ventas_label_venta) :
-                context.getString(R.string.ventas_label_compra));
-
-        if (currentProducto.isPublishByMe()) {
-            holder.imgAddAbono.setVisibility(View.VISIBLE);
-        } else {
-            holder.imgAddAbono.setVisibility(View.GONE);
-        }
+        holder.txtFechaVenta.setText(new SimpleDateFormat("dd/MM/yy", Locale.getDefault())
+                .format(currentProducto.getFechaVenta()));
     }
 
     public void addPhoto(Producto producto) {
@@ -124,8 +122,8 @@ public class VentasAdapter extends RecyclerView.Adapter<VentasAdapter.ViewHolder
         @Bind(R.id.txtCantidad)
         TextView txtCantidad;
 
-        @Bind(R.id.txtTipoVenta)
-        TextView txtTipoVenta;
+        @Bind(R.id.txtFechaVenta)
+        TextView txtFechaVenta;
 
         private View view;
 

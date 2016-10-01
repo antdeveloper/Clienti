@@ -1,5 +1,6 @@
 package com.artec.mobile.clienti.productos;
 
+import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.base.EventBus;
@@ -34,8 +35,8 @@ public class ProductosPresenterImpl implements ProductosPresenter {
     }
 
     @Override
-    public void uploadPhoto(Producto producto, String path, Client client) {
-        productosUploadInteractor.execute(producto, path, client);
+    public void uploadPhoto(Producto producto, Abono abono, String path, Client client) {
+        productosUploadInteractor.execute(producto, abono, path, client);
     }
 
     @Override
@@ -55,8 +56,8 @@ public class ProductosPresenterImpl implements ProductosPresenter {
                     view.onUploadError(event.getError());
                     break;
                 }
-                case ProductosEvent.CLIENT_CHANGED:{
-                    view.onClientChanged(event.getClient());
+                case ProductosEvent.ABONO_ADDED:{
+                    view.onAbonoAdded(event.getAbono());
                     break;
                 }
             }

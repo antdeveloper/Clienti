@@ -1,5 +1,6 @@
 package com.artec.mobile.clienti.productos;
 
+import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 
@@ -14,7 +15,7 @@ public class ProductosUploadInteractorImpl implements ProductosUploadInteractor 
     }
 
     @Override
-    public void execute(Producto producto, String path, Client client) {
-        repository.uploadPhoto(producto, path, client);
+    public void execute(Producto producto, Abono abono, String path, Client client) {
+        repository.uploadPhoto(producto, abono, path, client);
     }
 }

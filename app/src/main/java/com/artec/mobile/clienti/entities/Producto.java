@@ -1,23 +1,34 @@
 package com.artec.mobile.clienti.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.firebase.database.Exclude;
+
+import java.util.Map;
 
 /**
  * Created by ANICOLAS on 28/06/2016.
  */
 public class Producto {
-    @JsonIgnore
+    @Exclude
     private String id;
-    @JsonIgnore
+    @Exclude
     private boolean publishByMe;
+    @Exclude
+    private double abono;
 
     private String name;
     private String modelo;
     private double precio;
     private int cantidad;
-    private double abono;
     private String url;
     private String email;
+    Map<String, Abono> abonos;
+    private long fechaVenta;
+    /*private double descuento;
+    private String nombreOferta;
+    private String emailVendedor;*/
+
+    public Producto() {
+    }
 
     public String getId() {
         return id;
@@ -83,21 +94,43 @@ public class Producto {
         this.cantidad = cantidad;
     }
 
-    public double getAbono() {
-        return abono;
+    public Map<String, Abono> getAbonos() {
+        return abonos;
     }
 
-    public void setAbono(double abono) {
-        this.abono = abono;
+    public void setAbonos(Map<String, Abono> abonos) {
+        this.abonos = abonos;
+    }
+
+    public long getFechaVenta() {
+        return fechaVenta;
+    }
+
+    public void setFechaVenta(long fechaVenta) {
+        this.fechaVenta = fechaVenta;
     }
 
     /** Customs get and set **/
-    @JsonIgnore
+    @Exclude
     public double getTotal(){
         return this.precio * this.cantidad;
     }
-    @JsonIgnore
+    @Exclude
     public double getAdeudo(){
         return getTotal() - this.abono;
+    }
+    @Exclude
+    public double getAbono() {
+        double sum = 0.0;
+        if (this.abonos != null) {
+            for (int i = 0; i < this.abonos.values().size(); i++) {
+                sum += ((Abono) this.abonos.values().toArray()[i]).getValor();
+            }
+        }
+        return sum;
+    }
+    @Exclude
+    public void setAbono(double abono) {
+        this.abono = abono;
     }
 }

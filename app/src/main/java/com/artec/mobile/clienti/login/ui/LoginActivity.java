@@ -53,11 +53,12 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         app = (ClientiApp)getApplication();
         setupInjection();
         loginPresenter.onCreate();
-        loginPresenter.validateLogin(null, null);
+        String email = sharedPreferences.getString(app.getEmailKey(), null);
+        loginPresenter.validateLogin(email, null);
     }
 
     private void setupInjection() {
-        app.getLoginComponent(this).inject(this);
+        app.getLoginComponent(this, this).inject(this);
     }
 
     @Override

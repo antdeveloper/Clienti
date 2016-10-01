@@ -7,7 +7,19 @@
     <color name="colorPrimaryLight">#e8f5e9</color>
     <color name="colorBackgroundAccent">#c8e6c9</color>
 
+    <color name="cWhite_t">#bbffffff</color>
+
     <color name="red_500">#f44336</color>
 
     <color name="green_500">#4caf50</color>
+
+    <!-- Gray -->
+    <color name="gray_800">#424242</color>
+    <color name="gray_700">#616161</color>
+    <color name="gray_500">#9e9e9e</color>
+    <color name="gray_400">#bdbdbd</color>
+    <color name="gray_300">#e0e0e0</color>
+    <color name="gray_600_t">#d2757575</color>
+    <color name="gray_400_t">#aabdbdbd</color>
+    <color name="gray_700_tl">#50616161</color>
 </resources>

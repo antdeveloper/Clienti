@@ -6,8 +6,8 @@ import com.artec.mobile.clienti.domain.FirebaseEventListenerCallback;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.libs.base.EventBus;
 import com.artec.mobile.clienti.main.events.MainEvent;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.FirebaseError;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 /**
  * Created by ANICOLAS on 01/07/2016.
@@ -33,9 +33,9 @@ public class MainRepositoryImpl implements MainRepository{
             public void onSuccess() {}
 
             @Override
-            public void onError(FirebaseError error) {
+            public void onError(String error) {
                 if (error != null){
-                    post(MainEvent.CONTACT_READ, error.getMessage());
+                    post(MainEvent.CONTACT_READ, error);
                 }else{
                     post(MainEvent.CONTACT_READ, "");
                 }
@@ -69,7 +69,7 @@ public class MainRepositoryImpl implements MainRepository{
             public void onChildRemoved(DataSnapshot snapshot) {}
 
             @Override
-            public void onCancelled(FirebaseError error) {
+            public void onCancelled(DatabaseError error) {
                 post(MainEvent.CONTACT_READ, error.getMessage());
             }
         });

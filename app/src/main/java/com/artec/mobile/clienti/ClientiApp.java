@@ -1,5 +1,6 @@
 package com.artec.mobile.clienti;
 
+import android.app.Activity;
 import android.app.Application;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -39,7 +40,7 @@ import com.artec.mobile.clienti.ventas.ui.VentasView;
 import com.artec.mobile.clienti.productos.di.ProductosComponent;
 import com.artec.mobile.clienti.productos.di.ProductosModule;
 import com.artec.mobile.clienti.productos.ui.ProductosView;
-import com.firebase.client.Firebase;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by ANICOLAS on 28/06/2016.
@@ -66,7 +67,8 @@ public class ClientiApp extends Application{
     }
 
     private void initFirebase() {
-        Firebase.setAndroidContext(this);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        //Firebase.setAndroidContext(this);
     }
 
     public String getEmailKey() {
@@ -81,7 +83,8 @@ public class ClientiApp extends Application{
         return SHARED_PREFERENCES_NAME;
     }
 
-    public LoginComponent getLoginComponent(LoginView view){
+    public LoginComponent getLoginComponent(LoginView view, Activity activity){
+        domainModule.setActivity(activity);
         return DaggerLoginComponent
                 .builder()
                 .clientiAppModule(clientiAppModule)

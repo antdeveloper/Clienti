@@ -1,42 +1,99 @@
 package com.artec.mobile.clienti.domain;
 
+import android.app.Activity;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+
 import com.artec.mobile.clienti.entities.Producto;
-import com.firebase.client.AuthData;
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.artec.mobile.clienti.login.ui.LoginActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 /**
  * Created by ANICOLAS on 28/06/2016.
  */
 public class FirebaseAPI {
-    private Firebase firebase;
-    private Firebase productsSubscribeReference;
-    private Firebase clientReference;
+    private DatabaseReference firebase;
+    private DatabaseReference productsSubscribeReference;
+    private DatabaseReference clientReference;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser user;
     private ChildEventListener productsEventListener;
     private ChildEventListener clientsEventListener;
+    private Activity mContext;
 
     private final static String SEPARATOR = "___";
     private final static String USERS_PATH = "users";
     private final static String VENTAS_PATH = "products";
     private final static String CLIENTS_PATH = "clients";
+    private final static String ABONOS_PATH = "abonos";
     private final static String FIREBASE_URL = "https://clienti.firebaseio.com/";
 
     public FirebaseAPI() {
-        this.firebase = new Firebase(FIREBASE_URL);
+        this.firebase = FirebaseDatabase.getInstance().getReference();
+        this.mAuth = FirebaseAuth.getInstance();
+        this.mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null){
+
+                }
+            }
+        };
     }
 
-    public FirebaseAPI(Firebase firebase) {
+    public FirebaseAPI(DatabaseReference firebase) {
         this.firebase = firebase;
+        this.mAuth = FirebaseAuth.getInstance();
+        this.mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null){
+
+                }
+            }
+        };
+        this.mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    public FirebaseAPI(DatabaseReference firebase, Activity context) {
+        this.firebase = firebase;
+        this.mContext = context;
+        this.mAuth = FirebaseAuth.getInstance();
+        this.mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null){
+
+                }
+            }
+        };
+        this.mAuth.addAuthStateListener(mAuthListener);
     }
 
     public void checkForData(final FirebaseActionListenerCallback listenerCallback, String recipient){
-        Firebase productsReference = getProductsReference(recipient);
-        productsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference productsReference = getProductsReference(recipient);
+        Query query = productsReference.orderByChild("email").equalTo(getAuthEmail());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getChildrenCount() > 0){
@@ -47,11 +104,10 @@ public class FirebaseAPI {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                listenerCallback.onError(firebaseError);
+            public void onCancelled(DatabaseError databaseError) {
+                listenerCallback.onError(databaseError.getMessage());
             }
         });
-
     }
 
     public void subscribe(final FirebaseEventListenerCallbackVentas listenerCallback, String recipient){
@@ -76,12 +132,14 @@ public class FirebaseAPI {
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                     listenerCallback.onCancelled(firebaseError);
                 }
             };
             productsSubscribeReference = getProductsReference(recipient);
-            productsSubscribeReference.addChildEventListener(productsEventListener);
+            Query query = productsSubscribeReference.orderByChild("email").equalTo(getAuthUserEmail());
+            query.addChildEventListener(productsEventListener);
+            //productsSubscribeReference.addChildEventListener(productsEventListener);
         }
     }
 
@@ -102,47 +160,83 @@ public class FirebaseAPI {
 
     public String getAuthEmail(){
         String email = null;
-        if (firebase.getAuth() != null){
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            email = user.getEmail();
+        }
+        /*if (firebase.getAuth() != null){
             Map<String, Object> providerData = firebase.getAuth().getProviderData();
             email = providerData.get("email").toString();
-        }
+        }*/
         return email;
     }
 
     public void logout(){
-        firebase.unauth();
+        FirebaseAuth.getInstance().signOut();
     }
 
     public void login(String email, String password, final FirebaseActionListenerCallback listenerCallback){
-        firebase.authWithPassword(email, password, new Firebase.AuthResultHandler() {
+        /*firebase.authWithPassword(email, password, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
                 listenerCallback.onSuccess();
             }
 
             @Override
-            public void onAuthenticationError(FirebaseError firebaseError) {
+            public void onAuthenticationError(DatabaseError firebaseError) {
                 listenerCallback.onError(firebaseError);
             }
-        });
+        });*/
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(mContext , new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()){
+                            Log.w("Task: ", task.getException());
+                            listenerCallback.onError(task.getException().getMessage());
+                        }else{
+                            if (user != null){
+                                listenerCallback.onSuccess();
+                            }
+                        }
+                    }
+                });
     }
 
     public void signup(String email, String password, final FirebaseActionListenerCallback listenerCallback){
-        firebase.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
+        /*firebase.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> o) {
                 listenerCallback.onSuccess();
             }
 
             @Override
-            public void onError(FirebaseError firebaseError) {
+            public void onError(DatabaseError firebaseError) {
                 listenerCallback.onError(firebaseError);
             }
-        });
+        });*/
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(mContext , new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()){
+                            Log.w("Task: ", task.getException());
+                            listenerCallback.onError(task.getException().getMessage());
+                        }else {
+                            if (user != null){
+                                listenerCallback.onSuccess();
+                            }
+                        }
+                    }
+                });
     }
 
     public void checkForSession(FirebaseActionListenerCallback listenerCallback){
-        if (firebase.getAuth() != null){
+        //if (firebase.getAuth() != null){
+        if (FirebaseAuth.getInstance().getCurrentUser() != null){
             listenerCallback.onSuccess();
         }else {
             listenerCallback.onError(null);
@@ -155,7 +249,7 @@ public class FirebaseAPI {
      * */
 
     public void checkForDataMain(final FirebaseActionListenerCallback listenerCallback){
-        Firebase clientReference = getMyClientsReference();
+        DatabaseReference clientReference = getMyClientsReference();
         //firebase.addListenerForSingleValueEvent(new ValueEventListener() {
         clientReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -168,8 +262,8 @@ public class FirebaseAPI {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                listenerCallback.onError(firebaseError);
+            public void onCancelled(DatabaseError firebaseError) {
+                listenerCallback.onError(firebaseError.getMessage());
             }
         });
     }
@@ -196,7 +290,7 @@ public class FirebaseAPI {
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError firebaseError) {
                     listenerCallback.onCancelled(firebaseError);
                 }
             };
@@ -214,18 +308,25 @@ public class FirebaseAPI {
     }
 
     public String getAuthUserEmail(){
-        AuthData authData = firebase.getAuth();
+        /*AuthData authData = firebase.getAuth();
         String email = null;
         if (authData != null){
             Map<String, Object> providerData = authData.getProviderData();
             email = providerData.get("email").toString();
         }
 
+        return email;*/
+        String email = null;
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            email = user.getEmail();
+        }
         return email;
     }
 
-    public Firebase getUserReference(String email){
-        Firebase userReference = null;
+    public DatabaseReference getUserReference(String email){
+        DatabaseReference userReference = null;
         if (email != null){
             String emailKey = email.replace(".", "_");
             userReference = firebase.getRoot().child(USERS_PATH).child(emailKey);
@@ -233,19 +334,19 @@ public class FirebaseAPI {
         return userReference;
     }
 
-    public Firebase getMyUserReference(){
+    public DatabaseReference getMyUserReference(){
         return getUserReference(getAuthUserEmail());
     }
 
-    public Firebase getClientsReference(String email){
+    public DatabaseReference getClientsReference(String email){
         return getUserReference(email).child(CLIENTS_PATH);
     }
 
-    public Firebase getMyClientsReference(){
+    public DatabaseReference getMyClientsReference(){
         return getClientsReference(getAuthUserEmail());
     }
 
-    public Firebase getProductsReference(String receiver){
+    public DatabaseReference getProductsReference(String receiver){
         String keySender = getAuthUserEmail().replace(".", "_");
         String keyReceiver = receiver.replace(".", "_");
 
@@ -258,5 +359,10 @@ public class FirebaseAPI {
 
     public void destroyMainListener(){
         clientsEventListener = null;
+    }
+
+    // ABONOS
+    public DatabaseReference getAbonosReference(DatabaseReference reference){
+        return reference.child(ABONOS_PATH).push();
     }
 }

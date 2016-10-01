@@ -12,6 +12,6 @@ public class AddClientInteractorImpl implements AddClientInteractor {
 
     @Override
     public void execute(String email, String username) {
-        repository.addContact(email, username);
+        repository.addClient(email, username);
     }
 }
