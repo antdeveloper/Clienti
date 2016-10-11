@@ -7,6 +7,8 @@ import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.entities.User;
 import com.artec.mobile.clienti.libs.base.EventBus;
+import com.artec.mobile.clienti.libs.base.ImageStorage;
+import com.artec.mobile.clienti.libs.base.ImageStorageFinishedListener;
 import com.artec.mobile.clienti.ventas.events.VentasEvent;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,10 +21,12 @@ import com.google.firebase.database.ValueEventListener;
 public class VentasRepositoryImpl implements VentasReposiroty {
     private EventBus eventBus;
     private FirebaseAPI firebase;
+    private ImageStorage imageStorage;
 
-    public VentasRepositoryImpl(EventBus eventBus, FirebaseAPI firebase) {
+    public VentasRepositoryImpl(EventBus eventBus, FirebaseAPI firebase, ImageStorage imageStorage) {
         this.eventBus = eventBus;
         this.firebase = firebase;
+        this.imageStorage = imageStorage;
     }
 
     @Override
@@ -87,6 +91,38 @@ public class VentasRepositoryImpl implements VentasReposiroty {
 
     @Override
     public void removePhoto(final Producto producto, final Client client) {
+        ImageStorageFinishedListener listener = new ImageStorageFinishedListener() {
+            @Override
+            public void onSuccess() {
+                deletePhoto(producto, client);
+            }
+
+            @Override
+            public void onError(String error) {
+                post(VentasEvent.DELETE_EVENT, error);
+            }
+        };
+        if (producto.getUrl().isEmpty()){
+            deletePhoto(producto, client);
+        }else {
+            imageStorage.delete(producto.getId(), firebase.getAuthEmail(), listener);
+        }
+
+        /*firebase.remove(producto, new FirebaseActionListenerCallback() {
+            @Override
+            public void onSuccess() {
+                //updateClient(client, producto);
+                post(VentasEvent.DELETE_EVENT, producto);
+            }
+
+            @Override
+            public void onError(String error) {
+                post(VentasEvent.DELETE_EVENT, error);
+            }
+        }, client.getEmail());*/
+    }
+
+    private void deletePhoto(final Producto producto, Client client){
         firebase.remove(producto, new FirebaseActionListenerCallback() {
             @Override
             public void onSuccess() {
@@ -101,7 +137,7 @@ public class VentasRepositoryImpl implements VentasReposiroty {
         }, client.getEmail());
     }
 
-    private void updateClient(final Client client, final Producto producto){
+    /*private void updateClient(final Client client, final Producto producto){
         final String key = client.getEmail().replace(".", "_");
         DatabaseReference userReference = firebase.getUserReference(client.getEmail());
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -120,7 +156,7 @@ public class VentasRepositoryImpl implements VentasReposiroty {
                 post(VentasEvent.DELETE_EVENT, firebaseError.getMessage());
             }
         });
-    }
+    }*/
 
     private void post(int type, Producto producto){
         post(type, null, producto);

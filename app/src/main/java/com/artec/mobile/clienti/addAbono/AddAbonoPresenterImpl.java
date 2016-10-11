@@ -9,6 +9,8 @@ import com.artec.mobile.clienti.libs.base.EventBus;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
+
 /**
  * Created by ANICOLAS on 03/07/2016.
  */
@@ -41,6 +43,15 @@ public class AddAbonoPresenterImpl implements AddAbonoPresenter {
             view.showProgress();
         }
         interactor.execute(producto, abono, client);
+    }
+
+    @Override
+    public void addAbonoGral(List<Producto> productos, double abonoGral, long fecha, Client client) {
+        if (view != null){
+            view.hideInput();
+            view.showProgress();
+        }
+        interactor.addAbonoGral(productos, abonoGral, fecha, client);
     }
 
     @Override

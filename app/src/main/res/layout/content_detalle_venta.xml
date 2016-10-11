@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.artec.mobile.clienti.detalleVentas.ui.DetalleVentaActivity"
+    tools:showIn="@layout/activity_detalle_venta">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/padding_sm">
+
+        <TextView
+            android:id="@+id/txtModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Modelo: NG49"
+            android:textColor="@android:color/black"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/txtPrecioProveedor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Precio original: $500"
+            android:textColor="@android:color/black"
+            android:layout_below="@id/txtModel"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/txtPrecio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Precio venta: $950"
+            android:textColor="@android:color/black"
+            android:layout_below="@id/txtPrecioProveedor"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/txtTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total a pagar: $1900"
+            android:textColor="@android:color/black"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@id/txtPrecio"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/txtAbono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cantidad pagada: $1750"
+            android:textColor="@android:color/black"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@id/txtTotal"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/txtAdeudo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adeudo: $150"
+            android:textColor="@android:color/black"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@id/txtAbono"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/txtGanancia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ganancia total: $900"
+            android:textColor="@android:color/black"
+            android:layout_below="@id/txtAdeudo"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/txtObservaciones"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notas: Notas del producto."
+            android:textColor="@android:color/black"
+            android:layout_below="@id/txtGanancia"
+            android:layout_centerHorizontal="true"/>
+
+        <LinearLayout
+            android:id="@+id/contentOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtObservaciones"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/txtCantidad"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cantidad: (x2)"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/black"/>
+
+            <ImageButton
+                android:id="@+id/imgSharePhoto"
+                android:layout_width="@dimen/icon.mdl"
+                android:layout_height="@dimen/icon.mdl"
+                app:srcCompat="@drawable/ic_plus_box"
+                android:tint="@color/gray_600_t"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+        </LinearLayout>
+
+        <fragment
+            android:id="@+id/fragmentList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/contentOptions"
+            android:name="com.artec.mobile.clienti.detalleVentas.ui.AbonoHistoryFragment"
+            tools:layout="@layout/fragment_abono_history"/>
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

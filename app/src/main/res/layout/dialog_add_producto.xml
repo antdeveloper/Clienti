@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:orientation="vertical"
@@ -14,18 +15,43 @@
         android:gravity="center_horizontal"
         android:background="@color/colorBackground">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilName"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/etName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textNoSuggestions"
-                android:ems="10"
-                android:hint="@string/productos.hint.name"/>
-        </android.support.design.widget.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilName"
+                android:layout_width="0dp"
+                android:layout_weight="60"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/etName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textAutoCorrect"
+                    android:ems="10"
+                    android:hint="@string/productos.hint.name"
+                    android:nextFocusForward="@+id/etCantidad"
+                    android:imeOptions="actionNext"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilCantidad"
+                android:layout_width="0dp"
+                android:layout_weight="40"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/etCantidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:text="1"
+                    android:hint="@string/productos.hint.cantidad"
+                    android:nextFocusForward="@+id/etModel"
+                    android:imeOptions="actionNext"/>
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,7 +61,7 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tilModel"
                 android:layout_width="0dp"
-                android:layout_weight="50"
+                android:layout_weight="60"
                 android:layout_height="wrap_content">
                 <EditText
                     android:id="@+id/etModel"
@@ -44,23 +70,24 @@
                     android:inputType="textNoSuggestions"
                     android:ems="10"
                     android:hint="@string/productos.hint.model"
-                    android:nextFocusForward="@+id/etCantidad"
+                    android:nextFocusForward="@+id/etAbono"
                     android:imeOptions="actionNext"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilCantidad"
+                android:id="@+id/tilAbono"
                 android:layout_width="0dp"
-                android:layout_weight="50"
+                android:layout_weight="40"
                 android:layout_height="wrap_content">
                 <EditText
-                    android:id="@+id/etCantidad"
+                    android:id="@+id/etAbono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:ems="10"
-                    android:hint="@string/productos.hint.cantidad"
-                    android:nextFocusForward="@+id/etPrecio"
+                    android:text="0"
+                    android:hint="@string/productos.hint.abono"
+                    android:nextFocusForward="@+id/etPrecioOriginal"
                     android:imeOptions="actionNext"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
@@ -71,9 +98,25 @@
             android:orientation="horizontal">
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilPrecioOriginal"
+                android:layout_width="0dp"
+                android:layout_weight="60"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/etPrecioOriginal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:hint="@string/ventas.hint.precioOriginal"
+                    android:nextFocusForward="@+id/etPrecio"
+                    android:imeOptions="actionNext"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:id="@+id/tilPrecio"
                 android:layout_width="0dp"
-                android:layout_weight="50"
+                android:layout_weight="40"
                 android:layout_height="wrap_content">
                 <EditText
                     android:id="@+id/etPrecio"
@@ -82,61 +125,60 @@
                     android:inputType="numberDecimal"
                     android:ems="10"
                     android:hint="@string/productos.hint.precio"
-                    android:nextFocusForward="@+id/etAbono"
+                    android:nextFocusForward="@+id/etNotas"
                     android:imeOptions="actionNext"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilAbono"
-                android:layout_width="0dp"
-                android:layout_weight="50"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/etAbono"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:ems="10"
-                    android:hint="@string/productos.hint.abono"
-                    android:imeOptions="actionDone"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/img_mdl" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/imgPhotoProduct"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/img_mdl"
-                android:src="@drawable/ic_file_image"
-                android:adjustViewBounds="true"
-                android:layout_gravity="center"/>
-            <!--<ImageView
-                android:id="@+id/imgPhotoProduct"
-                android:layout_width="@dimen/img_md"
-                android:layout_height="wrap_content"
-                android:maxHeight="@dimen/img_md"
-                android:adjustViewBounds="true"
-                android:src="@drawable/ic_file_image"
-                android:layout_gravity="center"/>-->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end" >
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilNotas"
+                android:layout_width="0dp"
+                android:layout_weight="60"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/etNotas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textAutoCorrect"
+                    android:ems="10"
+                    android:hint="@string/ventas.property.notas"
+                    android:imeOptions="actionDone"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_weight="40"
+                android:layout_height="@dimen/img_mdl" >
+
                 <ImageView
-                    android:id="@+id/imgTakeFoto"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@android:drawable/ic_menu_camera"/>
-                <ImageView
-                    android:id="@+id/imgDeleteFoto"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"/>
-            </LinearLayout>
-        </FrameLayout>
+                    android:id="@+id/imgPhotoProduct"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/img_mdl"
+                    app:srcCompat="@drawable/ic_file_image"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="center"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end" >
+                    <ImageView
+                        android:id="@+id/imgTakeFoto"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_menu_camera"/>
+                    <ImageView
+                        android:id="@+id/imgDeleteFoto"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_menu_close_clear_cancel"/>
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <ProgressBar

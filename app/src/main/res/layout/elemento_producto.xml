@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/tools"
     card_view:cardUseCompatPadding="true">
 
     <RelativeLayout
@@ -18,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/img_mdl"
             card_view:contentPadding="0dp"
-            app:elevation="0dp"
+            card_view:cardElevation="0dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             card_view:cardBackgroundColor="@color/colorBackgroundAccent">
@@ -26,7 +27,7 @@
                 android:id="@+id/imgMain"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/img_mdl"
-                android:src="@drawable/ic_file_image"
+                app:srcCompat="@drawable/ic_file_image"
                 android:layout_gravity="center"/>
 
             <TextView
@@ -109,18 +110,10 @@
                 android:textColor="@android:color/black"/>
 
             <ImageButton
-                android:id="@+id/imgSharePhoto"
-                android:layout_width="@dimen/icon.sm"
-                android:layout_height="@dimen/icon.sm"
-                android:src="@drawable/ic_pencil_box"
-                android:tint="@color/gray_600_t"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
-
-            <ImageButton
                 android:id="@+id/imgAddAbono"
                 android:layout_width="@dimen/icon.sm"
                 android:layout_height="@dimen/icon.sm"
-                android:src="@drawable/ic_plus_box"
+                app:srcCompat="@drawable/ic_plus_box"
                 android:tint="@color/gray_600_t"
                 android:background="?attr/selectableItemBackgroundBorderless"/>
         </LinearLayout>

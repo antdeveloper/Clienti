@@ -43,7 +43,7 @@ public class FirebaseAPI {
     private final static String VENTAS_PATH = "products";
     private final static String CLIENTS_PATH = "clients";
     private final static String ABONOS_PATH = "abonos";
-    private final static String FIREBASE_URL = "https://clienti.firebaseio.com/";
+    //private final static String FIREBASE_URL = "https://clienti.firebaseio.com/";
 
     public FirebaseAPI() {
         this.firebase = FirebaseDatabase.getInstance().getReference();
@@ -177,18 +177,6 @@ public class FirebaseAPI {
     }
 
     public void login(String email, String password, final FirebaseActionListenerCallback listenerCallback){
-        /*firebase.authWithPassword(email, password, new Firebase.AuthResultHandler() {
-            @Override
-            public void onAuthenticated(AuthData authData) {
-                listenerCallback.onSuccess();
-            }
-
-            @Override
-            public void onAuthenticationError(DatabaseError firebaseError) {
-                listenerCallback.onError(firebaseError);
-            }
-        });*/
-
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(mContext , new OnCompleteListener<AuthResult>() {
                     @Override
@@ -206,18 +194,6 @@ public class FirebaseAPI {
     }
 
     public void signup(String email, String password, final FirebaseActionListenerCallback listenerCallback){
-        /*firebase.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
-            @Override
-            public void onSuccess(Map<String, Object> o) {
-                listenerCallback.onSuccess();
-            }
-
-            @Override
-            public void onError(DatabaseError firebaseError) {
-                listenerCallback.onError(firebaseError);
-            }
-        });*/
-
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(mContext , new OnCompleteListener<AuthResult>() {
                     @Override

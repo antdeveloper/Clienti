@@ -15,6 +15,7 @@ import com.artec.mobile.clienti.libs.base.ImageLoader;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -59,12 +60,12 @@ public class VentasAdapter extends RecyclerView.Adapter<VentasAdapter.ViewHolder
                 currentProducto.getName());
         holder.txtModel.setText( context.getString(R.string.productos_hint_model) + ": " +
                 currentProducto.getModelo());
-        holder.txtTotal.setText( context.getString(R.string.ventas_property_total) + ": $" +
-                String.format(Locale.getDefault(), "%.2f", total));
-        holder.txtAbono.setText( context.getString(R.string.ventas_property_pagado) + ": $" +
-                currentProducto.getAbono());
-        holder.txtAdeudo.setText(context.getString(R.string.ventas_property_adeudo) + ": $" +
-                String.format(Locale.getDefault(), "%.2f", total- currentProducto.getAbono()));
+        holder.txtTotal.setText(String.format(Locale.getDefault(), context.getString(
+                R.string.ventas_property_total), total));
+        /*holder.txtAbono.setText( context.getString(R.string.ventas_property_pagado) + ": $" +
+                currentProducto.getAbono());*/
+        holder.txtAdeudo.setText(String.format(Locale.getDefault(), context.getString(
+                R.string.ventas_property_adeudo), total- currentProducto.getAbono()));
         holder.txtCantidad.setText(context.getString(R.string.ventas_property_cantidad) + ": (x" +
                 String.format(Locale.getDefault(), "%d", currentProducto.getCantidad()) + ")");
         holder.txtFechaVenta.setText(new SimpleDateFormat("dd/MM/yy", Locale.getDefault())
@@ -97,6 +98,18 @@ public class VentasAdapter extends RecyclerView.Adapter<VentasAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
+    public double getAdeudoTotal(){
+        double adeudo = 0;
+        for (Producto producto : productoList){
+            adeudo += producto.getAdeudo();
+        }
+        return adeudo;
+    }
+
+    public List<Producto> getProductos(){
+        return productoList;
+    }
+
     @Override
     public int getItemCount() {
         return productoList.size();
@@ -115,8 +128,6 @@ public class VentasAdapter extends RecyclerView.Adapter<VentasAdapter.ViewHolder
         TextView txtAbono;
         @Bind(R.id.txtAdeudo)
         TextView txtAdeudo;
-        @Bind(R.id.imgSharePhoto)
-        ImageButton imgSharePhoto;
         @Bind(R.id.imgAddAbono)
         ImageButton imgAddAbono;
         @Bind(R.id.txtCantidad)
@@ -134,16 +145,22 @@ public class VentasAdapter extends RecyclerView.Adapter<VentasAdapter.ViewHolder
         }
 
         public void setOnItemClickListener(final Producto producto, final OnItemClickListener listener) {
-            imgSharePhoto.setOnClickListener(new View.OnClickListener() {
+            /*imgSharePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onShareClick(producto, imgMain);
                 }
-            });
+            });*/
             imgAddAbono.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onAddAbonoClick(producto);
+                }
+            });
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(producto);
                 }
             });
             view.setOnLongClickListener(new View.OnLongClickListener() {

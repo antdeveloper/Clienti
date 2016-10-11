@@ -7,6 +7,6 @@ import java.io.File;
  */
 public interface ImageStorage {
     String getImageUrl(String id);
-    void upload(File file, String id, ImageStorageFinishedListener listener);
-    void delete(String keyId, ImageStorageFinishedListener listener);
+    void upload(File file, String id, String folder, ImageStorageFinishedListener listener);
+    void delete(String keyId, String folder, ImageStorageFinishedListener listener);
 }

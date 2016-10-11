@@ -1,5 +1,8 @@
 package com.artec.mobile.clienti.main.ui;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,8 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
@@ -92,6 +97,10 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
                 startActivity(intent     );
                 break;
             }
+            case R.id.action_about:{
+                goToAboutHanlder();
+                break;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -132,5 +141,21 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     public void addContact(){
         new AddClientFragment().show(getSupportFragmentManager(),
                 getString(R.string.addclient_message_title));
+    }
+
+
+    public void goToAboutHanlder() {
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.about, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                .setTitle(R.string.menu_about)
+                .setView(view)
+                .setPositiveButton(R.string.label_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.show();
     }
 }

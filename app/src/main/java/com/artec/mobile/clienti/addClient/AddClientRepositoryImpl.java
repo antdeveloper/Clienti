@@ -23,7 +23,11 @@ public class AddClientRepositoryImpl implements AddClientRepository {
     }
 
     @Override
-    public void addClient(final String email, final String username) {
+    public void addClient(final String email, final String username, String customUsername) {
+        if (!customUsername.isEmpty()) {
+            registerNewUser(email, customUsername);
+        }
+
         final String key = email.replace(".", "_");
         DatabaseReference userReference = firebaseAPI.getUserReference(email);
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -59,6 +63,16 @@ public class AddClientRepositoryImpl implements AddClientRepository {
                 postError();
             }
         });
+    }
+
+    private void registerNewUser(String email, String username){
+        DatabaseReference userReference = firebaseAPI.getUserReference(email);
+        if (email != null){
+            User currentUser = new User();
+            currentUser.setEmail(email);
+            currentUser.setUsername(username);
+            userReference.setValue(currentUser);
+        }
     }
 
     private void postSuccess() {

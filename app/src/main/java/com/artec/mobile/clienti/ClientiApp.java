@@ -15,6 +15,7 @@ import com.artec.mobile.clienti.addClient.di.AddClientModule;
 import com.artec.mobile.clienti.addClient.di.DaggerAddClientComponent;
 import com.artec.mobile.clienti.addClient.ui.AddClientFragment;
 import com.artec.mobile.clienti.addClient.ui.AddClientView;
+import com.artec.mobile.clienti.detalleVentas.di.DaggerDetalleVentaComponent;
 import com.artec.mobile.clienti.domain.di.DomainModule;
 import com.artec.mobile.clienti.libs.di.LibsModule;
 import com.artec.mobile.clienti.login.di.DaggerLoginComponent;
@@ -33,8 +34,11 @@ import com.artec.mobile.clienti.signup.di.SignUpComponent;
 import com.artec.mobile.clienti.signup.di.SignUpModule;
 import com.artec.mobile.clienti.signup.ui.SignUpView;
 import com.artec.mobile.clienti.ventas.di.DaggerVentasComponent;
+import com.artec.mobile.clienti.detalleVentas.di.DetalleVentaComponent;
+import com.artec.mobile.clienti.detalleVentas.di.DetalleVentasModule;
 import com.artec.mobile.clienti.ventas.di.VentasComponent;
 import com.artec.mobile.clienti.ventas.di.VentasModule;
+import com.artec.mobile.clienti.detalleVentas.ui.DetalleVentaActivity;
 import com.artec.mobile.clienti.ventas.ui.VentasFragment;
 import com.artec.mobile.clienti.ventas.ui.VentasView;
 import com.artec.mobile.clienti.productos.di.ProductosComponent;
@@ -161,13 +165,14 @@ public class ClientiApp extends Application{
                 .addAbonoModule(new AddAbonoModule(view))
                 .build();
     }
-    /*public PhotoMapComponent getPhotoMapComponent(PhotoMapFragment fragment, PhotoMapView view) {
-        return DaggerPhotoMapComponent
+
+    public DetalleVentaComponent getDetalleAbonoComponent(DetalleVentaActivity activity){
+        return DaggerDetalleVentaComponent
                 .builder()
-                .photoFeedAppModule(photoFeedAppModule)
+                .clientiAppModule(clientiAppModule)
                 .domainModule(domainModule)
-                .libsModule(new LibsModule(fragment))
-                .photoMapModule(new PhotoMapModule(view))
+                .libsModule(new LibsModule(activity))
+                .detalleVentasModule(new DetalleVentasModule())
                 .build();
-    }*/
+    }
 }

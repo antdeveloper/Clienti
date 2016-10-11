@@ -95,8 +95,25 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
     @OnClick(R.id.btnSignin)
     @Override
     public void handleSignIn() {
-        loginPresenter.validateLogin(
-                editTxtEmail.getText().toString(), editTxtPassword.getText().toString());
+        if (validateFields()) {
+            loginPresenter.validateLogin(
+                    editTxtEmail.getText().toString(), editTxtPassword.getText().toString());
+        }
+    }
+
+    private boolean validateFields() {
+        boolean isValid = true;
+
+        if (editTxtEmail.getText().toString().isEmpty()){
+            editTxtEmail.setError(getString(R.string.productos_error_required));
+            isValid = false;
+        }
+        if (editTxtPassword.getText().toString().isEmpty()){
+            editTxtPassword.setError(getString(R.string.productos_error_required));
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     @Override

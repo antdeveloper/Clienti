@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Clienti</string>
+    <string name="version">v1.2.1.1</string>
 
     <string name="login.title">Inicio de sesión</string>
     <string name="login.message.username">Nombre de usuario</string>
@@ -39,23 +40,49 @@
     <string name="ventas.message.share">Compartir</string>
 
     <string name="addabono.message.title">Agregar abono</string>
+    <string name="addabono.message.titleGral">Agregar abono general</string>
     <string name="main.status.correct">En orden</string>
     <string name="main.status.incorrect">Con adeudo</string>
+    <string name="addAbono.error.abonoBiger">El abono no puede ser mas grande que la deuda.</string>
 
     <string name="productos.error.notfound">Fichero/recurso no encontrado.</string>
     <string name="productos.message.titledialog">Añadir producto</string>
     <string name="productos.error.required">Este campo es requerido</string>
     <string name="productos.error.notphotoselect">Seleccione una fotografia para continuar.</string>
 
-    <string name="ventas.property.total">Total</string>
+    <string name="ventas.hint.precioOriginal">Precio original</string>
+    <string name="ventas.property.precioOriginal">Precio original: $%,.2f</string>
+    <string name="ventas.property.precioVenta">Precio venta: $%,.2f</string>
+    <string name="ventas.property.total">Total: $%,.2f</string>
     <string name="ventas.property.pagado">Pagado</string>
-    <string name="ventas.property.adeudo">Adeudo</string>
+    <string name="ventas.property.adeudo">Adeudo: $%,.2f</string>
+    <string name="ventas.property.ganancia">Ganancia total: $%,.2f</string>
+    <string name="ventas.property.notas">Notas</string>
     <string name="ventas.property.cantidad">Cantidad</string>
+
+    <string name="ventas.detalle.property.total">Total a pagar: $%,.2f</string>
+    <string name="ventas.detalle.property.pagado">Cantidad pagada: $%,.2f</string>
+    <string name="ventas.detalle.label.abono">$%,.2f</string>
 
     <string name="ventas.label.compra">Compra</string>
     <string name="ventas.label.venta">Venta</string>
     <string name="ventas.title.confirmdelete">Borrar producto</string>
     <string name="ventas.message.confirmdelete">¿Estas seguro que quieres eliminar este producto?</string>
     <string name="addabono_message_abobboadded">Abono agregado exitosamente.</string>
+    <string name="addClient.label.nativeUser">Usuario Clienti</string>
+    <string name="addClient.label.customUser">Usuario local</string>
+    <string name="about.version">Version:</string>
+    <string name="about.artecForza.description">La marca Clienti y el logo son propiedad de ARTEC mobile and systems. Todos los derechos reservados</string>
+    <string name="about.webSite">www.artec-clienti.com</string>
+    <string name="about.licencias">Aviso de privacidad</string>
+    <string name="about.termCondition">Terminos y Condiciones</string>
+    <string name="menu.about">Acerca de</string>
+    <string name="label.ok">OK</string>
+    <string name="title_activity_detalle_venta">Detalle de la venta</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

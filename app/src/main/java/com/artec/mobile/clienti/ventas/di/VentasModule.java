@@ -1,10 +1,10 @@
 package com.artec.mobile.clienti.ventas.di;
 
 import com.artec.mobile.clienti.domain.FirebaseAPI;
-import com.artec.mobile.clienti.domain.Util;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.base.EventBus;
 import com.artec.mobile.clienti.libs.base.ImageLoader;
+import com.artec.mobile.clienti.libs.base.ImageStorage;
 import com.artec.mobile.clienti.ventas.VentasInteractor;
 import com.artec.mobile.clienti.ventas.VentasInteractorImpl;
 import com.artec.mobile.clienti.ventas.VentasPresenter;
@@ -53,14 +53,19 @@ public class VentasModule {
     }
 
     @Provides @Singleton
-    VentasReposiroty providesPhotoListReposiroty(EventBus eventBus, FirebaseAPI firebaseAPI){
-        return new VentasRepositoryImpl(eventBus, firebaseAPI);
+    VentasReposiroty providesPhotoListReposiroty(EventBus eventBus, FirebaseAPI firebaseAPI, ImageStorage imageStorage){
+        return new VentasRepositoryImpl(eventBus, firebaseAPI, imageStorage);
     }
 
     @Provides @Singleton
     VentasAdapter providesPhotoListAdapter(List<Producto> productoList, ImageLoader imageLoader, OnItemClickListener onItemClickListener){
         return new VentasAdapter(productoList, imageLoader, onItemClickListener);
     }
+
+    /*@Provides @Singleton
+    DetalleVentaActivity providesDetalleVentaActivity(ImageLoader imageLoader){
+        return new DetalleVentaActivity(imageLoader);
+    }*/
 
     @Provides @Singleton
     OnItemClickListener providesOnItemClickListener(){

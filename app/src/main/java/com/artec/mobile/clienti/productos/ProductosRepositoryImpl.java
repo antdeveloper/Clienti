@@ -52,7 +52,8 @@ public class ProductosRepositoryImpl implements ProductosRepository {
                 client.setAdeudo(client.getAdeudo() + producto.getTotal());
                 updateClient(client);*//*
                 post(ProductosEvent.UPLOAD_COMPLETE);*/
-                addProducto(imageStorage.getImageUrl(newPhotoId), newPhotoId, producto, ventasReference, abono);
+                addProducto(imageStorage.getImageUrl(firebaseAPI.getAuthEmail()+"/"+newPhotoId),
+                        newPhotoId, producto, ventasReference, abono);
             }
 
             @Override
@@ -63,7 +64,7 @@ public class ProductosRepositoryImpl implements ProductosRepository {
         if (path.isEmpty()){
             addProducto("", newPhotoId, producto, ventasReference, abono);
         }else {
-            imageStorage.upload(new File(path), newPhotoId, listener);
+            imageStorage.upload(new File(path), newPhotoId, firebaseAPI.getAuthEmail(), listener);
         }
     }
 
@@ -79,9 +80,6 @@ public class ProductosRepositoryImpl implements ProductosRepository {
     }
 
     public void addAbono(final Abono abono, final DatabaseReference reference) {
-        /*final String key = client.getEmail().replace(".", "_");
-        final DatabaseReference userReference = firebaseAPI.getUserReference(client.getEmail());*/
-
         final DatabaseReference abonosReference = firebaseAPI.getAbonosReference(reference);
         abonosReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -96,50 +94,7 @@ public class ProductosRepositoryImpl implements ProductosRepository {
                 post(ProductosEvent.UPLOAD_ERROR, databaseError.getMessage());
             }
         });
-
-        /*userReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                if (user != null){
-                    Client client = new Client();
-                    DatabaseReference myContactReference = firebaseAPI.getMyClientsReference();
-                    client.setEmail(email);
-                    client.setUsername(user.getUsername());
-                    client.setPartner(false);
-                    myContactReference.child(key).setValue(client);
-
-                    postSuccess();
-                }else {
-                    postError();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {}
-        });*/
     }
-
-    /*private void updateClient(final Client client){
-        final String key = client.getEmail().replace(".", "_");
-        DatabaseReference userReference = firebaseAPI.getUserReference(client.getEmail());
-        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                if (user != null){
-                    DatabaseReference myContactReference = firebaseAPI.getMyClientsReference();
-                    myContactReference.child(key).setValue(client);
-
-                    post(ProductosEvent.CLIENT_CHANGED, client);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                post(ProductosEvent.UPLOAD_ERROR, firebaseError.getMessage());
-            }
-        });
-    }*/
 
     private void post(int type, String error){
         post(type, error, null);

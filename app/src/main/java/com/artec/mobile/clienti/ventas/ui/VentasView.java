@@ -11,8 +11,8 @@ public interface VentasView {
     void showProgress();
     void hideProgress();
 
-    void addPhoto(Producto producto);
-    void removePhoto(Producto producto);
-    void updatePhoto(Producto producto);
-    void onPhotosError(String error);
+    void addProducto(Producto producto);
+    void removeProducto(Producto producto);
+    void updateProducto(Producto producto);
+    void onProductoError(String error);
 }

@@ -1,14 +1,39 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".addClient.ui.AddClientFragment"
     android:background="@color/colorBackground">
 
+    <RadioGroup
+        android:id="@+id/rgContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rbNativeUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/addClient.label.nativeUser"
+            android:theme="@style/RadioButtonMD"/>
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/rbCustomUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/addClient.label.customUser"
+            android:theme="@style/RadioButtonMD"/>
+    </RadioGroup>
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/wrapperEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/rgContent"
         android:layout_margin="@dimen/activity_horizontal_margin">
 
         <EditText
@@ -26,4 +51,4 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:visibility="gone"/>
-</FrameLayout>
+</RelativeLayout>

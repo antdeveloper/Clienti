@@ -88,10 +88,12 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
     @OnClick(R.id.btnRegister)
     @Override
     public void handleSignUp() {
-        signUpPresenter.registerNewUser(
-                editTxtEmail.getText().toString(),
-                editTxtPassword.getText().toString(),
-                editTxtUsername.getText().toString());
+        if (validateFields()) {
+            signUpPresenter.registerNewUser(
+                    editTxtEmail.getText().toString(),
+                    editTxtPassword.getText().toString(),
+                    editTxtUsername.getText().toString());
+        }
     }
 
     @Override
@@ -138,5 +140,23 @@ public class SignUpActivity extends AppCompatActivity implements SignUpView {
         editTxtEmail.setEnabled(enabled);
         editTxtPassword.setEnabled(enabled);
         btnRegister.setEnabled(enabled);
+    }
+
+    private boolean validateFields() {
+        boolean isValid = true;
+
+        if (editTxtEmail.getText().toString().isEmpty()){
+            editTxtEmail.setError(getString(R.string.productos_error_required));
+            isValid = false;
+        }
+        if (editTxtPassword.getText().toString().isEmpty()){
+            editTxtPassword.setError(getString(R.string.productos_error_required));
+            isValid = false;
+        }
+        if (editTxtUsername.getText().toString().isEmpty()){
+            editTxtUsername.setError(getString(R.string.productos_error_required));
+        }
+
+        return isValid;
     }
 }

@@ -5,12 +5,16 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.artec.mobile.clienti.ClientiApp;
@@ -21,17 +25,25 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by ANICOLAS on 03/07/2016.
  */
 public class AddClientFragment extends DialogFragment implements AddClientView,
-        DialogInterface.OnShowListener{
+        DialogInterface.OnShowListener {
 
+    private static final String DOMINIO_CLIENTI = "@clienti.com";
     @Bind(R.id.editTxtEmail)
     EditText editTxtEmail;
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
+    @Bind(R.id.rbNativeUser)
+    RadioButton rbNativeUser;
+    @Bind(R.id.rbCustomUser)
+    RadioButton rbCustomUser;
+    @Bind(R.id.wrapperEmail)
+    TextInputLayout wrapperEmail;
 
     @Inject
     AddClientPresenter presenter;
@@ -71,8 +83,9 @@ public class AddClientFragment extends DialogFragment implements AddClientView,
         AlertDialog dialog = builder.create();
         dialog.setOnShowListener(this);
 
-        app = (ClientiApp)getActivity().getApplication();
+        app = (ClientiApp) getActivity().getApplication();
         setupInjection();
+        setupRadioButtons();
         presenter.onShow();
 
         myUsername = sharedPreferences.getString(app.getUserName(), getString(R.string.app_name));
@@ -88,15 +101,21 @@ public class AddClientFragment extends DialogFragment implements AddClientView,
 
     @Override
     public void onShow(DialogInterface dialogInterface) {
-        final AlertDialog dialog = (AlertDialog)getDialog();
-        if (dialog != null){
+        final AlertDialog dialog = (AlertDialog) getDialog();
+        if (dialog != null) {
             Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
             Button negativeButton = dialog.getButton(Dialog.BUTTON_NEGATIVE);
 
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    presenter.addContact(editTxtEmail.getText().toString(), myUsername);
+                    if (editTxtEmail.getText().toString().isEmpty()){
+                        editTxtEmail.setError(getString(R.string.productos_error_required));
+                    }else {
+                        presenter.addContact(rbNativeUser.isChecked() ?
+                                        editTxtEmail.getText().toString() : editTxtEmail.getText().toString() + DOMINIO_CLIENTI,
+                                myUsername, rbNativeUser.isChecked() ? "" : editTxtEmail.getText().toString());
+                    }
                 }
             });
 
@@ -111,6 +130,10 @@ public class AddClientFragment extends DialogFragment implements AddClientView,
 
     private void setupInjection() {
         app.getAddClientComponent(this, this).inject(this);
+    }
+
+    private void setupRadioButtons() {
+
     }
 
     @Override
@@ -144,5 +167,19 @@ public class AddClientFragment extends DialogFragment implements AddClientView,
     public void contactNotAdded() {
         editTxtEmail.setText("");
         editTxtEmail.setError(getString(R.string.addclient_error_add));
+    }
+
+    @OnClick({R.id.rbNativeUser, R.id.rbCustomUser})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.rbNativeUser:
+                editTxtEmail.setHint(R.string.login_message_email);
+                wrapperEmail.setHint(getString(R.string.login_message_email));
+                break;
+            case R.id.rbCustomUser:
+                editTxtEmail.setHint(R.string.productos_hint_name);
+                wrapperEmail.setHint(getString(R.string.productos_hint_name));
+                break;
+        }
     }
 }

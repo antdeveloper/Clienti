@@ -32,12 +32,12 @@ public class AddClientPresenterImpl implements AddClientPresenter {
     }
 
     @Override
-    public void addContact(String email, String username) {
+    public void addContact(String email, String username, String customUsername) {
         if (view != null){
             view.hideInput();
             view.showProgress();
         }
-        interactor.execute(email, username);
+        interactor.execute(email, username, customUsername);
     }
 
     @Override

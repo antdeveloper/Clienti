@@ -2,7 +2,11 @@ package com.artec.mobile.clienti.entities;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by ANICOLAS on 28/06/2016.
@@ -17,12 +21,14 @@ public class Producto {
 
     private String name;
     private String modelo;
+    private double precioOriginal;
     private double precio;
     private int cantidad;
     private String url;
     private String email;
     Map<String, Abono> abonos;
     private long fechaVenta;
+    private String notas;
     /*private double descuento;
     private String nombreOferta;
     private String emailVendedor;*/
@@ -78,6 +84,14 @@ public class Producto {
         this.modelo = modelo;
     }
 
+    public double getPrecioOriginal() {
+        return precioOriginal;
+    }
+
+    public void setPrecioOriginal(double precioOriginal) {
+        this.precioOriginal = precioOriginal;
+    }
+
     public double getPrecio() {
         return precio;
     }
@@ -98,6 +112,17 @@ public class Producto {
         return abonos;
     }
 
+    public Map<Date, Abono> getAbonosSorted() {
+        Map<Date, Abono> sortedMap = new TreeMap<Date, Abono>();
+        Iterator<String> iterator = abonos.keySet().iterator();
+        while (iterator.hasNext()){
+            String name = iterator.next();
+            Abono abono = abonos.get(name);
+            sortedMap.put(abono.getFechaDate(), abono);
+        }
+        return sortedMap;
+    }
+
     public void setAbonos(Map<String, Abono> abonos) {
         this.abonos = abonos;
     }
@@ -110,6 +135,14 @@ public class Producto {
         this.fechaVenta = fechaVenta;
     }
 
+    public String getNotas() {
+        return notas ==null? "" : notas.isEmpty()? "" : notas;
+    }
+
+    public void setNotas(String notas) {
+        this.notas = notas;
+    }
+
     /** Customs get and set **/
     @Exclude
     public double getTotal(){
@@ -117,7 +150,7 @@ public class Producto {
     }
     @Exclude
     public double getAdeudo(){
-        return getTotal() - this.abono;
+        return getTotal() - getAbono();
     }
     @Exclude
     public double getAbono() {
@@ -132,5 +165,9 @@ public class Producto {
     @Exclude
     public void setAbono(double abono) {
         this.abono = abono;
+    }
+    @Exclude
+    public double getGanancia(){
+        return getTotal() - (this.precioOriginal * this.cantidad);
     }
 }

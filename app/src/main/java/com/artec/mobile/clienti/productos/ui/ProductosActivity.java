@@ -25,6 +25,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
+import com.artec.mobile.clienti.addAbono.ui.AddAbonoFragment;
 import com.artec.mobile.clienti.compras.ui.ComprasFragment;
 import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
@@ -43,7 +45,6 @@ import com.artec.mobile.clienti.productos.ProductosPresenter;
 import com.artec.mobile.clienti.productos.ui.adapters.ProductosSectionPageAdapter;
 import com.artec.mobile.clienti.ventas.ui.VentasFragment;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -93,6 +94,8 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
     private ClientiApp app;
 
     public Producto productoSelected;
+    private List<Producto> productos;
+    public boolean isAbonoGral;
 
     private boolean isSaving = false;
 
@@ -141,10 +144,22 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_productos, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:{
                 onBackPressed();
+                return true;
+            }
+            case R.id.action_add_abonoGral:{
+                isAbonoGral = true;
+                new AddAbonoFragment().show(this.getSupportFragmentManager(),
+                        getString(R.string.addabono_message_title));
                 return true;
             }
         }
@@ -226,10 +241,12 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
         View view = getLayoutInflater().inflate(R.layout.dialog_add_producto, null);
 
         final EditText etName = (EditText)view.findViewById(R.id.etName);
-        final EditText etModel = (EditText)view.findViewById(R.id.etModel);
         final EditText etCantidad = (EditText)view.findViewById(R.id.etCantidad);
-        final EditText etPrecio = (EditText)view.findViewById(R.id.etPrecio);
+        final EditText etModel = (EditText)view.findViewById(R.id.etModel);
         final EditText etAbono = (EditText)view.findViewById(R.id.etAbono);
+        final EditText etPrecio = (EditText)view.findViewById(R.id.etPrecio);
+        final EditText etPrecioOriginal = (EditText)view.findViewById(R.id.etPrecioOriginal);
+        final EditText etNotas = (EditText)view.findViewById(R.id.etNotas);
         final ImageView imgPhotoProduct = (ImageView)view.findViewById(R.id.imgPhotoProduct);
         ImageView imgTakeFoto = (ImageView)view.findViewById(R.id.imgTakeFoto);
         ImageView imgDeleteFoto = (ImageView)view.findViewById(R.id.imgDeleteFoto);
@@ -281,10 +298,12 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
                             progressBar.setVisibility(View.VISIBLE);
                             Producto producto = new Producto();
                             producto.setName(etName.getText().toString());
-                            producto.setModelo(etModel.getText().toString());
                             producto.setCantidad(Integer.valueOf(etCantidad.getText().toString()));
+                            producto.setModelo(etModel.getText().toString());
                             producto.setPrecio(Double.valueOf(etPrecio.getText().toString()));
+                            producto.setPrecioOriginal(Double.valueOf(etPrecioOriginal.getText().toString()));
                             producto.setFechaVenta(System.currentTimeMillis());
+                            producto.setNotas(etNotas.getText().toString());
                             /*producto.setAbono(etAbono.getText().toString().isEmpty()? 0 :
                                     Double.valueOf(etAbono.getText().toString()));*/
                             //presenter.uploadPhoto(producto, photoPath, client);
@@ -506,5 +525,13 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
 
     private void showSnackbar(int strResource) {
         Snackbar.make(viewPager, strResource, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public List<Producto> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<Producto> productos) {
+        this.productos = productos;
     }
 }

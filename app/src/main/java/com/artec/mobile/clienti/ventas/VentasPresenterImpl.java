@@ -50,6 +50,9 @@ public class VentasPresenterImpl implements VentasPresenter {
 
     @Override
     public void removePhoto(Producto producto, Client client) {
+        if (view != null){
+            view.showProgress();
+        }
         interactor.removePhoto(producto, client);
     }
 
@@ -63,17 +66,17 @@ public class VentasPresenterImpl implements VentasPresenter {
         String error = event.getError();
         if (error != null){
             if (error.isEmpty()){
-                view.onPhotosError(EMPTY_LIST);
+                view.onProductoError(EMPTY_LIST);
             }else{
-                view.onPhotosError(error);
+                view.onProductoError(error);
             }
         }else{
             if (event.getType() == VentasEvent.READ_EVENT){
-                view.addPhoto(event.getProducto());
+                view.addProducto(event.getProducto());
             }else if (event.getType() == VentasEvent.CHANGE_EVENT) {
-                view.updatePhoto(event.getProducto());
+                view.updateProducto(event.getProducto());
             }else if (event.getType() == VentasEvent.DELETE_EVENT){
-                view.removePhoto(event.getProducto());
+                view.removeProducto(event.getProducto());
             }
         }
     }

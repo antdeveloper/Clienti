@@ -9,6 +9,6 @@ public interface AddClientPresenter {
     void onShow();
     void onDestroy();
 
-    void addContact(String email, String username);
+    void addContact(String email, String username, String customUsername);
     void onEventMainThread(AddClientEvent event);
 }

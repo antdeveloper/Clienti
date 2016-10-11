@@ -27,12 +27,13 @@ public class CloudinaryImageStorage implements ImageStorage {
     }
 
     @Override
-    public void upload(final File file, final String id, final ImageStorageFinishedListener listener) {
+    public void upload(final File file, final String id, final String folder,
+                       final ImageStorageFinishedListener listener) {
         new AsyncTask<Void, Void, Void>(){
             boolean success = false;
             @Override
             protected Void doInBackground(Void... voids) {
-                Map params = ObjectUtils.asMap("public_id", id);
+                Map params = ObjectUtils.asMap("public_id", folder+"/"+id);
                 try {
                     cloudinary.uploader().upload(file, params);
                     success = true;
@@ -52,13 +53,13 @@ public class CloudinaryImageStorage implements ImageStorage {
     }
 
     @Override
-    public void delete(final String keyId, final ImageStorageFinishedListener listener) {
+    public void delete(final String keyId, final String folder, final ImageStorageFinishedListener listener) {
         new AsyncTask<Void, Void, Void>(){
             boolean success = false;
             @Override
             protected Void doInBackground(Void... voids) {
                 try {
-                    cloudinary.uploader().destroy(keyId, ObjectUtils.emptyMap());
+                    cloudinary.uploader().destroy(folder+"/"+keyId, ObjectUtils.emptyMap());
                     success = true;
                 }catch (IOException e){
                     listener.onError(e.getLocalizedMessage());
