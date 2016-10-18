@@ -12,8 +12,7 @@
         android:paddingStart="@dimen/padding.sm"
         android:paddingRight="@dimen/padding.sm"
         android:paddingEnd="@dimen/padding.sm"
-        android:gravity="center_horizontal"
-        android:background="@color/colorBackground">
+        android:gravity="center_horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,7 +21,7 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tilName"
                 android:layout_width="0dp"
-                android:layout_weight="60"
+                android:layout_weight="50"
                 android:layout_height="wrap_content">
                 <EditText
                     android:id="@+id/etName"
@@ -36,32 +35,9 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilCantidad"
-                android:layout_width="0dp"
-                android:layout_weight="40"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/etCantidad"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:text="1"
-                    android:hint="@string/productos.hint.cantidad"
-                    android:nextFocusForward="@+id/etModel"
-                    android:imeOptions="actionNext"/>
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <android.support.design.widget.TextInputLayout
                 android:id="@+id/tilModel"
                 android:layout_width="0dp"
-                android:layout_weight="60"
+                android:layout_weight="50"
                 android:layout_height="wrap_content">
                 <EditText
                     android:id="@+id/etModel"
@@ -71,23 +47,6 @@
                     android:ems="10"
                     android:hint="@string/productos.hint.model"
                     android:nextFocusForward="@+id/etAbono"
-                    android:imeOptions="actionNext"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/tilAbono"
-                android:layout_width="0dp"
-                android:layout_weight="40"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/etAbono"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:ems="10"
-                    android:text="0"
-                    android:hint="@string/productos.hint.abono"
-                    android:nextFocusForward="@+id/etPrecioOriginal"
                     android:imeOptions="actionNext"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
@@ -100,7 +59,7 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tilPrecioOriginal"
                 android:layout_width="0dp"
-                android:layout_weight="60"
+                android:layout_weight="50"
                 android:layout_height="wrap_content">
                 <EditText
                     android:id="@+id/etPrecioOriginal"
@@ -116,7 +75,7 @@
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tilPrecio"
                 android:layout_width="0dp"
-                android:layout_weight="40"
+                android:layout_weight="50"
                 android:layout_height="wrap_content">
                 <EditText
                     android:id="@+id/etPrecio"
@@ -180,11 +139,4 @@
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
 </RelativeLayout>

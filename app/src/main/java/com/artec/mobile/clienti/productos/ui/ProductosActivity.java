@@ -108,8 +108,8 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
         client = new Client();
         client.setEmail(getIntent().getStringExtra(EMAIL_KEY));
         client.setUsername(getIntent().getStringExtra(USERNAME_KEY));
-        client.setAdeudo(getIntent().getDoubleExtra(ADEUDO_KEY, 0));
-        client.setPagado(getIntent().getDoubleExtra(PAGADO_KEY, 0));
+        /*client.setAdeudo(getIntent().getDoubleExtra(ADEUDO_KEY, 0));
+        client.setPagado(getIntent().getDoubleExtra(PAGADO_KEY, 0));*/
 
         app = (ClientiApp) getApplication();
         setupInjection();

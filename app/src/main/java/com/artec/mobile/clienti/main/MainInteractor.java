@@ -7,4 +7,6 @@ public interface MainInteractor {
     void subscribe();
     void unsubscribe();
     void destroyListener();
+
+    void getAdeudo(String recipient);
 }

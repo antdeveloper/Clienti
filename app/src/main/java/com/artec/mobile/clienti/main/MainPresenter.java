@@ -9,6 +9,7 @@ public interface MainPresenter {
     void onCreate();
     void onDestroy();
     void onResume();
+    void onGetAdeudo(String recipient);
 
     void logout();
     void onEventMainThread(MainEvent event);

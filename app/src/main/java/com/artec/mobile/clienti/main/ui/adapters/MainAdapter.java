@@ -7,14 +7,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.domain.Util;
 import com.artec.mobile.clienti.entities.Client;
+import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.base.ImageLoader;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -53,14 +56,21 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
         holder.setClickListener(client, onItemClickListener);
 
         String email = client.getEmail();
-        boolean online = client.getPagado() >= client.getAdeudo();
-        String status = online? context.getString(R.string.main_status_correct) :
+        double deudaTotal = client.getDeudaTotal();
+        boolean enOrden = deudaTotal <= 0;
+        String status = enOrden? context.getString(R.string.main_status_correct) :
                 context.getString(R.string.main_status_incorrect);
         holder.txtUser.setText(client.getUsername());
         holder.txtEmail.setText(email);
-        holder.txtStatus.setText(status);
-        holder.imgStatus.setColorFilter(ContextCompat.getColor(context,
-                online? R.color.green_500 : R.color.red_500 ));
+        if (client.getProductos() != null) {
+            holder.containerAdeudo.setVisibility(View.VISIBLE);
+            holder.txtStatus.setText("Adeudo:\n" + String.format(Locale.getDefault(),
+                    "%,.2f", deudaTotal));
+            holder.imgStatus.setColorFilter(ContextCompat.getColor(context,
+                    enOrden ? R.color.green_500 : R.color.red_500));
+        }else {
+            holder.containerAdeudo.setVisibility(View.GONE);
+        }
 
         imageLoader.load(holder.imgAvatar, util.getAvatarUrl(email));
     }
@@ -98,6 +108,18 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
         return -1;
     }
 
+    public List<Client> getClientList(){
+        return clientList;
+    }
+
+    public double getDeudasTotal(){
+        double adeudo = 0;
+        for (Client client : clientList){
+            adeudo += client.getDeudaTotal();
+        }
+        return adeudo;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.imgAvatar)
         CircleImageView imgAvatar;
@@ -109,6 +131,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
         TextView txtStatus;
         @Bind(R.id.imgStatus)
         ImageView imgStatus;
+        @Bind(R.id.containerAdeudo)
+        LinearLayout containerAdeudo;
 
         private View view;
 

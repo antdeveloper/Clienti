@@ -8,4 +8,6 @@ public interface MainRepository {
     void subscribeToContactListEvents();
     void unsubscribeToContactListEvents();
     void destroyListener();
+
+    void getAdeudo(String recipient);
 }

@@ -112,8 +112,10 @@ public class AddClientFragment extends DialogFragment implements AddClientView,
                     if (editTxtEmail.getText().toString().isEmpty()){
                         editTxtEmail.setError(getString(R.string.productos_error_required));
                     }else {
-                        presenter.addContact(rbNativeUser.isChecked() ?
-                                        editTxtEmail.getText().toString() : editTxtEmail.getText().toString() + DOMINIO_CLIENTI,
+                        String email = editTxtEmail.getText().toString();
+                        email = email.replace(" ", ".");
+                        email = email.toLowerCase();
+                        presenter.addContact(rbNativeUser.isChecked() ? email : email + DOMINIO_CLIENTI,
                                 myUsername, rbNativeUser.isChecked() ? "" : editTxtEmail.getText().toString());
                     }
                 }

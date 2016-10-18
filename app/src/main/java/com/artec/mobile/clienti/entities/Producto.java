@@ -112,17 +112,6 @@ public class Producto {
         return abonos;
     }
 
-    public Map<Date, Abono> getAbonosSorted() {
-        Map<Date, Abono> sortedMap = new TreeMap<Date, Abono>();
-        Iterator<String> iterator = abonos.keySet().iterator();
-        while (iterator.hasNext()){
-            String name = iterator.next();
-            Abono abono = abonos.get(name);
-            sortedMap.put(abono.getFechaDate(), abono);
-        }
-        return sortedMap;
-    }
-
     public void setAbonos(Map<String, Abono> abonos) {
         this.abonos = abonos;
     }
@@ -169,5 +158,16 @@ public class Producto {
     @Exclude
     public double getGanancia(){
         return getTotal() - (this.precioOriginal * this.cantidad);
+    }
+    @Exclude
+    public Map<Date, Abono> getAbonosSorted() {
+        Map<Date, Abono> sortedMap = new TreeMap<Date, Abono>();
+        Iterator<String> iterator = abonos.keySet().iterator();
+        while (iterator.hasNext()){
+            String name = iterator.next();
+            Abono abono = abonos.get(name);
+            sortedMap.put(abono.getFechaDate(), abono);
+        }
+        return sortedMap;
     }
 }

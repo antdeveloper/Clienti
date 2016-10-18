@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
@@ -25,6 +26,10 @@ import com.artec.mobile.clienti.main.MainPresenter;
 import com.artec.mobile.clienti.main.ui.adapters.MainAdapter;
 import com.artec.mobile.clienti.main.ui.adapters.OnItemClickListener;
 import com.artec.mobile.clienti.productos.ui.ProductosActivity;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -40,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     RecyclerView recyclerViewClient;
     @Bind(R.id.fab)
     FloatingActionButton fab;
+    @Bind(R.id.progressBar)
+    ProgressBar progressBar;
 
     @Inject
     MainPresenter presenter;
@@ -49,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     SharedPreferences sharedPreferences;
 
     private ClientiApp app;
+
+    private Client mClient;
+    private int indexClient = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,22 +97,31 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_logout:{
+        switch (item.getItemId()) {
+            case R.id.action_logout: {
                 presenter.logout();
                 Intent intent = new Intent(this, LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent     );
+                startActivity(intent);
                 break;
             }
-            case R.id.action_about:{
+            case R.id.action_about: {
                 goToAboutHanlder();
+                break;
+            }
+            case R.id.action_show_adeudos: {
+                getAdeudo();
                 break;
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getAdeudo() {
+        mClient = adapter.getClientList().get(indexClient);
+        presenter.onGetAdeudo(mClient.getEmail());
     }
 
     @Override
@@ -118,6 +137,16 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     }
 
     @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onClientAdded(Client client) {
         adapter.add(client);
     }
@@ -128,17 +157,42 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     }
 
     @Override
+    public void onGetProducts(HashMap<String, ArrayList> productos) {
+        mClient.setProductos(productos);
+        adapter.update(mClient);
+        indexClient++;
+        if (indexClient < adapter.getItemCount()) {
+            getAdeudo();
+        } else {
+            indexClient = 0;
+            refreshAdeudo();
+        }
+    }
+
+    private void refreshAdeudo() {
+        /*ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            String username = sharedPreferences.getString(app.getUserName(), getString(R.string.app_name));
+            actionBar.setTitle(username + " - $" +
+                    String.format(Locale.getDefault(), "%.2f", adapter.getDeudasTotal()));
+        }*/
+        String username = sharedPreferences.getString(app.getUserName(), getString(R.string.app_name));
+        toolbar.setTitle(username + " - $" +
+                String.format(Locale.getDefault(), "%.2f", adapter.getDeudasTotal()));
+    }
+
+    @Override
     public void onItemClick(Client client) {
         Intent intent = new Intent(this, ProductosActivity.class);
         intent.putExtra(ProductosActivity.USERNAME_KEY, client.getUsername());
         intent.putExtra(ProductosActivity.EMAIL_KEY, client.getEmail());
-        intent.putExtra(ProductosActivity.ADEUDO_KEY, client.getAdeudo());
-        intent.putExtra(ProductosActivity.PAGADO_KEY, client.getPagado());
+        /*intent.putExtra(ProductosActivity.ADEUDO_KEY, client.getAdeudo());
+        intent.putExtra(ProductosActivity.PAGADO_KEY, client.getPagado());*/
         startActivity(intent);
     }
 
     @OnClick(R.id.fab)
-    public void addContact(){
+    public void addContact() {
         new AddClientFragment().show(getSupportFragmentManager(),
                 getString(R.string.addclient_message_title));
     }

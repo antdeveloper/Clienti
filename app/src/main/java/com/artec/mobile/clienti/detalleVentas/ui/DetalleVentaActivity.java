@@ -1,15 +1,22 @@
 package com.artec.mobile.clienti.detalleVentas.ui;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.artec.mobile.clienti.ClientiApp;
@@ -19,6 +26,11 @@ import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.Constants;
 import com.artec.mobile.clienti.libs.base.ImageLoader;
 import com.google.gson.Gson;
+import com.transitionseverywhere.Fade;
+import com.transitionseverywhere.Transition;
+import com.transitionseverywhere.TransitionManager;
+import com.transitionseverywhere.TransitionSet;
+import com.transitionseverywhere.extra.Scale;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -27,6 +39,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DetalleVentaActivity extends AppCompatActivity {
     @Bind(R.id.toolbar)
@@ -59,6 +72,42 @@ public class DetalleVentaActivity extends AppCompatActivity {
     ImageView imgMain;
     @Bind(R.id.txtFechaVenta)
     TextView txtFechaVenta;
+    @Bind(R.id.app_bar)
+    AppBarLayout appBar;
+    @Bind(R.id.container)
+    NestedScrollView container;
+    @Bind(R.id.etName)
+    EditText etName;
+    @Bind(R.id.tilName)
+    TextInputLayout tilName;
+    @Bind(R.id.etModel)
+    EditText etModel;
+    @Bind(R.id.tilModel)
+    TextInputLayout tilModel;
+    @Bind(R.id.etPrecioOriginal)
+    EditText etPrecioOriginal;
+    @Bind(R.id.tilPrecioOriginal)
+    TextInputLayout tilPrecioOriginal;
+    @Bind(R.id.etPrecio)
+    EditText etPrecio;
+    @Bind(R.id.tilPrecio)
+    TextInputLayout tilPrecio;
+    @Bind(R.id.etNotas)
+    EditText etNotas;
+    @Bind(R.id.tilNotas)
+    TextInputLayout tilNotas;
+    @Bind(R.id.imgPhotoProduct)
+    ImageView imgPhotoProduct;
+    @Bind(R.id.imgTakeFoto)
+    ImageView imgTakeFoto;
+    @Bind(R.id.imgDeleteFoto)
+    ImageView imgDeleteFoto;
+    @Bind(R.id.containerDetails)
+    RelativeLayout containerDetails;
+    @Bind(R.id.iEditProduct)
+    RelativeLayout containerEdit;
+    @Bind(R.id.contentMain)
+    RelativeLayout contentMain;
 
     private AbonoHistoryFragmentListener fragmentListener;
     private Producto mProducto;
@@ -67,21 +116,18 @@ public class DetalleVentaActivity extends AppCompatActivity {
 
     private ClientiApp app;
 
+    private MenuItem menuItem;
+
+    private boolean isDetailMode = true;
+    private boolean isAnimationInProccess = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_venta);
         ButterKnife.bind(this);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Proximamente...", Snackbar.LENGTH_LONG)
-                        .setAction("OK", null).show();
-            }
-        });
-
-        app = (ClientiApp)getApplication();
+        app = (ClientiApp) getApplication();
         setupInjection();
 
         mProducto = new Gson().fromJson(getIntent().getStringExtra(Constants.OBJ_PRODUCTO), Producto.class);
@@ -96,7 +142,7 @@ public class DetalleVentaActivity extends AppCompatActivity {
     }
 
     private void setupFragment() {
-        AbonoHistoryFragment fragment = (AbonoHistoryFragment)getSupportFragmentManager()
+        AbonoHistoryFragment fragment = (AbonoHistoryFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragmentList);
         fragment.setRetainInstance(true);
         fragmentListener = fragment;
@@ -104,7 +150,7 @@ public class DetalleVentaActivity extends AppCompatActivity {
 
     private void setupActionBar() {
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(mProducto.getName());
         }
@@ -136,30 +182,132 @@ public class DetalleVentaActivity extends AppCompatActivity {
                 mProducto.getGanancia()));
         txtObservaciones.setText(getString(R.string.ventas_property_notas) + ": " +
                 mProducto.getNotas());
+
+        etName.setText(mProducto.getName());
+        etModel.setText(mProducto.getModelo());
+        etPrecio.setText(String.format(Locale.getDefault(), "%,.2f", mProducto.getPrecio()));
+        etPrecioOriginal.setText(String.format(Locale.getDefault(), "%,.2f", mProducto.getPrecioOriginal()));
+        etNotas.setText(mProducto.getNotas());
     }
 
-    private void setupAbonos(){
+    private void setupAbonos() {
         if (mProducto.getAbonos() != null && mProducto.getAbonos().size() > 0) {
-            for (int i=0; i<mProducto.getAbonos().size(); i++){
+            for (int i = 0; i < mProducto.getAbonos().size(); i++) {
                 fragmentListener.addAbono((Abono) mProducto.getAbonosSorted().values().toArray()[i]);
             }
         }
-        /*if (mProducto.getAbonos() != null && mProducto.getAbonos().size() > 0) {
-            for (int i=0; i<mProducto.getAbonos().size(); i++){
-                fragmentListener.addAbono((Abono) mProducto.getAbonos().values().toArray()[i]);
-            }
-        }*/
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detalle_venta, menu);
+        menuItem = menu.findItem(R.id.action_save);
+        menuItem.setVisible(false);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home: {
-                finish();
+                if (isDetailMode) {
+                    finish();
+                }else {
+                    backToDetail();
+                }
+                return true;
+            }
+            case R.id.action_save: {
+                backToDetail();
                 return true;
             }
         }
 
         return false;
+    }
+
+    private void backToDetail() {
+        if (!isAnimationInProccess) {
+            isAnimationInProccess = true;
+            appBar.setExpanded(true);
+            container.setNestedScrollingEnabled(true);
+            menuItem.setVisible(false);
+            isDetailMode = true;
+            showDetail();
+        }
+    }
+
+    @OnClick(R.id.fab)
+    public void collapseExpand() {
+        if (!isAnimationInProccess) {
+            isAnimationInProccess = true;
+            appBar.setExpanded(false);
+            container.setNestedScrollingEnabled(false);
+            menuItem.setVisible(true);
+            isDetailMode = false;
+            showEdit();
+        }
+    }
+
+    private void showEdit() {
+        TransitionSet set = new TransitionSet()
+                .addTransition(new Scale(0.7f))
+                .addTransition(new Fade())
+                .setInterpolator(isDetailMode ?
+                        new LinearOutSlowInInterpolator() : new FastOutLinearInInterpolator())
+                .addListener(new Transition.TransitionListener() {
+                    @Override
+                    public void onTransitionStart(Transition transition) {
+                    }
+                    @Override
+                    public void onTransitionEnd(Transition transition) {
+                        TransitionManager.beginDelayedTransition(contentMain, transition);
+                        containerEdit.setVisibility(isDetailMode ? View.INVISIBLE : View.VISIBLE);
+                        TransitionManager.endTransitions(contentMain);
+                        isAnimationInProccess = false;
+                    }
+                    @Override
+                    public void onTransitionCancel(Transition transition) {
+                    }
+                    @Override
+                    public void onTransitionPause(Transition transition) {
+                    }
+                    @Override
+                    public void onTransitionResume(Transition transition) {
+                    }
+                });
+        TransitionManager.beginDelayedTransition(contentMain, set);
+        containerDetails.setVisibility(isDetailMode ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void showDetail() {
+        TransitionSet transitionSet = new TransitionSet()
+                .addTransition(new Scale(0.7f))
+                .addTransition(new Fade())
+                .setInterpolator(isDetailMode ?
+                        new LinearOutSlowInInterpolator() : new FastOutLinearInInterpolator())
+                .addListener(new Transition.TransitionListener() {
+                    @Override
+                    public void onTransitionStart(Transition transition) {
+                    }
+                    @Override
+                    public void onTransitionEnd(Transition transition) {
+                        TransitionManager.beginDelayedTransition(contentMain, transition);
+                        containerDetails.setVisibility(isDetailMode ? View.VISIBLE : View.INVISIBLE);
+                        TransitionManager.endTransitions(contentMain);
+                        isAnimationInProccess = false;
+                    }
+                    @Override
+                    public void onTransitionCancel(Transition transition) {
+                    }
+                    @Override
+                    public void onTransitionPause(Transition transition) {
+                    }
+                    @Override
+                    public void onTransitionResume(Transition transition) {
+                    }
+                });
+        TransitionManager.beginDelayedTransition(contentMain, transitionSet);
+        containerEdit.setVisibility(isDetailMode ? View.INVISIBLE : View.VISIBLE);
     }
 }

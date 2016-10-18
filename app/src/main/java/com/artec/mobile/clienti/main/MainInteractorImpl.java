@@ -24,4 +24,9 @@ public class MainInteractorImpl implements MainInteractor{
     public void destroyListener() {
         repository.destroyListener();
     }
+
+    @Override
+    public void getAdeudo(String recipient) {
+        repository.getAdeudo(recipient);
+    }
 }

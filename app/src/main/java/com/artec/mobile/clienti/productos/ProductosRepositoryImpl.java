@@ -41,17 +41,6 @@ public class ProductosRepositoryImpl implements ProductosRepository {
         ImageStorageFinishedListener listener = new ImageStorageFinishedListener() {
             @Override
             public void onSuccess() {
-                /*String url = imageStorage.getImageUrl(newPhotoId);
-                producto.setUrl(url);
-                ventasReference.child(newPhotoId).setValue(producto);
-
-                if (abono.getValor() != 0){
-                    addAbono(abono, ventasReference.child(newPhotoId));
-                }
-                *//*client.setPagado(client.getPagado() + producto.getAbono());
-                client.setAdeudo(client.getAdeudo() + producto.getTotal());
-                updateClient(client);*//*
-                post(ProductosEvent.UPLOAD_COMPLETE);*/
                 addProducto(imageStorage.getImageUrl(firebaseAPI.getAuthEmail()+"/"+newPhotoId),
                         newPhotoId, producto, ventasReference, abono);
             }

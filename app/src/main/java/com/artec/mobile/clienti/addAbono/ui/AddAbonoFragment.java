@@ -18,11 +18,9 @@ import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.addAbono.AddAbonoPresenter;
 import com.artec.mobile.clienti.entities.Abono;
-import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.productos.ui.ProductosActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -178,7 +176,7 @@ public class AddAbonoFragment extends DialogFragment implements AddAbonoView,
 
     @Override
     public void abonoAdded() {
-        Toast.makeText(getActivity(), R.string.addabono_message_abobboadded,
+        Toast.makeText(getActivity(), R.string.addAbono_message_abonoAdded,
                 Toast.LENGTH_SHORT).show();
         dismiss();
     }

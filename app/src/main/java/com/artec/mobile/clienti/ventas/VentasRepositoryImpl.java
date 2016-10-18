@@ -15,6 +15,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by ANICOLAS on 29/06/2016.
  */
@@ -34,9 +37,7 @@ public class VentasRepositoryImpl implements VentasReposiroty {
 
         firebase.checkForData(new FirebaseActionListenerCallback() {
             @Override
-            public void onSuccess() {
-
-            }
+            public void onSuccess() {}
 
             @Override
             public void onError(String error) {

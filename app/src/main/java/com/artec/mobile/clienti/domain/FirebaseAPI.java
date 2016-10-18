@@ -21,6 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
@@ -88,6 +90,27 @@ public class FirebaseAPI {
             }
         };
         this.mAuth.addAuthStateListener(mAuthListener);
+    }
+
+
+    public void getProductsByClient(final FirebaseActionListenerCallbackMain listenerCallback, String recipient){
+        DatabaseReference productsReference = getProductsReference(recipient);
+        Query query = productsReference.orderByChild("email").equalTo(getAuthEmail());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getChildrenCount() > 0){
+                    listenerCallback.onSuccess((HashMap<String, ArrayList>) dataSnapshot.getValue());
+                }else {
+                    listenerCallback.onSuccess(null);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listenerCallback.onError(databaseError.getMessage());
+            }
+        });
     }
 
     public void checkForData(final FirebaseActionListenerCallback listenerCallback, String recipient){
@@ -284,14 +307,6 @@ public class FirebaseAPI {
     }
 
     public String getAuthUserEmail(){
-        /*AuthData authData = firebase.getAuth();
-        String email = null;
-        if (authData != null){
-            Map<String, Object> providerData = authData.getProviderData();
-            email = providerData.get("email").toString();
-        }
-
-        return email;*/
         String email = null;
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -304,7 +319,9 @@ public class FirebaseAPI {
     public DatabaseReference getUserReference(String email){
         DatabaseReference userReference = null;
         if (email != null){
-            String emailKey = email.replace(".", "_");
+            String preKey = email.replace("_", "__");
+            String emailKey = preKey.replace(".", "_");
+            //String emailKey = email.replace(".", "_");
             userReference = firebase.getRoot().child(USERS_PATH).child(emailKey);
         }
         return userReference;
@@ -323,8 +340,12 @@ public class FirebaseAPI {
     }
 
     public DatabaseReference getProductsReference(String receiver){
-        String keySender = getAuthUserEmail().replace(".", "_");
-        String keyReceiver = receiver.replace(".", "_");
+        String preKey = getAuthUserEmail().replace("_", "__");
+        String keySender = preKey.replace(".", "_");
+        //String keySender = getAuthUserEmail().replace(".", "_");
+        String preKeyReceiver = receiver.replace("_", "__");
+        String keyReceiver = preKeyReceiver.replace(".", "_");
+        //String keyReceiver = receiver.replace(".", "_");
 
         String keyProducts = keySender + SEPARATOR + keyReceiver;
         if (keySender.compareTo(keyReceiver) > 0){

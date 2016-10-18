@@ -28,7 +28,9 @@ public class AddClientRepositoryImpl implements AddClientRepository {
             registerNewUser(email, customUsername);
         }
 
-        final String key = email.replace(".", "_");
+        String preKey = email.replace("_", "__");
+        final String key = preKey.replace(".", "_");
+        //final String key = email.replace(".", "_");
         DatabaseReference userReference = firebaseAPI.getUserReference(email);
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -43,7 +45,9 @@ public class AddClientRepositoryImpl implements AddClientRepository {
                     myContactReference.child(key).setValue(client);
 
                     String currentUserKey = firebaseAPI.getAuthUserEmail();
-                    currentUserKey = currentUserKey.replace(".", "_");
+                    String preKey = currentUserKey.replace("_", "__");
+                    currentUserKey = preKey.replace(".", "_");
+                    //currentUserKey = currentUserKey.replace(".", "_");
 
                     Client iClient = new Client();
 

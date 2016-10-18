@@ -48,22 +48,44 @@ public class MainPresenterImpl implements MainPresenter{
     }
 
     @Override
+    public void onGetAdeudo(String recipient) {
+        showProgress();
+        interactor.getAdeudo(recipient);
+    }
+
+    @Override
     @Subscribe
     public void onEventMainThread(MainEvent event) {
-        Client client = event.getUser();
-        switch (event.getType()){
-            case MainEvent.CONTACT_ADDED:{
-                onContactAdded(client);
-                break;
-            }
-            case MainEvent.CONTACT_CHANGED:{
-                onContactChanged(client);
-                break;
-            }
-            case MainEvent.CONTACT_READ:{
+        if (view != null) {
+            view.hideProgress();
 
-                break;
+            Client client = event.getUser();
+            switch (event.getType()) {
+                case MainEvent.CONTACT_ADDED: {
+                    //onContactAdded(client);
+                    view.onClientAdded(client);
+                    break;
+                }
+                case MainEvent.CONTACT_CHANGED: {
+                    //onContactChanged(client);
+                    view.onClientChanged(client);
+                    break;
+                }
+                case MainEvent.CONTACT_READ: {
+
+                    break;
+                }
+                case MainEvent.GET_PRODUCTOS:{
+                    view.onGetProducts(event.getProductos());
+                    break;
+                }
             }
+        }
+    }
+
+    private void showProgress(){
+        if (view != null){
+            view.showProgress();
         }
     }
 
