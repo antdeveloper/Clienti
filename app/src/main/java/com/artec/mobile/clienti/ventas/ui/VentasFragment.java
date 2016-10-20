@@ -110,7 +110,7 @@ public class VentasFragment extends Fragment implements VentasView,
     }
 
     private void setupRecyclerView() {
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.columns)));
         recyclerView.setAdapter(adapter);
     }
 
@@ -167,6 +167,7 @@ public class VentasFragment extends Fragment implements VentasView,
     public void onItemClick(Producto producto) {
         Intent intent = new Intent(getActivity(), DetalleVentaActivity.class);
         intent.putExtra(Constants.OBJ_PRODUCTO, new Gson().toJson(producto));
+        intent.putExtra(Constants.EMAIL, ((ProductosActivity)getActivity()).client.getEmail());
         if (Utilities.materialDesign()){
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
         } else {
@@ -240,7 +241,7 @@ public class VentasFragment extends Fragment implements VentasView,
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(((ProductosActivity)getActivity()).client.getUsername() + " - $" +
-                    String.format(Locale.getDefault(), "%.2f", adapter.getAdeudoTotal()));
+                    String.format(Locale.ROOT, "%,.2f", adapter.getAdeudoTotal()));
         }
         ((ProductosActivity)getActivity()).setProductos(adapter.getProductos());
     }

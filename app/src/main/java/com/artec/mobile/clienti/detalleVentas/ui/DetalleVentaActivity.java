@@ -3,6 +3,7 @@ package com.artec.mobile.clienti.detalleVentas.ui;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -16,11 +17,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
+import com.artec.mobile.clienti.detalleVentas.DetalleVentaPresenter;
+import com.artec.mobile.clienti.detalleVentas.ui.adapters.OnAbonoClickListener;
 import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.Constants;
@@ -41,7 +45,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DetalleVentaActivity extends AppCompatActivity {
+public class DetalleVentaActivity extends AppCompatActivity implements DetalleVentaView, OnAbonoClickListener {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.txtModel)
@@ -108,15 +112,20 @@ public class DetalleVentaActivity extends AppCompatActivity {
     RelativeLayout containerEdit;
     @Bind(R.id.contentMain)
     RelativeLayout contentMain;
+    @Bind(R.id.progressBar)
+    ProgressBar progressBar;
 
-    private AbonoHistoryFragmentListener fragmentListener;
-    private Producto mProducto;
+    @Inject
+    DetalleVentaPresenter presenter;
     @Inject
     ImageLoader imageLoader;
 
     private ClientiApp app;
 
     private MenuItem menuItem;
+    private AbonoHistoryFragmentListener fragmentListener;
+    private Producto mProducto;
+    private String clientEmail;
 
     private boolean isDetailMode = true;
     private boolean isAnimationInProccess = false;
@@ -131,14 +140,17 @@ public class DetalleVentaActivity extends AppCompatActivity {
         setupInjection();
 
         mProducto = new Gson().fromJson(getIntent().getStringExtra(Constants.OBJ_PRODUCTO), Producto.class);
+        clientEmail = getIntent().getStringExtra(Constants.EMAIL);
         setupFragment();
         setupActionBar();
         setupProduct();
         setupAbonos();
+
+        presenter.onCreate();
     }
 
     private void setupInjection() {
-        app.getDetalleAbonoComponent(this).inject(this);
+        app.getDetalleAbonoComponent(this, this).inject(this);
     }
 
     private void setupFragment() {
@@ -160,33 +172,35 @@ public class DetalleVentaActivity extends AppCompatActivity {
         double total = mProducto.getPrecio() * mProducto.getCantidad();
         if (mProducto.getUrl().isEmpty()) {
             imgMain.setImageResource(R.drawable.ic_file_image);
+            imgPhotoProduct.setImageResource(R.drawable.ic_file_image);
         } else {
             imageLoader.load(imgMain, mProducto.getUrl());
+            imageLoader.load(imgPhotoProduct, mProducto.getUrl());
         }
         txtModel.setText(getString(R.string.productos_hint_model) + ": " +
                 mProducto.getModelo());
-        txtPrecioProveedor.setText(String.format(Locale.getDefault(), getString(R.string.ventas_property_precioOriginal),
+        txtPrecioProveedor.setText(String.format(Locale.ROOT, getString(R.string.ventas_property_precioOriginal),
                 mProducto.getPrecioOriginal()));
-        txtPrecio.setText(String.format(Locale.getDefault(), getString(R.string.ventas_property_precioVenta),
+        txtPrecio.setText(String.format(Locale.ROOT, getString(R.string.ventas_property_precioVenta),
                 mProducto.getPrecio()));
-        txtTotal.setText(String.format(Locale.getDefault(), getString(R.string.ventas_detalle_property_total), total));
-        txtAbono.setText(String.format(Locale.getDefault(), getString(R.string.ventas_detalle_property_pagado),
+        txtTotal.setText(String.format(Locale.ROOT, getString(R.string.ventas_detalle_property_total), total));
+        txtAbono.setText(String.format(Locale.ROOT, getString(R.string.ventas_detalle_property_pagado),
                 mProducto.getAbono()));
-        txtAdeudo.setText(String.format(Locale.getDefault(), getString(R.string.ventas_property_adeudo),
+        txtAdeudo.setText(String.format(Locale.ROOT, getString(R.string.ventas_property_adeudo),
                 total - mProducto.getAbono()));
         txtCantidad.setText(getString(R.string.ventas_property_cantidad) + ": (x" +
                 String.format(Locale.getDefault(), "%d", mProducto.getCantidad()) + ")");
         txtFechaVenta.setText(new SimpleDateFormat("dd/MM/yy", Locale.getDefault())
                 .format(mProducto.getFechaVenta()));
-        txtGanancia.setText(String.format(Locale.getDefault(), getString(R.string.ventas_property_ganancia),
+        txtGanancia.setText(String.format(Locale.ROOT, getString(R.string.ventas_property_ganancia),
                 mProducto.getGanancia()));
         txtObservaciones.setText(getString(R.string.ventas_property_notas) + ": " +
                 mProducto.getNotas());
 
         etName.setText(mProducto.getName());
         etModel.setText(mProducto.getModelo());
-        etPrecio.setText(String.format(Locale.getDefault(), "%,.2f", mProducto.getPrecio()));
-        etPrecioOriginal.setText(String.format(Locale.getDefault(), "%,.2f", mProducto.getPrecioOriginal()));
+        etPrecio.setText(String.format(Locale.ROOT, "%.2f", mProducto.getPrecio()));
+        etPrecioOriginal.setText(String.format(Locale.ROOT, "%.2f", mProducto.getPrecioOriginal()));
         etNotas.setText(mProducto.getNotas());
     }
 
@@ -212,13 +226,18 @@ public class DetalleVentaActivity extends AppCompatActivity {
             case android.R.id.home: {
                 if (isDetailMode) {
                     finish();
-                }else {
+                } else {
                     backToDetail();
                 }
                 return true;
             }
             case R.id.action_save: {
-                backToDetail();
+                mProducto.setName(etName.getText().toString());
+                mProducto.setModelo(etModel.getText().toString());
+                mProducto.setPrecioOriginal(Double.valueOf(etPrecioOriginal.getText().toString()));
+                mProducto.setPrecio(Double.valueOf(etPrecio.getText().toString()));
+                mProducto.setNotas(etNotas.getText().toString());
+                presenter.update(mProducto, "", clientEmail);
                 return true;
             }
         }
@@ -259,6 +278,7 @@ public class DetalleVentaActivity extends AppCompatActivity {
                     @Override
                     public void onTransitionStart(Transition transition) {
                     }
+
                     @Override
                     public void onTransitionEnd(Transition transition) {
                         TransitionManager.beginDelayedTransition(contentMain, transition);
@@ -266,12 +286,15 @@ public class DetalleVentaActivity extends AppCompatActivity {
                         TransitionManager.endTransitions(contentMain);
                         isAnimationInProccess = false;
                     }
+
                     @Override
                     public void onTransitionCancel(Transition transition) {
                     }
+
                     @Override
                     public void onTransitionPause(Transition transition) {
                     }
+
                     @Override
                     public void onTransitionResume(Transition transition) {
                     }
@@ -290,6 +313,7 @@ public class DetalleVentaActivity extends AppCompatActivity {
                     @Override
                     public void onTransitionStart(Transition transition) {
                     }
+
                     @Override
                     public void onTransitionEnd(Transition transition) {
                         TransitionManager.beginDelayedTransition(contentMain, transition);
@@ -297,17 +321,93 @@ public class DetalleVentaActivity extends AppCompatActivity {
                         TransitionManager.endTransitions(contentMain);
                         isAnimationInProccess = false;
                     }
+
                     @Override
                     public void onTransitionCancel(Transition transition) {
                     }
+
                     @Override
                     public void onTransitionPause(Transition transition) {
                     }
+
                     @Override
                     public void onTransitionResume(Transition transition) {
                     }
                 });
         TransitionManager.beginDelayedTransition(contentMain, transitionSet);
         containerEdit.setVisibility(isDetailMode ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void enableUIElements() {
+        setInputs(true);
+    }
+
+    @Override
+    public void disableUIElements() {
+        setInputs(false);
+    }
+
+    @Override
+    public void productInit() {
+        showSnackbar(R.string.productos_notice_upload_init);
+    }
+
+    @Override
+    public void productUpdate() {
+        setupProduct();
+        backToDetail();
+        showSnackbar(R.string.productos_notice_upload_complete);
+    }
+
+    @Override
+    public void addAbono(Abono abono) {
+
+    }
+
+    @Override
+    public void removeAbono(Abono abono) {
+
+    }
+
+    @Override
+    public void updateAbono(Abono abono) {
+
+    }
+
+    @Override
+    public void onError(String error) {
+        showSnackbar(error);
+    }
+
+    @Override
+    public void OnItemLongClick(Abono abono) {
+
+    }
+
+    private void setInputs(boolean enabled) {
+        etName.setEnabled(enabled);
+        etModel.setEnabled(enabled);
+        etPrecioOriginal.setEnabled(enabled);
+        etPrecio.setEnabled(enabled);
+        etNotas.setEnabled(enabled);
+    }
+
+    private void showSnackbar(String msg) {
+        Snackbar.make(contentMain, msg, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void showSnackbar(int strResource) {
+        Snackbar.make(contentMain, strResource, Snackbar.LENGTH_SHORT).show();
     }
 }

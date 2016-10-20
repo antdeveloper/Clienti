@@ -32,77 +32,50 @@
 
             <TextView
                 android:id="@+id/txtModel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Modelo: NG49"
-                android:textColor="@android:color/black"
-                android:layout_centerHorizontal="true"/>
+                style="@style/TextViewDetailSm"
+                android:text="Modelo: NG49"/>
 
             <TextView
                 android:id="@+id/txtPrecioProveedor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextViewDetailSm"
                 android:text="Precio original: $500"
-                android:textColor="@android:color/black"
-                android:layout_below="@id/txtModel"
-                android:layout_centerHorizontal="true"/>
+                android:layout_below="@id/txtModel"/>
 
             <TextView
                 android:id="@+id/txtPrecio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextViewDetailSm"
                 android:text="Precio venta: $950"
-                android:textColor="@android:color/black"
-                android:layout_below="@id/txtPrecioProveedor"
-                android:layout_centerHorizontal="true"/>
+                android:layout_below="@id/txtPrecioProveedor"/>
 
             <TextView
                 android:id="@+id/txtTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextViewDetailMd"
                 android:text="Total a pagar: $1900"
-                android:textColor="@android:color/black"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_below="@id/txtPrecio"
-                android:layout_centerHorizontal="true"/>
+                android:layout_below="@id/txtPrecio"/>
 
             <TextView
                 android:id="@+id/txtAbono"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextViewDetailMd"
                 android:text="Cantidad pagada: $1750"
-                android:textColor="@android:color/black"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_below="@id/txtTotal"
-                android:layout_centerHorizontal="true"/>
+                android:layout_below="@id/txtTotal"/>
 
             <TextView
                 android:id="@+id/txtAdeudo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextViewDetailMd"
                 android:text="Adeudo: $150"
-                android:textColor="@android:color/black"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_below="@id/txtAbono"
-                android:layout_centerHorizontal="true"/>
+                android:layout_below="@id/txtAbono"/>
 
             <TextView
                 android:id="@+id/txtGanancia"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextViewDetailSm"
                 android:text="Ganancia total: $900"
-                android:textColor="@android:color/black"
-                android:layout_below="@id/txtAdeudo"
-                android:layout_centerHorizontal="true"/>
+                android:layout_below="@id/txtAdeudo"/>
 
             <TextView
                 android:id="@+id/txtObservaciones"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextViewDetailSm"
                 android:text="Notas: Notas del producto."
-                android:textColor="@android:color/black"
-                android:layout_below="@id/txtGanancia"
-                android:layout_centerHorizontal="true"/>
+                android:layout_below="@id/txtGanancia"/>
 
             <LinearLayout
                 android:id="@+id/contentOptions"

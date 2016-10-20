@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
         }*/
         String username = sharedPreferences.getString(app.getUserName(), getString(R.string.app_name));
         toolbar.setTitle(username + " - $" +
-                String.format(Locale.getDefault(), "%.2f", adapter.getDeudasTotal()));
+                String.format(Locale.ROOT, "%,.2f", adapter.getDeudasTotal()));
     }
 
     @Override

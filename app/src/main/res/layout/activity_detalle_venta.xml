@@ -66,5 +66,4 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/ic_pencil" />
-
 </android.support.design.widget.CoordinatorLayout>

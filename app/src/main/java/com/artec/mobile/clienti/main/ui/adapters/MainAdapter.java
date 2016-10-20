@@ -64,7 +64,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
         holder.txtEmail.setText(email);
         if (client.getProductos() != null) {
             holder.containerAdeudo.setVisibility(View.VISIBLE);
-            holder.txtStatus.setText("Adeudo:\n" + String.format(Locale.getDefault(),
+            holder.txtStatus.setText("Adeudo:\n" + String.format(Locale.ROOT,
                     "%,.2f", deudaTotal));
             holder.imgStatus.setColorFilter(ContextCompat.getColor(context,
                     enOrden ? R.color.green_500 : R.color.red_500));

@@ -37,12 +37,16 @@ public class ProductosPresenterImpl implements ProductosPresenter {
     @Override
     public void uploadPhoto(Producto producto, Abono abono, String path, Client client) {
         productosUploadInteractor.execute(producto, abono, path, client);
+        view.showProgress();
+        view.disableUIElements();
     }
 
     @Override
     @Subscribe
     public void onEventMainThread(ProductosEvent event) {
         if (this.view != null){
+            view.hideProgress();
+            view.enableUIElements();
             switch (event.getType()){
                 case ProductosEvent.UPLOAD_INIT:{
                     view.onUploadInit();

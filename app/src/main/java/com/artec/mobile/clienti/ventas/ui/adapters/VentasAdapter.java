@@ -60,11 +60,11 @@ public class VentasAdapter extends RecyclerView.Adapter<VentasAdapter.ViewHolder
                 currentProducto.getName());
         holder.txtModel.setText( context.getString(R.string.productos_hint_model) + ": " +
                 currentProducto.getModelo());
-        holder.txtTotal.setText(String.format(Locale.getDefault(), context.getString(
+        holder.txtTotal.setText(String.format(Locale.ROOT, context.getString(
                 R.string.ventas_property_total), total));
         /*holder.txtAbono.setText( context.getString(R.string.ventas_property_pagado) + ": $" +
                 currentProducto.getAbono());*/
-        holder.txtAdeudo.setText(String.format(Locale.getDefault(), context.getString(
+        holder.txtAdeudo.setText(String.format(Locale.ROOT, context.getString(
                 R.string.ventas_property_adeudo), total- currentProducto.getAbono()));
         holder.txtCantidad.setText(context.getString(R.string.ventas_property_cantidad) + ": (x" +
                 String.format(Locale.getDefault(), "%d", currentProducto.getCantidad()) + ")");

@@ -16,6 +16,7 @@ import com.artec.mobile.clienti.addClient.di.DaggerAddClientComponent;
 import com.artec.mobile.clienti.addClient.ui.AddClientFragment;
 import com.artec.mobile.clienti.addClient.ui.AddClientView;
 import com.artec.mobile.clienti.detalleVentas.di.DaggerDetalleVentaComponent;
+import com.artec.mobile.clienti.detalleVentas.ui.adapters.OnAbonoClickListener;
 import com.artec.mobile.clienti.domain.di.DomainModule;
 import com.artec.mobile.clienti.libs.di.LibsModule;
 import com.artec.mobile.clienti.login.di.DaggerLoginComponent;
@@ -166,13 +167,13 @@ public class ClientiApp extends Application{
                 .build();
     }
 
-    public DetalleVentaComponent getDetalleAbonoComponent(DetalleVentaActivity activity){
+    public DetalleVentaComponent getDetalleAbonoComponent(DetalleVentaActivity activity, OnAbonoClickListener onAbonoClickListener){
         return DaggerDetalleVentaComponent
                 .builder()
                 .clientiAppModule(clientiAppModule)
                 .domainModule(domainModule)
                 .libsModule(new LibsModule(activity))
-                .detalleVentasModule(new DetalleVentasModule())
+                .detalleVentasModule(new DetalleVentasModule(activity, onAbonoClickListener))
                 .build();
     }
 }

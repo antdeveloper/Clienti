@@ -10,8 +10,14 @@ public interface DetalleVentaView {
     void showProgress();
     void hideProgress();
 
+    void enableUIElements();
+    void disableUIElements();
+
+    void productInit();
+    void productUpdate();
+
     void addAbono(Abono abono);
     void removeAbono(Abono abono);
     void updateAbono(Abono abono);
-    void onError(String error, int type);
+    void onError(String error);
 }

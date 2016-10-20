@@ -47,7 +47,8 @@ public class AbonoAdapter extends RecyclerView.Adapter<AbonoAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Abono element = abonoList.get(position);
-        String strTip = context.getString(R.string.ventas_detalle_label_abono, element.getValor());
+        String strTip = String.format(Locale.ROOT, context.getString(R.string.ventas_detalle_label_abono),
+                element.getValor());//context.getString(R.string.ventas_detalle_label_abono, element.getValor());
         String strFecha = element.getDateFormatted();
 
         holder.setOnItemClickListener(element, onItemClickListener);

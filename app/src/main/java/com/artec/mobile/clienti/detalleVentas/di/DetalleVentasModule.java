@@ -1,6 +1,16 @@
 package com.artec.mobile.clienti.detalleVentas.di;
 
+import com.artec.mobile.clienti.detalleVentas.DetalleVentaInteractor;
+import com.artec.mobile.clienti.detalleVentas.DetalleVentaInteractorImpl;
+import com.artec.mobile.clienti.detalleVentas.DetalleVentaPresenter;
+import com.artec.mobile.clienti.detalleVentas.DetalleVentaPresenterImpl;
+import com.artec.mobile.clienti.detalleVentas.DetalleVentaRepository;
+import com.artec.mobile.clienti.detalleVentas.DetalleVentaRepositoryImpl;
+import com.artec.mobile.clienti.detalleVentas.ui.DetalleVentaView;
+import com.artec.mobile.clienti.detalleVentas.ui.adapters.AbonoAdapter;
+import com.artec.mobile.clienti.detalleVentas.ui.adapters.OnAbonoClickListener;
 import com.artec.mobile.clienti.domain.FirebaseAPI;
+import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.base.EventBus;
 import com.artec.mobile.clienti.libs.base.ImageLoader;
@@ -28,41 +38,38 @@ import dagger.Provides;
  */
 @Module
 public class DetalleVentasModule {
-    private VentasView view;
-    private OnItemClickListener onItemClickListener;
+    private DetalleVentaView view;
+    private OnAbonoClickListener onItemClickListener;
 
-    public DetalleVentasModule() {
-    }
-
-    public DetalleVentasModule(VentasView view, OnItemClickListener onItemClickListener) {
+    public DetalleVentasModule(DetalleVentaView view, OnAbonoClickListener onItemClickListener) {
         this.view = view;
         this.onItemClickListener = onItemClickListener;
     }
 
     @Provides
     @Singleton
-    VentasView providesPhotoListView(){
+    DetalleVentaView providesPhotoListView(){
         return this.view;
     }
 
     @Provides @Singleton
-    VentasPresenter providesPhotoListPresenter(EventBus eventBus, VentasView view, VentasInteractor interactor){
-        return new VentasPresenterImpl(eventBus, view, interactor);
+    DetalleVentaPresenter providesPhotoListPresenter(EventBus eventBus, DetalleVentaView view, DetalleVentaInteractor interactor){
+        return new DetalleVentaPresenterImpl(view, eventBus, interactor);
     }
 
     @Provides @Singleton
-    VentasInteractor providesPhotoListInteractor(VentasReposiroty reposiroty){
-        return new VentasInteractorImpl(reposiroty);
+    DetalleVentaInteractor providesPhotoListInteractor(DetalleVentaRepository reposiroty){
+        return new DetalleVentaInteractorImpl(reposiroty);
     }
 
     @Provides @Singleton
-    VentasReposiroty providesPhotoListReposiroty(EventBus eventBus, FirebaseAPI firebaseAPI, ImageStorage imageStorage){
-        return new VentasRepositoryImpl(eventBus, firebaseAPI, imageStorage);
+    DetalleVentaRepository providesPhotoListReposiroty(EventBus eventBus, FirebaseAPI firebaseAPI, ImageStorage imageStorage){
+        return new DetalleVentaRepositoryImpl(eventBus, firebaseAPI, imageStorage);
     }
 
     @Provides @Singleton
-    VentasAdapter providesPhotoListAdapter(List<Producto> productoList, ImageLoader imageLoader, OnItemClickListener onItemClickListener){
-        return new VentasAdapter(productoList, imageLoader, onItemClickListener);
+    AbonoAdapter providesPhotoListAdapter(List<Abono> productoList, OnAbonoClickListener onItemClickListener){
+        return new AbonoAdapter(productoList, onItemClickListener);
     }
 
     /*@Provides @Singleton
@@ -71,12 +78,12 @@ public class DetalleVentasModule {
     }*/
 
     @Provides @Singleton
-    OnItemClickListener providesOnItemClickListener(){
+    OnAbonoClickListener providesOnItemClickListener(){
         return this.onItemClickListener;
     }
 
     @Provides @Singleton
-    List<Producto> providesPhotoList(){
+    List<Abono> providesPhotoList(){
         return new ArrayList<>();
     }
 }
