@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.artec.mobile.clienti.entities.Abono;
+import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.login.ui.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,7 +49,7 @@ public class FirebaseAPI {
     private final static String ABONOS_PATH = "abonos";
     //private final static String FIREBASE_URL = "https://clienti.firebaseio.com/";
 
-    public FirebaseAPI() {
+    /*public FirebaseAPI() {
         this.firebase = FirebaseDatabase.getInstance().getReference();
         this.mAuth = FirebaseAuth.getInstance();
         this.mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -59,9 +61,9 @@ public class FirebaseAPI {
                 }
             }
         };
-    }
+    }*/
 
-    public FirebaseAPI(DatabaseReference firebase) {
+    /*public FirebaseAPI(DatabaseReference firebase) {
         this.firebase = firebase;
         this.mAuth = FirebaseAuth.getInstance();
         this.mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -74,7 +76,7 @@ public class FirebaseAPI {
             }
         };
         this.mAuth.addAuthStateListener(mAuthListener);
-    }
+    }*/
 
     public FirebaseAPI(DatabaseReference firebase, Activity context) {
         this.firebase = firebase;
@@ -361,5 +363,16 @@ public class FirebaseAPI {
     // ABONOS
     public DatabaseReference getAbonosReference(DatabaseReference reference){
         return reference.child(ABONOS_PATH).push();
+    }
+
+    public DatabaseReference getAbonoUpdateReference(DatabaseReference reference, String abonoId){
+        return reference.child(ABONOS_PATH).child(abonoId);
+    }
+
+    public void deleteAbono(Producto producto, final Abono abono, Client client,
+                            FirebaseActionListenerCallback listenerCallback){
+        getProductsReference(client.getEmail()).child(producto.getId()).child(ABONOS_PATH)
+                .child(abono.getId()).removeValue();
+        listenerCallback.onSuccess();
     }
 }

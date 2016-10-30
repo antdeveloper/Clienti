@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">Clienti</string>
-    <string name="version">v1.4.3.2</string>
+    <string name="version">v1.8.9.3</string>
 
     <string name="action_settings">Settings</string>
 
     <string name="label.ok">OK</string>
+    <string name="label.delete">Eliminar</string>
 
     <string name="menu.about">Acerca de</string>
 
@@ -12,6 +13,14 @@
     <string name="addabono.message.title">Agregar abono</string>
     <string name="addabono.message.titleGral">Agregar abono general</string>
     <string name="addAbono.message.abonoAdded">Abono agregado exitosamente.</string>
+
+    <string name="admonAbono.error.abonoBiger">El abono no puede ser mas grande que la deuda.</string>
+    <string name="admonAbono.message.title">Agregar abono</string>
+    <string name="admonAbono.message.titleEdit">Editar abono</string>
+    <string name="admonAbono.message.titleGral">Agregar abono general</string>
+    <string name="admonAbono.message.abonoAdded">Abono guardado exitosamente.</string>
+    <string name="admonAbono.message.confirmdelete">¿Estas seguro que quieres eliminar este abono?</string>
+    <string name="admonAbono.title.confirmdelete">Borrar abono</string>
 
     <string name="addclient.error.add">Imposible agregar usuario no existente</string>
     <string name="addClient.label.nativeUser">Usuario Clienti</string>
@@ -32,6 +41,7 @@
     <string name="login.message.password">Password</string>
     <string name="login.message.signin">Iniciar sesión</string>
     <string name="login.message.register">Registrarse</string>
+    <string name="login.message.welcome">Bienvenido a Clienti</string>
     <string name="login.title">Inicio de sesión</string>
     <string name="login.user.message.signin">Imposible iniciar sesión %s</string>
 
@@ -48,9 +58,10 @@
     <string name="productos.menu.action.logout">Cerrar sesión</string>
     <string name="productos.message.picture.source">Selecciona una foto</string>
     <string name="productos.message.titledialog">Añadir producto</string>
+    <string name="productos.message.valid.addGral">Añada un producto para continuar.</string>
     <string name="productos.hint.name">Nombre</string>
     <string name="productos.hint.model">Modelo</string>
-    <string name="productos.hint.precio">Precio</string>
+    <string name="productos.hint.precio">Precio venta</string>
     <string name="productos.hint.cantidad">Cantidad</string>
     <string name="productos.hint.abono">Abono</string>
     <string name="productos.error.notfound">Fichero/recurso no encontrado.</string>
@@ -63,7 +74,7 @@
     <string name="signup.notice.message.useradded">Usuario agregado exitosamente</string>
     <string name="signup.error.useradded">Imposible registrar nuevo usuario %s</string>
 
-    <string name="ventas.hint.precioOriginal">Precio original</string>
+    <string name="ventas.hint.precioOriginal">Precio compra</string>
     <string name="ventas.label.compra">Compra</string>
     <string name="ventas.label.venta">Venta</string>
     <string name="ventas.property.precioOriginal">Precio original: $%,.2f</string>

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.entities.Abono;
@@ -63,30 +62,38 @@ public class AbonoAdapter extends RecyclerView.Adapter<AbonoAdapter.ViewHolder>{
     }
 
 
-    public void add(Abono abono) {// FIXME: 10/10/2016
+    public void add(Abono abono) {
         abonoList.add(0, abono);
         notifyDataSetChanged();
     }
 
-    public void update(Abono abono){// FIXME: 10/10/2016
+    public void update(Abono abono){
         int index = getIndexById(abono);
         abonoList.set(index, abono);
         notifyDataSetChanged();
     }
 
-    public void remove(Abono abono) {// FIXME: 10/10/2016
+    public void remove(Abono abono) {
         int index = getIndexById(abono);
         abonoList.remove(index);
         notifyDataSetChanged();
     }
 
-    private int getIndexById(Abono abono) {// FIXME: 10/10/2016
+    private int getIndexById(Abono abono) {
         for (int i = 0; i< abonoList.size(); i++){
             if (abonoList.get(i).getId().equals(abono.getId())){
                 return i;
             }
         }
         return -1;
+    }
+
+    public double getAbonos(){
+        double result = 0.0;
+        for (Abono abono : abonoList) {
+            result += abono.getValor();
+        }
+        return result;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -101,10 +108,17 @@ public class AbonoAdapter extends RecyclerView.Adapter<AbonoAdapter.ViewHolder>{
         }
 
         public void setOnItemClickListener(final Abono element, final OnAbonoClickListener onAbonoClickListener){
-            itemView.setOnClickListener(new View.OnClickListener() {
+            /*itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onAbonoClickListener.OnItemLongClick(element);
+                }
+            });*/
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    onAbonoClickListener.OnItemLongClick(element);
+                    return true;
                 }
             });
         }

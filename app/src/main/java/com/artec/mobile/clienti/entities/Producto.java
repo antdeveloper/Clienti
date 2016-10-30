@@ -4,6 +4,7 @@ import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -109,7 +110,7 @@ public class Producto {
     }
 
     public Map<String, Abono> getAbonos() {
-        return abonos;
+        return abonos == null? new HashMap<String, Abono>() : abonos;
     }
 
     public void setAbonos(Map<String, Abono> abonos) {
@@ -166,6 +167,7 @@ public class Producto {
         while (iterator.hasNext()){
             String name = iterator.next();
             Abono abono = abonos.get(name);
+            abono.setId(name);
             sortedMap.put(abono.getFechaDate(), abono);
         }
         return sortedMap;

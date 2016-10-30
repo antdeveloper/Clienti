@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.domain.Util;
 import com.artec.mobile.clienti.entities.Client;
-import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.base.ImageLoader;
 
 import java.util.List;
@@ -72,7 +71,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
             holder.containerAdeudo.setVisibility(View.GONE);
         }
 
-        imageLoader.load(holder.imgAvatar, util.getAvatarUrl(email));
+        if (client.isLocalUser()) {
+            holder.imgAvatar.setImageResource(R.drawable.ic_account);
+        } else {
+            imageLoader.load(holder.imgAvatar, util.getAvatarUrl(email));
+        }
     }
 
     @Override
@@ -81,7 +84,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
     }
 
     public void add(Client client) {
-        if (!clientList.contains(client)){
+        if (getIndexById(client) == -1){
             clientList.add(client);
             notifyDataSetChanged();
         }

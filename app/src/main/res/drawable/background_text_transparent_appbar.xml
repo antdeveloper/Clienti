@@ -10,8 +10,8 @@
             <solid android:color="@color/cWhite_t"/>
 
             <corners
-                android:bottomRightRadius="@dimen/padding_micro"
-                android:bottomLeftRadius="@dimen/padding_micro"/>
+                android:bottomRightRadius="@dimen/padding.micro"
+                android:bottomLeftRadius="@dimen/padding.micro"/>
         </shape>
     </item>
 </selector>

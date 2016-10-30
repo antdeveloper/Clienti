@@ -15,6 +15,11 @@ import com.artec.mobile.clienti.addClient.di.AddClientModule;
 import com.artec.mobile.clienti.addClient.di.DaggerAddClientComponent;
 import com.artec.mobile.clienti.addClient.ui.AddClientFragment;
 import com.artec.mobile.clienti.addClient.ui.AddClientView;
+import com.artec.mobile.clienti.admonAbono.di.AdmonAbonoComponent;
+import com.artec.mobile.clienti.admonAbono.di.AdmonAbonoModule;
+import com.artec.mobile.clienti.admonAbono.di.DaggerAdmonAbonoComponent;
+import com.artec.mobile.clienti.admonAbono.ui.AdmonAbonoFragment;
+import com.artec.mobile.clienti.admonAbono.ui.AdmonAbonoView;
 import com.artec.mobile.clienti.detalleVentas.di.DaggerDetalleVentaComponent;
 import com.artec.mobile.clienti.detalleVentas.ui.adapters.OnAbonoClickListener;
 import com.artec.mobile.clienti.domain.di.DomainModule;
@@ -34,9 +39,9 @@ import com.artec.mobile.clienti.signup.di.DaggerSignUpComponent;
 import com.artec.mobile.clienti.signup.di.SignUpComponent;
 import com.artec.mobile.clienti.signup.di.SignUpModule;
 import com.artec.mobile.clienti.signup.ui.SignUpView;
-import com.artec.mobile.clienti.ventas.di.DaggerVentasComponent;
 import com.artec.mobile.clienti.detalleVentas.di.DetalleVentaComponent;
 import com.artec.mobile.clienti.detalleVentas.di.DetalleVentasModule;
+import com.artec.mobile.clienti.ventas.di.DaggerVentasComponent;
 import com.artec.mobile.clienti.ventas.di.VentasComponent;
 import com.artec.mobile.clienti.ventas.di.VentasModule;
 import com.artec.mobile.clienti.detalleVentas.ui.DetalleVentaActivity;
@@ -156,8 +161,7 @@ public class ClientiApp extends Application{
                 .build();
     }
 
-
-    public AddAbonoComponent getAddContactComponent(AddAbonoFragment dialogFragment, AddAbonoView view){
+    public AddAbonoComponent getAddAbonoComponent(AddAbonoFragment dialogFragment, AddAbonoView view){
         return DaggerAddAbonoComponent
                 .builder()
                 .clientiAppModule(clientiAppModule)
@@ -174,6 +178,16 @@ public class ClientiApp extends Application{
                 .domainModule(domainModule)
                 .libsModule(new LibsModule(activity))
                 .detalleVentasModule(new DetalleVentasModule(activity, onAbonoClickListener))
+                .build();
+    }
+
+    public AdmonAbonoComponent getAdmonContactComponent(AdmonAbonoFragment dialogFragment, AdmonAbonoView view){
+        return DaggerAdmonAbonoComponent
+                .builder()
+                .clientiAppModule(clientiAppModule)
+                .domainModule(domainModule)
+                .libsModule(new LibsModule(dialogFragment.getActivity()))
+                .admonAbonoModule(new AdmonAbonoModule(view))
                 .build();
     }
 }

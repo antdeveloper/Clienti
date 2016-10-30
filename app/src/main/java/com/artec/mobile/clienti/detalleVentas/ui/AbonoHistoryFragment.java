@@ -26,6 +26,8 @@ public class AbonoHistoryFragment extends Fragment implements AbonoHistoryFragme
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
 
+    private OnAbonoClickListener listener;
+
     private AbonoAdapter adapter;
 
     public AbonoHistoryFragment() {
@@ -69,16 +71,26 @@ public class AbonoHistoryFragment extends Fragment implements AbonoHistoryFragme
 
     @Override
     public void updateAbono(Abono abono) {
-
+        adapter.update(abono);
     }
 
     @Override
     public void deleteAbono(Abono abono) {
+        adapter.remove(abono);
+    }
 
+    @Override
+    public double getAbonos() {
+        return adapter.getAbonos();
     }
 
     @Override
     public void OnItemLongClick(Abono abono) {
+        listener.OnItemLongClick(abono);
+    }
 
+    @Override
+    public void setListenerFragment(OnAbonoClickListener listener) {
+        this.listener = listener;
     }
 }

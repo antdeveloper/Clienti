@@ -25,10 +25,7 @@
             android:id="@+id/containerDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/padding.sm"
-            android:paddingLeft="@dimen/padding.sm"
-            android:paddingRight="@dimen/padding.sm"
-            android:paddingBottom="@dimen/padding.sml">
+            android:padding="@dimen/padding.sm">
 
             <TextView
                 android:id="@+id/txtModel"
@@ -49,13 +46,13 @@
 
             <TextView
                 android:id="@+id/txtTotal"
-                style="@style/TextViewDetailMd"
+                style="@style/TextViewDetailSm"
                 android:text="Total a pagar: $1900"
                 android:layout_below="@id/txtPrecio"/>
 
             <TextView
                 android:id="@+id/txtAbono"
-                style="@style/TextViewDetailMd"
+                style="@style/TextViewDetailSm"
                 android:text="Cantidad pagada: $1750"
                 android:layout_below="@id/txtTotal"/>
 
@@ -74,6 +71,7 @@
             <TextView
                 android:id="@+id/txtObservaciones"
                 style="@style/TextViewDetailSm"
+                android:gravity="center"
                 android:text="Notas: Notas del producto."
                 android:layout_below="@id/txtGanancia"/>
 
@@ -95,7 +93,7 @@
                     android:textColor="@android:color/black"/>
 
                 <ImageButton
-                    android:id="@+id/imgSharePhoto"
+                    android:id="@+id/imgbtnAddAbono"
                     android:layout_width="@dimen/icon.mdl"
                     android:layout_height="@dimen/icon.mdl"
                     app:srcCompat="@drawable/ic_plus_box"

@@ -50,6 +50,9 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setTitle(R.string.login_title);
+        }
         app = (ClientiApp)getApplication();
         setupInjection();
         loginPresenter.onCreate();

@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.addClient.AddClientPresenter;
+import com.artec.mobile.clienti.libs.Constants;
 
 import javax.inject.Inject;
 
@@ -33,7 +34,6 @@ import butterknife.OnClick;
 public class AddClientFragment extends DialogFragment implements AddClientView,
         DialogInterface.OnShowListener {
 
-    private static final String DOMINIO_CLIENTI = "@clienti.com";
     @Bind(R.id.editTxtEmail)
     EditText editTxtEmail;
     @Bind(R.id.progressBar)
@@ -115,8 +115,9 @@ public class AddClientFragment extends DialogFragment implements AddClientView,
                         String email = editTxtEmail.getText().toString();
                         email = email.replace(" ", ".");
                         email = email.toLowerCase();
-                        presenter.addContact(rbNativeUser.isChecked() ? email : email + DOMINIO_CLIENTI,
-                                myUsername, rbNativeUser.isChecked() ? "" : editTxtEmail.getText().toString());
+                        presenter.addContact(rbNativeUser.isChecked() ?
+                                email : email + Constants.DOMINIO_CLIENTI, myUsername,
+                                rbNativeUser.isChecked() ? "" : editTxtEmail.getText().toString());
                     }
                 }
             });

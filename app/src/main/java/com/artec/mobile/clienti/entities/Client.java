@@ -1,5 +1,6 @@
 package com.artec.mobile.clienti.entities;
 
+import com.artec.mobile.clienti.libs.Constants;
 import com.google.firebase.database.Exclude;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -98,5 +99,9 @@ public class Client {
     @Exclude
     public void setProductos(HashMap<String, ArrayList> productos) {
         this.productos = productos;
+    }
+    @Exclude
+    public boolean isLocalUser() {
+        return email.contains(Constants.DOMINIO_CLIENTI);
     }
 }

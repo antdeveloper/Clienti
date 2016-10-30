@@ -20,7 +20,9 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:subtitleTextAppearance="@style/titleSmall"
+            app:titleTextAppearance="@style/titleMedium"/>
         
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"

@@ -10,12 +10,13 @@
     <dimen name="img_md">144dp</dimen>
     <dimen name="img_mdl">96dp</dimen>
     <dimen name="padding.nano">2dp</dimen>
-    <dimen name="padding_micro">4dp</dimen>
+    <dimen name="padding.micro">4dp</dimen>
     <dimen name="padding.sml">8dp</dimen>
     <dimen name="padding.sm">16dp</dimen>
-    <dimen name="recyclerview_margin_sm">8dp</dimen>
+    <dimen name="recyclerview.margin.sm">8dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="recyclerview.paddingBottom">72dp</dimen>
     <dimen name="margin.dialog">16dp</dimen>
+    <dimen name="padding.smx">24dp</dimen>
 </resources>

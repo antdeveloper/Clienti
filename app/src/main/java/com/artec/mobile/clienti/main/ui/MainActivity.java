@@ -120,8 +120,10 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     }
 
     private void getAdeudo() {
-        mClient = adapter.getClientList().get(indexClient);
-        presenter.onGetAdeudo(mClient.getEmail());
+        if (adapter != null && adapter.getItemCount()>0) {
+            mClient = adapter.getClientList().get(indexClient);
+            presenter.onGetAdeudo(mClient.getEmail());
+        }
     }
 
     @Override
@@ -170,12 +172,6 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     }
 
     private void refreshAdeudo() {
-        /*ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            String username = sharedPreferences.getString(app.getUserName(), getString(R.string.app_name));
-            actionBar.setTitle(username + " - $" +
-                    String.format(Locale.getDefault(), "%.2f", adapter.getDeudasTotal()));
-        }*/
         String username = sharedPreferences.getString(app.getUserName(), getString(R.string.app_name));
         toolbar.setTitle(username + " - $" +
                 String.format(Locale.ROOT, "%,.2f", adapter.getDeudasTotal()));
@@ -186,8 +182,6 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
         Intent intent = new Intent(this, ProductosActivity.class);
         intent.putExtra(ProductosActivity.USERNAME_KEY, client.getUsername());
         intent.putExtra(ProductosActivity.EMAIL_KEY, client.getEmail());
-        /*intent.putExtra(ProductosActivity.ADEUDO_KEY, client.getAdeudo());
-        intent.putExtra(ProductosActivity.PAGADO_KEY, client.getPagado());*/
         startActivity(intent);
     }
 

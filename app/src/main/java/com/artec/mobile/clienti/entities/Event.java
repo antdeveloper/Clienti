@@ -9,8 +9,8 @@ public class Event {
     private String error;
 
     public final static int SUCCESS = 0;
-    public final static int INIT = 1;
     public final static int ERROR = 100;
+    public final static int INIT = 200;
 
     public int getType() {
         return type;

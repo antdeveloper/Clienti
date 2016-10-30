@@ -29,7 +29,7 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_margin="@dimen/recyclerview_margin_sm"
+        android:layout_margin="@dimen/recyclerview.margin.sm"
         android:paddingBottom="@dimen/recyclerview.paddingBottom"
         android:clipToPadding="false"/>
 

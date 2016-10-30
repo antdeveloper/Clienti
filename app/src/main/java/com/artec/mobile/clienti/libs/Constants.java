@@ -7,4 +7,5 @@ package com.artec.mobile.clienti.libs;
 public class Constants {
     public static final String OBJ_PRODUCTO = "obj_producto";
     public static final String EMAIL = "email";
+    public static final String DOMINIO_CLIENTI = "@clienti.com";
 }

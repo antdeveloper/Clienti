@@ -18,20 +18,23 @@
             android:layout_height="@dimen/contact.image.size"
             android:layout_marginRight="@dimen/padding.sml"
             android:layout_centerVertical="true"
-            app:civ_border_color="@android:color/black"
+            app:civ_border_color="@color/blue_900"
             app:civ_border_width="1dp"
-            android:src="@mipmap/ic_launcher"/>
+            app:srcCompat="@drawable/ic_account"
+            app:civ_fill_color="@color/colorAccent"/>
 
         <TextView
             android:id="@+id/txtUser"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User username"
+            android:text="User username for testing here"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:singleLine="true"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@id/imgAvatar"
-            android:layout_toEndOf="@id/imgAvatar"/>
+            android:layout_toEndOf="@id/imgAvatar"
+            android:paddingRight="@dimen/padding.sm"
+            android:paddingEnd="@dimen/padding.sm"/>
 
         <TextView
             android:id="@+id/txtEmail"
@@ -61,7 +64,8 @@
                 android:layout_height="wrap_content"
                 android:text="Adeudo:\n$0.00"
                 android:gravity="end"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:background="@color/colorBackgroundAccent"/>
 
             <ImageView
                 android:id="@+id/imgStatus"

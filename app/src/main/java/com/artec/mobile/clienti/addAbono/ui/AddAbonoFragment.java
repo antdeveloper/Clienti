@@ -17,7 +17,10 @@ import android.widget.Toast;
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.addAbono.AddAbonoPresenter;
+import com.artec.mobile.clienti.detalleVentas.ui.DetalleVentaActivity;
+import com.artec.mobile.clienti.detalleVentas.ui.DetalleVentaView;
 import com.artec.mobile.clienti.entities.Abono;
+import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.productos.ui.ProductosActivity;
 
@@ -44,9 +47,12 @@ public class AddAbonoFragment extends DialogFragment implements AddAbonoView,
 
     private ClientiApp app;
 
+    private Abono abono;
+    public Client client;
     private Producto producto;
     private List<Producto> productos;
     private boolean isAbonoGral;
+    private boolean isFromDetalle;
 
     public AddAbonoFragment() {
 
@@ -55,7 +61,19 @@ public class AddAbonoFragment extends DialogFragment implements AddAbonoView,
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        isAbonoGral = ((ProductosActivity)getActivity()).isAbonoGral;
+        try {
+            isFromDetalle = ((DetalleVentaActivity)getActivity()).isFromDetalle;
+        }catch (Exception e){
+            isFromDetalle = ((ProductosActivity)getActivity()).isFromDetalle;
+        }
+
+        if (isFromDetalle){
+            isAbonoGral = ((DetalleVentaActivity) getActivity()).isAbonoGral;
+            client = ((DetalleVentaActivity) getActivity()).client;
+        } else {
+            isAbonoGral = ((ProductosActivity) getActivity()).isAbonoGral;
+            client = ((ProductosActivity) getActivity()).client;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DialogFragmentTheme)
                 .setTitle(isAbonoGral?R.string.addabono_message_titleGral : R.string.addabono_message_title)
                 .setPositiveButton(R.string.addclient_message_acept,
@@ -82,10 +100,15 @@ public class AddAbonoFragment extends DialogFragment implements AddAbonoView,
         setupInjection();
         presenter.onShow();
 
-        if (isAbonoGral){
-            productos = ((ProductosActivity)getActivity()).getProductos();
-        }else {
-            producto = ((ProductosActivity) getActivity()).productoSelected;
+
+        if (isFromDetalle){
+            producto = ((DetalleVentaActivity) getActivity()).productoSelected;
+        } else {
+            if (isAbonoGral){
+                productos = ((ProductosActivity)getActivity()).getProductos();
+            }else {
+                producto = ((ProductosActivity) getActivity()).productoSelected;
+            }
         }
         return dialog;
     }
@@ -119,20 +142,18 @@ public class AddAbonoFragment extends DialogFragment implements AddAbonoView,
                                 editTxtAbono.setError(getString(R.string.addAbono_error_abonoBiger)+
                                         " ($"+deudaTotal+")");
                             }else {
-                                presenter.addAbonoGral(productos, valorAbono, System.currentTimeMillis(),
-                                        ((ProductosActivity) getActivity()).client);
+                                presenter.addAbonoGral(productos, valorAbono, System.currentTimeMillis(), client);
                             }
                         }else {
                             if (valorAbono > producto.getAdeudo()){
                                 editTxtAbono.setError(getString(R.string.addAbono_error_abonoBiger)+
                                         " ($"+producto.getAdeudo()+")");
                             }else {
-                                Abono abono = new Abono();
+                                abono = new Abono();
                                 abono.setValor(valorAbono);
                                 abono.setFecha(System.currentTimeMillis());
 
-                                presenter.addAbono(producto, abono,
-                                        ((ProductosActivity) getActivity()).client);
+                                presenter.addAbono(producto, abono, client);
                             }
                         }
                     }
@@ -151,7 +172,7 @@ public class AddAbonoFragment extends DialogFragment implements AddAbonoView,
     }
 
     private void setupInjection() {
-        app.getAddContactComponent(this, this).inject(this);
+        app.getAddAbonoComponent(this, this).inject(this);
     }
 
     @Override
@@ -178,6 +199,9 @@ public class AddAbonoFragment extends DialogFragment implements AddAbonoView,
     public void abonoAdded() {
         Toast.makeText(getActivity(), R.string.addAbono_message_abonoAdded,
                 Toast.LENGTH_SHORT).show();
+        if (isFromDetalle){
+            ((DetalleVentaView)getActivity()).addAbono(abono);
+        }
         dismiss();
     }
 

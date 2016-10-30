@@ -13,10 +13,7 @@ import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.base.ImageLoader;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -128,7 +125,7 @@ public class VentasAdapter extends RecyclerView.Adapter<VentasAdapter.ViewHolder
         TextView txtAbono;
         @Bind(R.id.txtAdeudo)
         TextView txtAdeudo;
-        @Bind(R.id.imgAddAbono)
+        @Bind(R.id.imgbtnAddAbono)
         ImageButton imgAddAbono;
         @Bind(R.id.txtCantidad)
         TextView txtCantidad;

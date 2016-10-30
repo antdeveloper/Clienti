@@ -8,4 +8,11 @@
     <style name="TextViewDetailMd" parent="TextViewDetail">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
+
+    <!-- Toolbar -->
+    <style name="titleMedium" parent="AppTheme.PopupOverlay">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 </resources>

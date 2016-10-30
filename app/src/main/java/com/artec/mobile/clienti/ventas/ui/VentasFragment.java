@@ -240,8 +240,12 @@ public class VentasFragment extends Fragment implements VentasView,
     private void refreshAdeudo(){
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(((ProductosActivity)getActivity()).client.getUsername() + " - $" +
-                    String.format(Locale.ROOT, "%,.2f", adapter.getAdeudoTotal()));
+            if (getResources().getBoolean(R.bool.isTablet)){
+                actionBar.setTitle(((ProductosActivity) getActivity()).client.getUsername() + " - $" +
+                        String.format(Locale.ROOT, "%,.2f", adapter.getAdeudoTotal()));
+            } else {
+                actionBar.setSubtitle("$" + String.format(Locale.ROOT, "%,.2f", adapter.getAdeudoTotal()));
+            }
         }
         ((ProductosActivity)getActivity()).setProductos(adapter.getProductos());
     }
@@ -253,9 +257,14 @@ public class VentasFragment extends Fragment implements VentasView,
 
     @Override
     public void onAddAbonoClick(Producto producto) {
-        ((ProductosActivity)getActivity()).isAbonoGral = false;
-        ((ProductosActivity)getActivity()).productoSelected = producto;
+        setupProductoForAbono(producto);
         new AddAbonoFragment().show(getActivity().getSupportFragmentManager(),
                 getString(R.string.addabono_message_title));
+    }
+
+    private void setupProductoForAbono(Producto producto) {
+        ((ProductosActivity)getActivity()).isAbonoGral = false;
+        ((ProductosActivity)getActivity()).isFromDetalle = false;
+        ((ProductosActivity)getActivity()).productoSelected = producto;
     }
 }

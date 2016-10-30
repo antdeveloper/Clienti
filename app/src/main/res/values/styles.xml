@@ -18,6 +18,25 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <style name="TextAppearance.Design.CollapsingToolbar.Expanded.Shadow">
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowRadius">6</item>
+        <item name="android:shadowColor">@android:color/black</item>
+    </style>
+
+    <!-- Toolbar -->
+    <style name="titleMedium" parent="AppTheme.PopupOverlay">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="titleSmall" parent="AppTheme.PopupOverlay">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <!-- Buttons -->
     <style name="ButtonMD" parent="Theme.AppCompat.Light">
         <item name="colorControlHighlight">@color/colorPrimary</item>

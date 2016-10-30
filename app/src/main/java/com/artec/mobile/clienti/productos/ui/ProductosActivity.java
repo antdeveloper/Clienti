@@ -88,6 +88,7 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
 
     private AlertDialog alertDialog;
     private Uri uriFoto;
+    private String uriStr;
 
     public Client client;
     private String photoPath;
@@ -96,6 +97,7 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
     public Producto productoSelected;
     private List<Producto> productos;
     public boolean isAbonoGral;
+    public boolean isFromDetalle;
 
     private boolean isSaving = false;
 
@@ -155,9 +157,13 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
                 return true;
             }
             case R.id.action_add_abonoGral:{
-                isAbonoGral = true;
-                new AddAbonoFragment().show(this.getSupportFragmentManager(),
-                        getString(R.string.addabono_message_title));
+                if (productos != null && productos.size()>0) {
+                    isAbonoGral = true;
+                    new AddAbonoFragment().show(this.getSupportFragmentManager(),
+                            getString(R.string.addabono_message_title));
+                } else {
+                    showSnackbar(R.string.productos_message_valid_addGral);
+                }
                 return true;
             }
         }
@@ -171,7 +177,7 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
             case REQUEST_PICTURE: {
                 if (resultCode == RESULT_OK) {
                     boolean fromCamera = (data == null || data.getData() == null);
-                    String uriStr = "";
+                    //String uriStr = "";
                     if (fromCamera) {
                         addToGallery();
                         uriStr = uriFoto.toString();
@@ -204,6 +210,227 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public void onUploadInit() {
+        showSnackbar(R.string.productos_notice_upload_init);
+    }
+
+    @Override
+    public void onUploadComplete() {
+        alertDialog.dismiss();
+        photoPath = "";
+        showSnackbar(R.string.productos_notice_upload_complete);
+        isSaving = false;
+    }
+
+    @Override
+    public void onUploadError(String error) {
+        showSnackbar(error);
+        isSaving = false;
+        /*ProgressBar progressBar = (ProgressBar)(alertDialog).findViewById(R.id.progressBar);
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }*/
+    }
+
+    @Override
+    public void onAbonoAdded(Abono abono) {
+        //this.client = abono;
+    }
+
+    @Override
+    public void showProgress() {
+        ProgressBar progressBar = (ProgressBar)(alertDialog).findViewById(R.id.progressBar);
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        ProgressBar progressBar = (ProgressBar)(alertDialog).findViewById(R.id.progressBar);
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void enableUIElements() {
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setEnabled(true);
+    }
+
+    @Override
+    public void disableUIElements() {
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setEnabled(false);
+    }
+
+    @OnClick(R.id.fab)
+    public void createVentaHandler() {
+        View view = getLayoutInflater().inflate(R.layout.dialog_add_producto, null);
+
+        final EditText etName = (EditText)view.findViewById(R.id.etName);
+        final EditText etCantidad = (EditText)view.findViewById(R.id.etCantidad);
+        final EditText etModel = (EditText)view.findViewById(R.id.etModel);
+        final EditText etAbono = (EditText)view.findViewById(R.id.etAbono);
+        final EditText etPrecio = (EditText)view.findViewById(R.id.etPrecio);
+        final EditText etPrecioOriginal = (EditText)view.findViewById(R.id.etPrecioOriginal);
+        final EditText etNotas = (EditText)view.findViewById(R.id.etNotas);
+        final ImageView imgPhotoProduct = (ImageView)view.findViewById(R.id.imgPhotoProduct);
+        ImageView imgTakeFoto = (ImageView)view.findViewById(R.id.imgTakeFoto);
+        ImageView imgDeleteFoto = (ImageView)view.findViewById(R.id.imgDeleteFoto);
+        final ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+
+        imgTakeFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //takePicture();
+                checkPermissionStorage();
+            }
+        });
+
+        imgDeleteFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (photoPath != null && !photoPath.isEmpty()) {
+                    imgPhotoProduct.setImageBitmap(null);
+                    photoPath = "";
+                }
+            }
+        });
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogFragmentTheme)
+                .setTitle(R.string.productos_message_titledialog)
+                .setPositiveButton(R.string.addclient_message_acept, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setNegativeButton(R.string.addclient_message_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.setView(view);
+
+        alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button btnAceptar = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                btnAceptar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (validateFields() && !isSaving) {
+                            isSaving = true;
+                            progressBar.setVisibility(View.VISIBLE);
+                            Producto producto = new Producto();
+                            producto.setName(etName.getText().toString());
+                            producto.setCantidad(Integer.valueOf(etCantidad.getText().toString()));
+                            producto.setModelo(etModel.getText().toString());
+                            producto.setPrecio(Double.valueOf(etPrecio.getText().toString()));
+                            producto.setPrecioOriginal(Double.valueOf(etPrecioOriginal.getText().toString()));
+                            producto.setFechaVenta(System.currentTimeMillis());
+                            producto.setNotas(etNotas.getText().toString());
+                            Abono abono = new Abono();
+                            abono.setValor(etAbono.getText().toString().isEmpty()? 0 :
+                                    Double.valueOf(etAbono.getText().toString()));
+                            abono.setFecha(System.currentTimeMillis());
+                            presenter.uploadPhoto(producto, abono, saveImageLocally(), client);
+                            //presenter.uploadPhoto(producto, abono, photoPath, client);
+                        }
+                    }
+
+                    private boolean validateFields() {
+                        if (etName.getText().toString().isEmpty()){
+                            etName.setError(getString(R.string.productos_error_required));
+                            return false;
+                        }
+                        if (etModel.getText().toString().isEmpty()){
+                            etModel.setError(getString(R.string.productos_error_required));
+                            return false;
+                        }
+                        if (etCantidad.getText().toString().isEmpty()){
+                            etCantidad.setError(getString(R.string.productos_error_required));
+                            return false;
+                        }
+                        if (etPrecio.getText().toString().isEmpty()){
+                            etPrecio.setError(getString(R.string.productos_error_required));
+                            return false;
+                        }
+                        /*if (photoPath == null || photoPath.isEmpty()){
+                            Toast.makeText(ProductosActivity.this, R.string.productos_error_notphotoselect,
+                                    Toast.LENGTH_SHORT).show();
+                            return false;
+                        }*/
+
+                        return true;
+                    }
+
+                    private String saveImageLocally() {
+                        if (photoPath == null || photoPath.isEmpty()){
+                            return "";
+                        }
+
+                        imgPhotoProduct.buildDrawingCache();
+                        //Bitmap _bitmap = imgPhotoProduct.getDrawingCache();
+                        Bitmap _bitmap = reduceBitmapFromRoot(ProductosActivity.this, uriStr, 240, 240);
+
+                        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                        File outputFile = null;
+                        try {
+                            outputFile = File.createTempFile("tmp", ".jpg", storageDir);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            FileOutputStream out = new FileOutputStream(outputFile);
+                            _bitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+                            out.close();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        return outputFile.getAbsolutePath();
+                    }
+
+                    private Bitmap reduceBitmapFromRoot(Context context, String uri, int maxAncho, int maxAlto){
+                        try{
+                            final BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inJustDecodeBounds = true;
+                            BitmapFactory.decodeStream(context.getContentResolver().openInputStream(Uri.parse(uri)),
+                                    null, options);
+                            options.inSampleSize = (int)Math.max(
+                                    Math.ceil(options.outWidth / maxAncho),
+                                    Math.ceil(options.outHeight / maxAlto));
+                            options.inJustDecodeBounds = false;
+                            return BitmapFactory.decodeStream(context.getContentResolver()
+                                    .openInputStream(Uri.parse(uri)), null, options);
+                        }catch (FileNotFoundException e){
+                            Toast.makeText(context, R.string.productos_error_notfound, Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                });
+                Button btnCancelar = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                btnCancelar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!isSaving){
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+            }
+        });
+        alertDialog.show();
     }
 
     @Override
@@ -340,206 +567,6 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
             }
         }
         return result;
-    }
-
-    @Override
-    public void onUploadInit() {
-        showSnackbar(R.string.productos_notice_upload_init);
-    }
-
-    @Override
-    public void onUploadComplete() {
-        alertDialog.dismiss();
-        photoPath = "";
-        showSnackbar(R.string.productos_notice_upload_complete);
-        isSaving = false;
-    }
-
-    @Override
-    public void onUploadError(String error) {
-        showSnackbar(error);
-        isSaving = false;
-        /*ProgressBar progressBar = (ProgressBar)(alertDialog).findViewById(R.id.progressBar);
-        if (progressBar != null) {
-            progressBar.setVisibility(View.GONE);
-        }*/
-    }
-
-    @Override
-    public void onAbonoAdded(Abono abono) {
-        //this.client = abono;
-    }
-
-    @Override
-    public void showProgress() {
-        ProgressBar progressBar = (ProgressBar)(alertDialog).findViewById(R.id.progressBar);
-        if (progressBar != null) {
-            progressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void hideProgress() {
-        ProgressBar progressBar = (ProgressBar)(alertDialog).findViewById(R.id.progressBar);
-        if (progressBar != null) {
-            progressBar.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void enableUIElements() {
-        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
-        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setEnabled(true);
-    }
-
-    @Override
-    public void disableUIElements() {
-        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
-        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setEnabled(false);
-    }
-
-    @OnClick(R.id.fab)
-    public void createVentaHandler() {
-        View view = getLayoutInflater().inflate(R.layout.dialog_add_producto, null);
-
-        final EditText etName = (EditText)view.findViewById(R.id.etName);
-        final EditText etCantidad = (EditText)view.findViewById(R.id.etCantidad);
-        final EditText etModel = (EditText)view.findViewById(R.id.etModel);
-        final EditText etAbono = (EditText)view.findViewById(R.id.etAbono);
-        final EditText etPrecio = (EditText)view.findViewById(R.id.etPrecio);
-        final EditText etPrecioOriginal = (EditText)view.findViewById(R.id.etPrecioOriginal);
-        final EditText etNotas = (EditText)view.findViewById(R.id.etNotas);
-        final ImageView imgPhotoProduct = (ImageView)view.findViewById(R.id.imgPhotoProduct);
-        ImageView imgTakeFoto = (ImageView)view.findViewById(R.id.imgTakeFoto);
-        ImageView imgDeleteFoto = (ImageView)view.findViewById(R.id.imgDeleteFoto);
-        final ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
-
-        imgTakeFoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //takePicture();
-                checkPermissionStorage();
-            }
-        });
-
-        imgDeleteFoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (photoPath != null && !photoPath.isEmpty()) {
-                    imgPhotoProduct.setImageBitmap(null);
-                    photoPath = "";
-                }
-            }
-        });
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.DialogFragmentTheme)
-                .setTitle(R.string.productos_message_titledialog)
-                .setPositiveButton(R.string.addclient_message_acept, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .setNegativeButton(R.string.addclient_message_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-        builder.setView(view);
-
-        alertDialog = builder.create();
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                Button btnAceptar = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                btnAceptar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (validateFields() && !isSaving) {
-                            isSaving = true;
-                            progressBar.setVisibility(View.VISIBLE);
-                            Producto producto = new Producto();
-                            producto.setName(etName.getText().toString());
-                            producto.setCantidad(Integer.valueOf(etCantidad.getText().toString()));
-                            producto.setModelo(etModel.getText().toString());
-                            producto.setPrecio(Double.valueOf(etPrecio.getText().toString()));
-                            producto.setPrecioOriginal(Double.valueOf(etPrecioOriginal.getText().toString()));
-                            producto.setFechaVenta(System.currentTimeMillis());
-                            producto.setNotas(etNotas.getText().toString());
-                            Abono abono = new Abono();
-                            abono.setValor(etAbono.getText().toString().isEmpty()? 0 :
-                                    Double.valueOf(etAbono.getText().toString()));
-                            abono.setFecha(System.currentTimeMillis());
-                            presenter.uploadPhoto(producto, abono, saveImageLocally(), client);
-                        }
-                    }
-
-                    private boolean validateFields() {
-                        if (etName.getText().toString().isEmpty()){
-                            etName.setError(getString(R.string.productos_error_required));
-                            return false;
-                        }
-                        if (etModel.getText().toString().isEmpty()){
-                            etModel.setError(getString(R.string.productos_error_required));
-                            return false;
-                        }
-                        if (etCantidad.getText().toString().isEmpty()){
-                            etCantidad.setError(getString(R.string.productos_error_required));
-                            return false;
-                        }
-                        if (etPrecio.getText().toString().isEmpty()){
-                            etPrecio.setError(getString(R.string.productos_error_required));
-                            return false;
-                        }
-                        /*if (photoPath == null || photoPath.isEmpty()){
-                            Toast.makeText(ProductosActivity.this, R.string.productos_error_notphotoselect,
-                                    Toast.LENGTH_SHORT).show();
-                            return false;
-                        }*/
-
-                        return true;
-                    }
-
-                    private String saveImageLocally() {
-                        if (photoPath == null || photoPath.isEmpty()){
-                            return "";
-                        }
-
-                        imgPhotoProduct.buildDrawingCache();
-                        Bitmap _bitmap = imgPhotoProduct.getDrawingCache();
-
-                        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                        File outputFile = null;
-                        try {
-                            outputFile = File.createTempFile("tmp", ".jpg", storageDir);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        try {
-                            FileOutputStream out = new FileOutputStream(outputFile);
-                            _bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                            out.close();
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        return outputFile.getAbsolutePath();
-                    }
-                });
-                Button btnCancelar = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                btnCancelar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (!isSaving){
-                            alertDialog.dismiss();
-                        }
-                    }
-                });
-            }
-        });
-        alertDialog.show();
     }
 
     private void showSnackbar(String msg) {

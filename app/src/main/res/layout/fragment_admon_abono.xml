@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/margin.dialog">
+
+    <TextView
+        android:id="@+id/tvFecha"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:drawableRight="@drawable/ic_calendar_compat"
+        android:drawableEnd="@drawable/ic_calendar_compat"
+        android:drawablePadding="@dimen/padding.micro"
+        android:paddingRight="@dimen/padding.micro"
+        android:paddingEnd="@dimen/padding.micro"
+        android:text="Jun 18, 2016"
+        android:background="@drawable/background_line_bottom"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilAbono"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding.sml"
+        android:layout_below="@id/tvFecha">
+
+        <EditText
+            android:id="@+id/editTxtAbono"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/productos.hint.abono"
+            android:inputType="numberDecimal|numberSigned"/>
+    </android.support.design.widget.TextInputLayout>
+
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+</RelativeLayout>

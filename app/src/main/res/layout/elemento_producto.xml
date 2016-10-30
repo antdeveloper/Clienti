@@ -110,7 +110,7 @@
                 android:textColor="@android:color/black"/>
 
             <ImageButton
-                android:id="@+id/imgAddAbono"
+                android:id="@+id/imgbtnAddAbono"
                 android:layout_width="@dimen/icon.sm"
                 android:layout_height="@dimen/icon.sm"
                 app:srcCompat="@drawable/ic_plus_box"

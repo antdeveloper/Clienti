@@ -2,6 +2,7 @@ package com.artec.mobile.clienti.detalleVentas.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -9,6 +10,7 @@ import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,9 +25,13 @@ import android.widget.TextView;
 
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
+import com.artec.mobile.clienti.addAbono.ui.AddAbonoFragment;
+import com.artec.mobile.clienti.admonAbono.ui.AdmonAbonoFragment;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoAux;
 import com.artec.mobile.clienti.detalleVentas.DetalleVentaPresenter;
 import com.artec.mobile.clienti.detalleVentas.ui.adapters.OnAbonoClickListener;
 import com.artec.mobile.clienti.entities.Abono;
+import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.Constants;
 import com.artec.mobile.clienti.libs.base.ImageLoader;
@@ -37,6 +43,7 @@ import com.transitionseverywhere.TransitionSet;
 import com.transitionseverywhere.extra.Scale;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -45,7 +52,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DetalleVentaActivity extends AppCompatActivity implements DetalleVentaView, OnAbonoClickListener {
+public class DetalleVentaActivity extends AppCompatActivity implements DetalleVentaView,
+        OnAbonoClickListener, AdmonAbonoAux {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.txtModel)
@@ -66,8 +74,8 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
     TextView txtObservaciones;
     @Bind(R.id.txtCantidad)
     TextView txtCantidad;
-    @Bind(R.id.imgSharePhoto)
-    ImageButton imgSharePhoto;
+    @Bind(R.id.imgbtnAddAbono)
+    ImageButton imgbtnAddAbono;
     @Bind(R.id.contentOptions)
     LinearLayout contentOptions;
     @Bind(R.id.fab)
@@ -119,12 +127,20 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
     DetalleVentaPresenter presenter;
     @Inject
     ImageLoader imageLoader;
+    @Bind(R.id.toolbar_layout)
+    CollapsingToolbarLayout toolbarLayout;
 
     private ClientiApp app;
 
     private MenuItem menuItem;
     private AbonoHistoryFragmentListener fragmentListener;
     private Producto mProducto;
+    public Client client;
+    public Producto productoSelected;
+    private Abono abonoSelect;
+    private int mode;
+    public boolean isAbonoGral;
+    public boolean isFromDetalle;
     private String clientEmail;
 
     private boolean isDetailMode = true;
@@ -141,10 +157,14 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
 
         mProducto = new Gson().fromJson(getIntent().getStringExtra(Constants.OBJ_PRODUCTO), Producto.class);
         clientEmail = getIntent().getStringExtra(Constants.EMAIL);
+        client = new Client();
+        client.setEmail(clientEmail);
+
         setupFragment();
         setupActionBar();
-        setupProduct();
         setupAbonos();
+        setupProduct();
+        setupImageProduct();
 
         presenter.onCreate();
     }
@@ -158,6 +178,7 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
                 .findFragmentById(R.id.fragmentList);
         fragment.setRetainInstance(true);
         fragmentListener = fragment;
+        fragmentListener.setListenerFragment(this);
     }
 
     private void setupActionBar() {
@@ -168,15 +189,17 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
         }
     }
 
+    private void setupAbonos() {
+        if (mProducto.getAbonos() != null && mProducto.getAbonos().size() > 0) {
+            for (int i = 0; i < mProducto.getAbonos().size(); i++) {
+                fragmentListener.addAbono((Abono) mProducto.getAbonosSorted().values().toArray()[i]);
+            }
+        }
+    }
+
     private void setupProduct() {
         double total = mProducto.getPrecio() * mProducto.getCantidad();
-        if (mProducto.getUrl().isEmpty()) {
-            imgMain.setImageResource(R.drawable.ic_file_image);
-            imgPhotoProduct.setImageResource(R.drawable.ic_file_image);
-        } else {
-            imageLoader.load(imgMain, mProducto.getUrl());
-            imageLoader.load(imgPhotoProduct, mProducto.getUrl());
-        }
+        double abono = fragmentListener.getAbonos();
         txtModel.setText(getString(R.string.productos_hint_model) + ": " +
                 mProducto.getModelo());
         txtPrecioProveedor.setText(String.format(Locale.ROOT, getString(R.string.ventas_property_precioOriginal),
@@ -184,10 +207,9 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
         txtPrecio.setText(String.format(Locale.ROOT, getString(R.string.ventas_property_precioVenta),
                 mProducto.getPrecio()));
         txtTotal.setText(String.format(Locale.ROOT, getString(R.string.ventas_detalle_property_total), total));
-        txtAbono.setText(String.format(Locale.ROOT, getString(R.string.ventas_detalle_property_pagado),
-                mProducto.getAbono()));
+        txtAbono.setText(String.format(Locale.ROOT, getString(R.string.ventas_detalle_property_pagado), abono));
         txtAdeudo.setText(String.format(Locale.ROOT, getString(R.string.ventas_property_adeudo),
-                total - mProducto.getAbono()));
+                total - abono));
         txtCantidad.setText(getString(R.string.ventas_property_cantidad) + ": (x" +
                 String.format(Locale.getDefault(), "%d", mProducto.getCantidad()) + ")");
         txtFechaVenta.setText(new SimpleDateFormat("dd/MM/yy", Locale.getDefault())
@@ -204,11 +226,13 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
         etNotas.setText(mProducto.getNotas());
     }
 
-    private void setupAbonos() {
-        if (mProducto.getAbonos() != null && mProducto.getAbonos().size() > 0) {
-            for (int i = 0; i < mProducto.getAbonos().size(); i++) {
-                fragmentListener.addAbono((Abono) mProducto.getAbonosSorted().values().toArray()[i]);
-            }
+    private void setupImageProduct() {
+        if (mProducto.getUrl().isEmpty()) {
+            imgMain.setImageResource(R.drawable.ic_file_image);
+            imgPhotoProduct.setImageResource(R.drawable.ic_file_image);
+        } else {
+            imageLoader.load(imgMain, mProducto.getUrl());
+            imageLoader.load(imgPhotoProduct, mProducto.getUrl());
         }
     }
 
@@ -366,23 +390,35 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
     @Override
     public void productUpdate() {
         setupProduct();
+        toolbarLayout.setTitle(mProducto.getName());
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(mProducto.getName());
+        }
         backToDetail();
         showSnackbar(R.string.productos_notice_upload_complete);
     }
 
     @Override
     public void addAbono(Abono abono) {
+        fragmentListener.addAbono(abono);
+        /*if (mProducto.getAbonos() == null){
+            mProducto.setAbonos(new HashMap<String, Abono>());
+        }*/
 
+        //mProducto.getAbonos().put(abono.getDateFormatted(), abono);
+        setupProduct();
     }
 
     @Override
     public void removeAbono(Abono abono) {
-
+        fragmentListener.deleteAbono(abono);
+        setupProduct();
     }
 
     @Override
     public void updateAbono(Abono abono) {
-
+        fragmentListener.updateAbono(abono);
+        setupProduct();
     }
 
     @Override
@@ -392,7 +428,9 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
 
     @Override
     public void OnItemLongClick(Abono abono) {
-
+        mode = AdmonAbonoFragment.MODE_EDIT;
+        abonoSelect = abono;
+        new AdmonAbonoFragment().show(getSupportFragmentManager(), getString(R.string.admonAbono_message_titleEdit));
     }
 
     private void setInputs(boolean enabled) {
@@ -409,5 +447,58 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
 
     private void showSnackbar(int strResource) {
         Snackbar.make(contentMain, strResource, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.imgbtnAddAbono)
+    public void addAbonoHandler() {
+        /*isAbonoGral = false;
+        productoSelected = mProducto;
+        isFromDetalle = true;
+        new AddAbonoFragment().show(getSupportFragmentManager(), getString(R.string.addabono_message_title));*/
+        mode = AdmonAbonoFragment.MODE_ADD;
+        new AdmonAbonoFragment().show(getSupportFragmentManager(), getString(R.string.admonAbono_message_title));
+    }
+
+    /******************
+     * Metodos auxiliares para admonAdeudosFragment
+     * ****************/
+    @Override
+    public int getMode() {
+        return mode;
+    }
+
+    @Override
+    public void abonoAdded(Abono abono) {
+        addAbono(abono);
+    }
+
+    @Override
+    public void abonoUpdated(Abono abono) {
+        updateAbono(abono);
+    }
+
+    @Override
+    public void abonoDeleted(Abono abono) {
+        removeAbono(abono);
+    }
+
+    @Override
+    public Abono getAbono() {
+        return abonoSelect;
+    }
+
+    @Override
+    public Producto getProducto() {
+        return mProducto;
+    }
+
+    @Override
+    public List<Producto> getProductos() {
+        return null;
+    }
+
+    @Override
+    public Client getClient() {
+        return client;
     }
 }
