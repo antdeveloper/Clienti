@@ -2,6 +2,7 @@ package com.artec.mobile.clienti.main.ui.adapters;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,6 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by ANICOLAS on 01/07/2016.
@@ -55,16 +55,16 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
         holder.setClickListener(client, onItemClickListener);
 
         String email = client.getEmail();
-        double deudaTotal = client.getDeudaTotal();
+        double deudaTotal = client.calcDeudaTotal();
         boolean enOrden = deudaTotal <= 0;
-        String status = enOrden? context.getString(R.string.main_status_correct) :
-                context.getString(R.string.main_status_incorrect);
         holder.txtUser.setText(client.getUsername());
         holder.txtEmail.setText(email);
         if (client.getProductos() != null) {
             holder.containerAdeudo.setVisibility(View.VISIBLE);
-            holder.txtStatus.setText("Adeudo:\n" + String.format(Locale.ROOT,
-                    "%,.2f", deudaTotal));
+            holder.txtStatus.setText(String.format(Locale.ROOT, context.getString(
+                    R.string.main_label_adeudo), deudaTotal));
+                    /*"Adeudo:\n" + String.format(Locale.ROOT,
+                    "%,.2f", deudaTotal));*/
             holder.imgStatus.setColorFilter(ContextCompat.getColor(context,
                     enOrden ? R.color.green_500 : R.color.red_500));
         }else {
@@ -84,25 +84,28 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
     }
 
     public void add(Client client) {
-        if (getIndexById(client) == -1){
+        if (getIndexByEmail(client) == -1){
             clientList.add(client);
             notifyDataSetChanged();
+        }else{
+            update(client);
         }
     }
 
     public void update(Client client) {
-        int index = getIndexById(client);
+        int index = getIndexByEmail(client);
+        client.setProductos(clientList.get(index).getProductos());
         clientList.set(index, client);
         notifyDataSetChanged();
     }
 
     public void remove(Client client) {
-        int index = getIndexById(client);
+        int index = getIndexByEmail(client);
         clientList.remove(index);
         notifyDataSetChanged();
     }
 
-    private int getIndexById(Client client) {
+    private int getIndexByEmail(Client client) {
         for (int i = 0; i< clientList.size(); i++){
             if (clientList.get(i).getEmail().equals(client.getEmail())){
                 return i;
@@ -118,14 +121,15 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
     public double getDeudasTotal(){
         double adeudo = 0;
         for (Client client : clientList){
-            adeudo += client.getDeudaTotal();
+            adeudo += client.calcDeudaTotal();
         }
         return adeudo;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.imgAvatar)
-        CircleImageView imgAvatar;
+        //CircleImageView imgAvatar;
+        AppCompatImageView imgAvatar;
         @Bind(R.id.txtUser)
         TextView txtUser;
         @Bind(R.id.txtEmail)
@@ -150,6 +154,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
                 @Override
                 public void onClick(View v) {
                     listener.onItemClick(client);
+                }
+            });
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onItemLongClick(client);
+                    return true;
                 }
             });
         }

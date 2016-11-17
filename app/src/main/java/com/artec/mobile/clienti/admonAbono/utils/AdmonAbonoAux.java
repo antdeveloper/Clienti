@@ -11,12 +11,15 @@ import java.util.List;
  */
 
 public interface AdmonAbonoAux {
+    /*void setMode(int mode);*/
     int getMode();
     void abonoAdded(Abono abono);
-    void abonoUpdated(Abono abono);
-    void abonoDeleted(Abono abono);
-    Abono getAbono();
+    /*void abonoUpdated(Abono abono);
+    void abonoDeleted(Abono abono);*/
+    /*Abono getAbono();*/
+    /*void setProducto(Producto producto);*/
     Producto getProducto();
-    List<Producto> getProductos();
+    /*void setProductos(List<Producto> productos);
+    List<Producto> getProductos();*/
     Client getClient();
 }

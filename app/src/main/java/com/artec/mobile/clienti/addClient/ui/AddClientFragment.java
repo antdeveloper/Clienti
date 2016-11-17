@@ -21,6 +21,7 @@ import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.addClient.AddClientPresenter;
 import com.artec.mobile.clienti.libs.Constants;
+import com.artec.mobile.clienti.main.ui.MainActivity;
 
 import javax.inject.Inject;
 
@@ -125,6 +126,7 @@ public class AddClientFragment extends DialogFragment implements AddClientView,
             negativeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ((MainActivity)getActivity()).setNewClient(false);
                     dismiss();
                 }
             });
@@ -168,7 +170,6 @@ public class AddClientFragment extends DialogFragment implements AddClientView,
 
     @Override
     public void contactNotAdded() {
-        editTxtEmail.setText("");
         editTxtEmail.setError(getString(R.string.addclient_error_add));
     }
 

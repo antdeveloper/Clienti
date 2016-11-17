@@ -21,6 +21,9 @@ import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.admonAbono.AdmonAbonoPresenter;
 import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoAux;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoDetailAux;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoEditAux;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoGralAux;
 import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
@@ -66,7 +69,7 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
     private List<Producto> productos;
 
     // Variables auxiliares para los 3 modos(add, edit y addGral)
-    private AdmonAbonoAux aux;
+    //private AdmonAbonoAux aux;
     private int mode;
     private String title;
     private Calendar mCalendar;
@@ -129,14 +132,14 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
                 break;
             }
             case MODE_EDIT:{
-                abono = ((AdmonAbonoAux)getActivity()).getAbono();
+                abono = ((AdmonAbonoEditAux)getActivity()).getAbono();
                 producto = ((AdmonAbonoAux)getActivity()).getProducto();
                 title = getString(R.string.admonAbono_message_titleEdit);
                 editTxtAbono.setText(String.format(Locale.ROOT, "%.2f", abono.getValor()));
                 break;
             }
             case MODE_GRAL:{
-                productos = ((AdmonAbonoAux)getActivity()).getProductos();
+                productos = ((AdmonAbonoGralAux)getActivity()).getProductos();
                 title = getString(R.string.admonAbono_message_titleGral);
                 break;
             }
@@ -284,13 +287,13 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
     public void abonoUpdated() {
         Toast.makeText(getActivity(), R.string.admonAbono_message_abonoAdded,
                 Toast.LENGTH_SHORT).show();
-        ((AdmonAbonoAux)getActivity()).abonoUpdated(abono);
+        ((AdmonAbonoDetailAux)getActivity()).abonoUpdated(abono);
         dismiss();
     }
 
     @Override
     public void abonoDeleted() {
-        ((AdmonAbonoAux)getActivity()).abonoDeleted(abono);
+        ((AdmonAbonoDetailAux)getActivity()).abonoDeleted(abono);
         dismiss();
     }
 

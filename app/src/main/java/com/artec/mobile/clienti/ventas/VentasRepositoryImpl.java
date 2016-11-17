@@ -108,26 +108,12 @@ public class VentasRepositoryImpl implements VentasReposiroty {
         }else {
             imageStorage.delete(producto.getId(), firebase.getAuthEmail(), listener);
         }
-
-        /*firebase.remove(producto, new FirebaseActionListenerCallback() {
-            @Override
-            public void onSuccess() {
-                //updateClient(client, producto);
-                post(VentasEvent.DELETE_EVENT, producto);
-            }
-
-            @Override
-            public void onError(String error) {
-                post(VentasEvent.DELETE_EVENT, error);
-            }
-        }, client.getEmail());*/
     }
 
     private void deletePhoto(final Producto producto, Client client){
         firebase.remove(producto, new FirebaseActionListenerCallback() {
             @Override
             public void onSuccess() {
-                //updateClient(client, producto);
                 post(VentasEvent.DELETE_EVENT, producto);
             }
 
@@ -137,27 +123,6 @@ public class VentasRepositoryImpl implements VentasReposiroty {
             }
         }, client.getEmail());
     }
-
-    /*private void updateClient(final Client client, final Producto producto){
-        final String key = client.getEmail().replace(".", "_");
-        DatabaseReference userReference = firebase.getUserReference(client.getEmail());
-        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                if (user != null){
-                    DatabaseReference myContactReference = firebase.getMyClientsReference();
-                    client.setPagado(client.getPagado() + producto.getAdeudo());
-                    myContactReference.child(key).setValue(client);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                post(VentasEvent.DELETE_EVENT, firebaseError.getMessage());
-            }
-        });
-    }*/
 
     private void post(int type, Producto producto){
         post(type, null, producto);

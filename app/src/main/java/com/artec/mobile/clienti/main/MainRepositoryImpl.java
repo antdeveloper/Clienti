@@ -9,6 +9,8 @@ import com.artec.mobile.clienti.libs.base.EventBus;
 import com.artec.mobile.clienti.main.events.MainEvent;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +54,6 @@ public class MainRepositoryImpl implements MainRepository{
                 String email = snapshot.getKey();
                 String preEmail = email.replace("_", ".");
                 email = preEmail.replace("..", "_");
-                //email = email.replace("_", ".");
 
                 Client client = new Client();
                 client.setEmail(email);
@@ -66,7 +67,6 @@ public class MainRepositoryImpl implements MainRepository{
                 String email = snapshot.getKey();
                 String preEmail = email.replace("_", ".");
                 email = preEmail.replace("..", "_");
-                //email = email.replace("_", ".");
 
                 Client client = snapshot.getValue(Client.class);
                 client.setEmail(email);
@@ -106,6 +106,17 @@ public class MainRepositoryImpl implements MainRepository{
                 post(MainEvent.CONTACT_READ, error);
             }
         }, recipient);
+    }
+
+    @Override
+    public void updateClient(Client client) {
+        String preKey = client.getEmail().replace("_", "__");
+        String key = preKey.replace(".", "_");
+
+        DatabaseReference myContactReference = firebaseAPI.getMyClientsReference().child(key);
+        myContactReference.setValue(client);
+
+        post(MainEvent.CONTACT_CHANGED, client);
     }
 
     private void post(int type, Client client){

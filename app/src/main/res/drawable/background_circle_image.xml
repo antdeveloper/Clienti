@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape
+            android:shape="rectangle"
+            android:visible="true"
+            android:dither="true"
+            android:useLevel="false">
+
+            <solid android:color="@color/colorAccent"/>
+            <corners
+                android:radius="@dimen/contact.image.size.corner"/>
+            <size
+                android:width="@dimen/contact.image.size"
+                android:height="@dimen/contact.image.size"/>
+            <stroke
+                android:width="1dp"
+                android:color="@color/blue_900"/>
+        </shape>
+    </item>
+</selector>

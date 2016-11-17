@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardUseCompatPadding="true"
+    style="@style/CardViewInactiveMD">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--<de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgAvatar"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="@dimen/contact.image.size"
+            android:layout_height="@dimen/contact.image.size"
+            android:layout_marginRight="@dimen/padding.sml"
+            android:layout_centerVertical="true"
+            app:civ_border_color="@color/blue_900"
+            app:civ_border_width="1dp"
+            app:srcCompat="@drawable/ic_account"
+            app:civ_fill_color="@color/colorAccent"/>-->
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="@dimen/contact.image.size"
+            android:layout_height="@dimen/contact.image.size"
+            android:layout_marginRight="@dimen/padding.sml"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_account"
+            android:background="@drawable/background_circle_image"/>
+
+        <TextView
+            android:id="@+id/txtUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="User username for testing here"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:singleLine="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/imgAvatar"
+            android:layout_toEndOf="@id/imgAvatar"/>
+
+        <TextView
+            android:id="@+id/txtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="example@something.any"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:singleLine="true"
+            android:layout_below="@id/txtUser"
+            android:layout_toRightOf="@id/imgAvatar"
+            android:layout_toEndOf="@id/imgAvatar"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

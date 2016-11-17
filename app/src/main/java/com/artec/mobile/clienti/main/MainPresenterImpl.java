@@ -36,8 +36,13 @@ public class MainPresenterImpl implements MainPresenter{
     }
 
     @Override
+    public void onPause() {
+        interactor.unsubscribe();// FIXME: 05/11/2016 
+    }
+
+    @Override
     public void onResume() {
-        interactor.subscribe();
+        interactor.subscribe();// FIXME: 05/11/2016 
     }
 
     @Override
@@ -54,6 +59,12 @@ public class MainPresenterImpl implements MainPresenter{
     }
 
     @Override
+    public void onUpdateClient(Client client) {
+        showProgress();
+        interactor.updateClient(client);
+    }
+
+    @Override
     @Subscribe
     public void onEventMainThread(MainEvent event) {
         if (view != null) {
@@ -62,12 +73,10 @@ public class MainPresenterImpl implements MainPresenter{
             Client client = event.getUser();
             switch (event.getType()) {
                 case MainEvent.CONTACT_ADDED: {
-                    //onContactAdded(client);
                     view.onClientAdded(client);
                     break;
                 }
                 case MainEvent.CONTACT_CHANGED: {
-                    //onContactChanged(client);
                     view.onClientChanged(client);
                     break;
                 }
@@ -86,18 +95,6 @@ public class MainPresenterImpl implements MainPresenter{
     private void showProgress(){
         if (view != null){
             view.showProgress();
-        }
-    }
-
-    private void onContactAdded(Client client){
-        if (view != null){
-            view.onClientAdded(client);
-        }
-    }
-
-    private void onContactChanged(Client client){
-        if (view != null){
-            view.onClientChanged(client);
         }
     }
 }

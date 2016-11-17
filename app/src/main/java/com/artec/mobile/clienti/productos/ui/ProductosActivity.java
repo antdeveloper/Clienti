@@ -37,6 +37,10 @@ import android.widget.Toast;
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.addAbono.ui.AddAbonoFragment;
+import com.artec.mobile.clienti.admonAbono.ui.AdmonAbonoFragment;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoAux;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoFrgAux;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoGralAux;
 import com.artec.mobile.clienti.compras.ui.ComprasFragment;
 import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
@@ -62,11 +66,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ProductosActivity extends AppCompatActivity implements ProductosView {
+public class ProductosActivity extends AppCompatActivity implements ProductosView, AdmonAbonoAux,
+        AdmonAbonoGralAux, AdmonAbonoFrgAux{
 
     public static final String EMAIL_KEY = "email";
-    public static final String ADEUDO_KEY = "adeudo";
-    public static final String PAGADO_KEY = "pagado";
     public static final String USERNAME_KEY = "username";
 
     private final static int REQUEST_PICTURE = 0;
@@ -98,6 +101,7 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
     private List<Producto> productos;
     public boolean isAbonoGral;
     public boolean isFromDetalle;
+    private int mode;
 
     private boolean isSaving = false;
 
@@ -158,9 +162,11 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
             }
             case R.id.action_add_abonoGral:{
                 if (productos != null && productos.size()>0) {
-                    isAbonoGral = true;
+                    /*isAbonoGral = true;
                     new AddAbonoFragment().show(this.getSupportFragmentManager(),
-                            getString(R.string.addabono_message_title));
+                            getString(R.string.addabono_message_title));*/
+                    mode = AdmonAbonoFragment.MODE_GRAL;
+                    new AdmonAbonoFragment().show(getSupportFragmentManager(), getString(R.string.admonAbono_message_title));
                 } else {
                     showSnackbar(R.string.productos_message_valid_addGral);
                 }
@@ -577,11 +583,63 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
         Snackbar.make(viewPager, strResource, Snackbar.LENGTH_SHORT).show();
     }
 
-    public List<Producto> getProductos() {
+    /*public List<Producto> getProductos() {
         return productos;
     }
 
     public void setProductos(List<Producto> productos) {
         this.productos = productos;
+    }*/
+
+    /******************
+     * Metodos auxiliares para admonAdeudosFragment
+     * ****************/
+    @Override
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+
+    @Override
+    public int getMode() {
+        return mode;
+    }
+
+    @Override
+    public void abonoAdded(Abono abono) {}
+
+    /*@Override
+    public void abonoUpdated(Abono abono) {}
+
+    @Override
+    public void abonoDeleted(Abono abono) {}
+
+    @Override
+    public Abono getAbono() {
+        return null;
+    }*/
+
+    @Override
+    public void setProducto(Producto producto) {
+        this.productoSelected = producto;
+    }
+
+    @Override
+    public Producto getProducto() {
+        return productoSelected;
+    }
+
+    @Override
+    public void setProductos(List<Producto> productos) {
+        this.productos = productos;
+    }
+
+    @Override
+    public List<Producto> getProductos() {
+        return productos;
+    }
+
+    @Override
+    public Client getClient() {
+        return client;
     }
 }

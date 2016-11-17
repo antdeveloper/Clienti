@@ -4,6 +4,7 @@ import com.artec.mobile.clienti.addClient.events.AddClientEvent;
 import com.artec.mobile.clienti.domain.FirebaseAPI;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.User;
+import com.artec.mobile.clienti.libs.Constants;
 import com.artec.mobile.clienti.libs.base.EventBus;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,6 +43,8 @@ public class AddClientRepositoryImpl implements AddClientRepository {
                     client.setEmail(email);
                     client.setUsername(user.getUsername());
                     client.setPartner(false);
+                    //client.setDown(false);
+                    client.setEstatus(Constants.ESTATUS_ACTIVO);
                     myContactReference.child(key).setValue(client);
 
                     String currentUserKey = firebaseAPI.getAuthUserEmail();

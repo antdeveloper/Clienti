@@ -11,6 +11,7 @@ public class Event {
     public final static int SUCCESS = 0;
     public final static int ERROR = 100;
     public final static int INIT = 200;
+    public final static int READ = 201;
 
     public int getType() {
         return type;

@@ -7,4 +7,5 @@ import com.artec.mobile.clienti.entities.Client;
  */
 public interface OnItemClickListener {
     void onItemClick(Client client);
+    void onItemLongClick(Client client);
 }

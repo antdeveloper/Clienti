@@ -1,5 +1,6 @@
 package com.artec.mobile.clienti.detalleVentas.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,6 +30,8 @@ import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.addAbono.ui.AddAbonoFragment;
 import com.artec.mobile.clienti.admonAbono.ui.AdmonAbonoFragment;
 import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoAux;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoDetailAux;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoEditAux;
 import com.artec.mobile.clienti.detalleVentas.DetalleVentaPresenter;
 import com.artec.mobile.clienti.detalleVentas.ui.adapters.OnAbonoClickListener;
 import com.artec.mobile.clienti.entities.Abono;
@@ -35,6 +39,7 @@ import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.Constants;
 import com.artec.mobile.clienti.libs.base.ImageLoader;
+import com.artec.mobile.clienti.utils.UtilsUI;
 import com.google.gson.Gson;
 import com.transitionseverywhere.Fade;
 import com.transitionseverywhere.Transition;
@@ -53,7 +58,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class DetalleVentaActivity extends AppCompatActivity implements DetalleVentaView,
-        OnAbonoClickListener, AdmonAbonoAux {
+        OnAbonoClickListener, AdmonAbonoAux, AdmonAbonoDetailAux, AdmonAbonoEditAux {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.txtModel)
@@ -277,6 +282,7 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
             menuItem.setVisible(false);
             isDetailMode = true;
             showDetail();
+            UtilsUI.hideKeyboard(this);
         }
     }
 
@@ -395,17 +401,12 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
             getSupportActionBar().setTitle(mProducto.getName());
         }
         backToDetail();
-        showSnackbar(R.string.productos_notice_upload_complete);
+        showSnackbar(R.string.message_save_successfully);
     }
 
     @Override
     public void addAbono(Abono abono) {
         fragmentListener.addAbono(abono);
-        /*if (mProducto.getAbonos() == null){
-            mProducto.setAbonos(new HashMap<String, Abono>());
-        }*/
-
-        //mProducto.getAbonos().put(abono.getDateFormatted(), abono);
         setupProduct();
     }
 
@@ -451,10 +452,6 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
 
     @OnClick(R.id.imgbtnAddAbono)
     public void addAbonoHandler() {
-        /*isAbonoGral = false;
-        productoSelected = mProducto;
-        isFromDetalle = true;
-        new AddAbonoFragment().show(getSupportFragmentManager(), getString(R.string.addabono_message_title));*/
         mode = AdmonAbonoFragment.MODE_ADD;
         new AdmonAbonoFragment().show(getSupportFragmentManager(), getString(R.string.admonAbono_message_title));
     }
@@ -462,6 +459,11 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
     /******************
      * Metodos auxiliares para admonAdeudosFragment
      * ****************/
+    /*@Override
+    public void setMode(int mode) {
+        //this.mode = mode;
+    }*/
+
     @Override
     public int getMode() {
         return mode;
@@ -487,15 +489,25 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
         return abonoSelect;
     }
 
+    /*@Override
+    public void setProducto(Producto producto) {
+        mProducto = producto;
+    }*/
+
     @Override
     public Producto getProducto() {
         return mProducto;
     }
 
+    /*@Override
+    public void setProductos(List<Producto> productos) {
+
+    }
+
     @Override
     public List<Producto> getProductos() {
         return null;
-    }
+    }*/
 
     @Override
     public Client getClient() {

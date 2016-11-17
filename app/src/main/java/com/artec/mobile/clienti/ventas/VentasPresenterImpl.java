@@ -66,7 +66,7 @@ public class VentasPresenterImpl implements VentasPresenter {
         String error = event.getError();
         if (error != null){
             if (error.isEmpty()){
-                view.onProductoError(EMPTY_LIST);
+                view.onProductoError(EMPTY_LIST);// FIXME: 15/11/2016
             }else{
                 view.onProductoError(error);
             }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 import com.artec.mobile.clienti.addAbono.di.AddAbonoComponent;
 import com.artec.mobile.clienti.addAbono.di.AddAbonoModule;
@@ -20,6 +21,11 @@ import com.artec.mobile.clienti.admonAbono.di.AdmonAbonoModule;
 import com.artec.mobile.clienti.admonAbono.di.DaggerAdmonAbonoComponent;
 import com.artec.mobile.clienti.admonAbono.ui.AdmonAbonoFragment;
 import com.artec.mobile.clienti.admonAbono.ui.AdmonAbonoView;
+import com.artec.mobile.clienti.clientiInactive.di.ClientiInactiveComponent;
+import com.artec.mobile.clienti.clientiInactive.di.ClientiInactiveModule;
+import com.artec.mobile.clienti.clientiInactive.di.DaggerClientiInactiveComponent;
+import com.artec.mobile.clienti.clientiInactive.ui.ClientiInactiveActivity;
+import com.artec.mobile.clienti.clientiInactive.ui.ClientiInactiveView;
 import com.artec.mobile.clienti.detalleVentas.di.DaggerDetalleVentaComponent;
 import com.artec.mobile.clienti.detalleVentas.ui.adapters.OnAbonoClickListener;
 import com.artec.mobile.clienti.domain.di.DomainModule;
@@ -124,6 +130,18 @@ public class ClientiApp extends Application{
                 .domainModule(domainModule)
                 .libsModule(new LibsModule(activity))
                 .mainModule(new MainModule(view, onItemClickListener))
+                .build();
+    }
+
+    public ClientiInactiveComponent getClientiInactiveComponent(ClientiInactiveActivity activity,
+                                                                ClientiInactiveView view,
+                                                                OnItemClickListener onItemClickListener){
+        return DaggerClientiInactiveComponent
+                .builder()
+                .clientiAppModule(clientiAppModule)
+                .domainModule(domainModule)
+                .libsModule(new LibsModule(activity))
+                .clientiInactiveModule(new ClientiInactiveModule(view, onItemClickListener))
                 .build();
     }
 

@@ -50,14 +50,19 @@
     </style>
 
     <!-- CardView -->
-    <style name="CardViewMD" parent="Theme.AppCompat.Light">
+    <style name="CardViewBase" parent="Theme.AppCompat.Light">
         <item name="cardCornerRadius">2dp</item>
         <item name="cardElevation">2dp</item>
         <item name="contentPaddingBottom">8dp</item>
         <item name="contentPaddingTop">8dp</item>
         <item name="contentPaddingLeft">8dp</item>
         <item name="contentPaddingRight">8dp</item>
+    </style>
+    <style name="CardViewMD" parent="CardViewBase">
         <item name="cardBackgroundColor">@color/colorBackgroundAccent</item>
+    </style>
+    <style name="CardViewInactiveMD" parent="CardViewBase">
+        <item name="cardBackgroundColor">@color/gray_400</item>
     </style>
 
     <!-- DialogFragment -->

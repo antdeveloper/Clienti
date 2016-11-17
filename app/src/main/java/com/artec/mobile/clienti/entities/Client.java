@@ -3,7 +3,6 @@ package com.artec.mobile.clienti.entities;
 import com.artec.mobile.clienti.libs.Constants;
 import com.google.firebase.database.Exclude;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -18,6 +17,8 @@ public class Client {
     private String username;
     private String email;
     private boolean isPartner;
+    //private boolean down;
+    private double estatus;
 
     @Exclude
     private double adeudo;
@@ -55,6 +56,22 @@ public class Client {
         isPartner = partner;
     }
 
+    /*public boolean isDown() {
+        return down;
+    }
+
+    public void setDown(boolean down) {
+        this.down = down;
+    }*/
+
+    public double getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(double estatus) {
+        this.estatus = estatus;
+    }
+
     @Exclude
     public double getAdeudo() {
         return adeudo;
@@ -72,10 +89,9 @@ public class Client {
         this.pagado = pagado;
     }
     @Exclude
-    public double getDeudaTotal() {
+    public double calcDeudaTotal() {
         double result = 0.0;
         if (getProductos() != null) {
-            //for (int i = 0; i < getProductos().size(); i++) {
                 Gson gson = new Gson();
                 String json = gson.toJson(getProductos().values());
                 Type listType = new TypeToken<List<Producto>>(){}.getType();
@@ -83,10 +99,14 @@ public class Client {
             for (int i = 0; i < productos.size(); i++) {
                 Producto producto = productos.get(i);
                 result += producto.getAdeudo();
-                //result += ((Producto)getProductos().values().toArray()[i]).getAdeudo();
             }
         }
+        this.deudaTotal = result;
         return result;
+    }
+    @Exclude
+    public double getDeudaTotal() {
+        return this.deudaTotal;
     }
     @Exclude
     public void setDeudaTotal(double deudaTotal) {

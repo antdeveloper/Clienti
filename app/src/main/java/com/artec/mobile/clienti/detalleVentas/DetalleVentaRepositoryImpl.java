@@ -29,10 +29,7 @@ public class DetalleVentaRepositoryImpl implements DetalleVentaRepository {
     @Override
     public void updateProduct(final Producto producto, String path, String clientEmail) {
         final DatabaseReference ventasReference = firebaseAPI.getProductsReference(clientEmail);
-        //final String newPhotoId = ventasReference.push().getKey();
 
-        //producto.setId(newPhotoId);
-        //producto.setEmail(firebaseAPI.getAuthEmail());
         post(DetalleVentaEvent.INIT);
         ImageStorageFinishedListener listener = new ImageStorageFinishedListener() {
             @Override

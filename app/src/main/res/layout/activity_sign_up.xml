@@ -22,6 +22,7 @@
             android:inputType="textNoSuggestions"
             android:ems="10"
             android:hint="@string/login.message.username"
+            android:maxLength="@integer/length.max.username"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"/>
     </android.support.design.widget.TextInputLayout>
@@ -38,6 +39,7 @@
             android:inputType="textEmailAddress"
             android:ems="10"
             android:hint="@string/login.message.email"
+            android:maxLength="@integer/length.max.email"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"/>
     </android.support.design.widget.TextInputLayout>
@@ -54,6 +56,7 @@
             android:inputType="textPassword"
             android:ems="10"
             android:hint="@string/login.message.password"
+            android:maxLength="@integer/length.max.pass"
             android:layout_below="@id/editTxtEmail"
             android:layout_centerHorizontal="true"/>
     </android.support.design.widget.TextInputLayout>

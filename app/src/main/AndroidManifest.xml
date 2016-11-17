@@ -46,12 +46,17 @@
         <activity
             android:name=".productos.ui.ProductosActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".detalleVentas.ui.DetalleVentaActivity"
             android:label="@string/ventas.detalle.title"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".clientiInactive.ui.ClientiInactiveActivity"
+            android:label="@string/clientiInactive.title"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

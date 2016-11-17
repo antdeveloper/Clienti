@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="length.max.username">200</integer>
+    <integer name="length.max.product.name">50</integer>
+    <integer name="length.max.product.model">50</integer>
+    <integer name="length.max.product.precio">10</integer>
+    <integer name="length.max.product.notas">250</integer>
+    <integer name="length.max.email">200</integer>
+    <integer name="length.max.pass">200</integer>
+    <integer name="length.max.product.cantidad">5</integer>
+</resources>

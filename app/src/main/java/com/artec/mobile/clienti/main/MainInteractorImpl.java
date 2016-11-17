@@ -1,5 +1,7 @@
 package com.artec.mobile.clienti.main;
 
+import com.artec.mobile.clienti.entities.Client;
+
 /**
  * Created by ANICOLAS on 01/07/2016.
  */
@@ -28,5 +30,10 @@ public class MainInteractorImpl implements MainInteractor{
     @Override
     public void getAdeudo(String recipient) {
         repository.getAdeudo(recipient);
+    }
+
+    @Override
+    public void updateClient(Client client) {
+        repository.updateClient(client);
     }
 }

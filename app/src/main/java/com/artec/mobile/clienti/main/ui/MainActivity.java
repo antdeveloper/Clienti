@@ -1,26 +1,33 @@
 package com.artec.mobile.clienti.main.ui;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.addClient.ui.AddClientFragment;
+import com.artec.mobile.clienti.clientiInactive.ui.ClientiInactiveActivity;
 import com.artec.mobile.clienti.entities.Client;
+import com.artec.mobile.clienti.libs.Constants;
 import com.artec.mobile.clienti.login.ui.LoginActivity;
 import com.artec.mobile.clienti.main.MainPresenter;
 import com.artec.mobile.clienti.main.ui.adapters.MainAdapter;
@@ -41,12 +48,14 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.recyclerViewClient)
+    @Bind(R.id.recyclerView)
     RecyclerView recyclerViewClient;
     @Bind(R.id.fab)
     FloatingActionButton fab;
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
+    @Bind(R.id.container)
+    CoordinatorLayout container;
 
     @Inject
     MainPresenter presenter;
@@ -59,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 
     private Client mClient;
     private int indexClient = 0;
+    private boolean isNewClient = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     private void setupRecyclerView() {
         recyclerViewClient.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewClient.setAdapter(adapter);
+        registerForContextMenu(recyclerViewClient);
     }
 
     private void setupToolbar() {
@@ -107,6 +118,11 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
                 startActivity(intent);
                 break;
             }
+            case R.id.action_show_users:{
+                Intent intent = new Intent(this, ClientiInactiveActivity.class);
+                startActivity(intent);
+                break;
+            }
             case R.id.action_about: {
                 goToAboutHanlder();
                 break;
@@ -120,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     }
 
     private void getAdeudo() {
-        if (adapter != null && adapter.getItemCount()>0) {
+        if (adapter != null && adapter.getItemCount() > 0) {
             mClient = adapter.getClientList().get(indexClient);
             presenter.onGetAdeudo(mClient.getEmail());
         }
@@ -130,6 +146,12 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     protected void onDestroy() {
         presenter.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        presenter.onPause();
     }
 
     @Override
@@ -151,11 +173,22 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     @Override
     public void onClientAdded(Client client) {
         adapter.add(client);
+        if (isNewClient) {
+            isNewClient = false;
+            recyclerViewClient.smoothScrollToPosition(adapter.getItemCount() - 2);
+        }
     }
 
     @Override
     public void onClientChanged(Client client) {
-        adapter.update(client);
+        //if (client.isDown()) {
+        if (client.getEstatus() == Constants.ESTATUS_INACTIVO){
+            adapter.remove(client);
+            showSnackbar(R.string.main_message_downSuccessfully);
+        } else {
+            adapter.update(client);
+            //showSnackbar(R.string.message_save_successfully);
+        }
     }
 
     @Override
@@ -185,10 +218,79 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
         startActivity(intent);
     }
 
+    @Override
+    public void onItemLongClick(final Client client) {
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(60);
+        /*new android.support.v7.app.AlertDialog.Builder(this, R.style.DialogFragmentTheme)
+                .setTitle(getString(R.string.main_title_confirmDown))
+                .setMessage(getString(R.string.main_message_confirmDown))
+                .setPositiveButton(getString(R.string.addclient_message_acept), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //client.setDown(true);
+                        client.setEstatus(Constants.ESTATUS_INACTIVO);
+                        presenter.onUpdateClient(client);
+                    }
+                })
+                .setNegativeButton(getString(R.string.addclient_message_cancel), null)
+                .show();*/
+        openContextMenu(recyclerViewClient);
+        mClient = client;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.menu_main_context, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_edit: {
+                View view = getLayoutInflater().inflate(R.layout.dialog_rename_client, null);
+                final EditText etName = (EditText)view.findViewById(R.id.etName);
+                etName.setText(mClient.getUsername());
+                new AlertDialog.Builder(this, R.style.DialogFragmentTheme)
+                        .setTitle(R.string.main_menu_action_edit)
+                        .setView(view)
+                        .setPositiveButton(R.string.label_ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                mClient.setUsername(etName.getText().toString());
+                                presenter.onUpdateClient(mClient);
+                            }
+                        })
+                        .setNegativeButton(R.string.addclient_message_cancel, null)
+                        .show();
+                return true;
+            }
+            case R.id.action_delete: {
+                new AlertDialog.Builder(this, R.style.DialogFragmentTheme)
+                        .setTitle(getString(R.string.main_title_confirmDown))
+                        .setMessage(getString(R.string.main_message_confirmDown))
+                        .setPositiveButton(getString(R.string.addclient_message_acept), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mClient.setEstatus(Constants.ESTATUS_INACTIVO);
+                                presenter.onUpdateClient(mClient);
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.addclient_message_cancel), null)
+                        .show();
+                return true;
+            }
+            default: {
+                return super.onContextItemSelected(item);
+            }
+        }
+    }
+
     @OnClick(R.id.fab)
     public void addContact() {
         new AddClientFragment().show(getSupportFragmentManager(),
                 getString(R.string.addclient_message_title));
+        isNewClient = true;
     }
 
 
@@ -205,5 +307,17 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
                     }
                 });
         builder.show();
+    }
+
+    private void showSnackbar(String msg) {
+        Snackbar.make(container, msg, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void showSnackbar(int strResource) {
+        Snackbar.make(container, strResource, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void setNewClient(boolean newClient) {
+        isNewClient = newClient;
     }
 }

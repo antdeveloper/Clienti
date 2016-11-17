@@ -1,15 +1,13 @@
 package com.artec.mobile.clienti.domain;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
-import com.artec.mobile.clienti.login.ui.LoginActivity;
+import com.artec.mobile.clienti.libs.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -19,14 +17,11 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executor;
 
 /**
  * Created by ANICOLAS on 28/06/2016.
@@ -40,6 +35,7 @@ public class FirebaseAPI {
     private FirebaseUser user;
     private ChildEventListener productsEventListener;
     private ChildEventListener clientsEventListener;
+    private Query queryClients;
     private Activity mContext;
 
     private final static String SEPARATOR = "___";
@@ -164,7 +160,6 @@ public class FirebaseAPI {
             productsSubscribeReference = getProductsReference(recipient);
             Query query = productsSubscribeReference.orderByChild("email").equalTo(getAuthUserEmail());
             query.addChildEventListener(productsEventListener);
-            //productsSubscribeReference.addChildEventListener(productsEventListener);
         }
     }
 
@@ -190,10 +185,6 @@ public class FirebaseAPI {
         if (user != null){
             email = user.getEmail();
         }
-        /*if (firebase.getAuth() != null){
-            Map<String, Object> providerData = firebase.getAuth().getProviderData();
-            email = providerData.get("email").toString();
-        }*/
         return email;
     }
 
@@ -284,7 +275,7 @@ public class FirebaseAPI {
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    listenerCallback.onChildRemoved(dataSnapshot);
+                    //listenerCallback.onChildRemoved(dataSnapshot);
                 }
 
                 @Override
@@ -297,14 +288,18 @@ public class FirebaseAPI {
             };
 
             clientReference = getMyClientsReference();
-            clientReference.addChildEventListener(clientsEventListener);
+            //queryClients = clientReference.orderByChild("estatus").startAt(null).endAt(false);
+            queryClients = clientReference.orderByChild("estatus").startAt(null).endAt(Constants.ESTATUS_ACTIVO);
         }
+        queryClients.addChildEventListener(clientsEventListener);
     }
 
     public void unsubscribeMain(){
-        if (clientsEventListener != null){
-            clientReference.removeEventListener(clientsEventListener);
-            clientsEventListener = null;
+        //if (clientsEventListener != null){
+        if (queryClients != null && clientsEventListener != null){
+            //clientReference.removeEventListener(clientsEventListener);
+            queryClients.removeEventListener(clientsEventListener);
+            //clientsEventListener = null;
         }
     }
 
@@ -358,6 +353,47 @@ public class FirebaseAPI {
 
     public void destroyMainListener(){
         clientsEventListener = null;
+    }
+
+    /**
+     * ClientiInactive
+     * */
+
+    public void checkForClientiInactive(final FirebaseActionListenerCallback listenerCallback){
+        DatabaseReference clientReference = getMyClientsReference();
+        Query queryClients = clientReference.orderByChild("estatus").startAt(Constants.ESTATUS_INACTIVO).endAt(Constants.ESTATUS_INACTIVO);
+        queryClients.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getChildrenCount() > 0){
+                    listenerCallback.onSuccess();
+                }else {
+                    listenerCallback.onError(null);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                listenerCallback.onError(firebaseError.getMessage());
+            }
+        });
+    }
+
+    public void getMyClientsInactives(final FirebaseEventListenerCalbackClientiInactive listenerCallback){
+        DatabaseReference reference = getMyClientsReference();
+        reference.keepSynced(true);
+        Query queryClients = reference.orderByChild("estatus").startAt(Constants.ESTATUS_INACTIVO).endAt(Constants.ESTATUS_INACTIVO);
+        queryClients.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listenerCallback.onGetChilds(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listenerCallback.onCancelled(databaseError);
+            }
+        });
     }
 
     // ABONOS

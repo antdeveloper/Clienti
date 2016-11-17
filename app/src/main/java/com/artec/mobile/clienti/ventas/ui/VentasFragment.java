@@ -33,6 +33,10 @@ import android.widget.ProgressBar;
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.addAbono.ui.AddAbonoFragment;
+import com.artec.mobile.clienti.admonAbono.ui.AdmonAbonoFragment;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoAux;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoFrgAux;
+import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoGralAux;
 import com.artec.mobile.clienti.detalleVentas.ui.DetalleVentaActivity;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.Constants;
@@ -247,7 +251,8 @@ public class VentasFragment extends Fragment implements VentasView,
                 actionBar.setSubtitle("$" + String.format(Locale.ROOT, "%,.2f", adapter.getAdeudoTotal()));
             }
         }
-        ((ProductosActivity)getActivity()).setProductos(adapter.getProductos());
+        //((ProductosActivity)getActivity()).setProductos(adapter.getProductos());
+        ((AdmonAbonoGralAux)getActivity()).setProductos(adapter.getProductos());
     }
 
     @Override
@@ -258,13 +263,16 @@ public class VentasFragment extends Fragment implements VentasView,
     @Override
     public void onAddAbonoClick(Producto producto) {
         setupProductoForAbono(producto);
-        new AddAbonoFragment().show(getActivity().getSupportFragmentManager(),
-                getString(R.string.addabono_message_title));
+        /*new AddAbonoFragment().show(getActivity().getSupportFragmentManager(),
+                getString(R.string.addabono_message_title));*/
+        new AdmonAbonoFragment().show(getActivity().getSupportFragmentManager(),
+                getString(R.string.admonAbono_message_title));
     }
 
     private void setupProductoForAbono(Producto producto) {
-        ((ProductosActivity)getActivity()).isAbonoGral = false;
-        ((ProductosActivity)getActivity()).isFromDetalle = false;
-        ((ProductosActivity)getActivity()).productoSelected = producto;
+        ((AdmonAbonoFrgAux)getActivity()).setMode(AdmonAbonoFragment.MODE_ADD);
+        /*((ProductosActivity)getActivity()).isAbonoGral = false;
+        ((ProductosActivity)getActivity()).isFromDetalle = false;*/
+        ((AdmonAbonoFrgAux)getActivity()).setProducto(producto);
     }
 }
