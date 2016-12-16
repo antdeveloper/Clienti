@@ -90,7 +90,7 @@ public class FirebaseAPI {
         this.mAuth.addAuthStateListener(mAuthListener);
     }
 
-
+    // FIXME: 18/11/2016 //Eliminar
     public void getProductsByClient(final FirebaseActionListenerCallbackMain listenerCallback, String recipient){
         DatabaseReference productsReference = getProductsReference(recipient);
         Query query = productsReference.orderByChild("email").equalTo(getAuthEmail());
@@ -361,6 +361,7 @@ public class FirebaseAPI {
 
     public void checkForClientiInactive(final FirebaseActionListenerCallback listenerCallback){
         DatabaseReference clientReference = getMyClientsReference();
+        clientReference.keepSynced(true);
         Query queryClients = clientReference.orderByChild("estatus").startAt(Constants.ESTATUS_INACTIVO).endAt(Constants.ESTATUS_INACTIVO);
         queryClients.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -384,6 +385,48 @@ public class FirebaseAPI {
         reference.keepSynced(true);
         Query queryClients = reference.orderByChild("estatus").startAt(Constants.ESTATUS_INACTIVO).endAt(Constants.ESTATUS_INACTIVO);
         queryClients.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listenerCallback.onGetChilds(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listenerCallback.onCancelled(databaseError);
+            }
+        });
+    }
+
+    /****
+     * Indicadores
+     * ***/
+
+    public void checkForProductos(final FirebaseActionListenerCallback listenerCallback, String recipient){
+        DatabaseReference productsReference = getProductsReference(recipient);
+        Query query = productsReference.orderByChild("email").equalTo(getAuthEmail());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getChildrenCount() > 0){
+                    listenerCallback.onSuccess();
+                }else {
+                    listenerCallback.onError(null);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listenerCallback.onError(databaseError.getMessage());
+            }
+        });
+    }
+
+    public void getProductsByClient(final FirebaseEventListenerCalbackClientiInactive listenerCallback,
+                                      String recipient){
+        DatabaseReference productsReference = getProductsReference(recipient);
+        productsReference.keepSynced(true);
+        Query query = productsReference.orderByChild("email").equalTo(getAuthEmail());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 listenerCallback.onGetChilds(dataSnapshot);

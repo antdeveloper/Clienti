@@ -27,7 +27,7 @@
                 android:id="@+id/imgMain"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/img_mdl"
-                app:srcCompat="@drawable/ic_file_image"
+                android:src="@drawable/ic_file_image"
                 android:layout_gravity="center"/>
 
             <TextView
@@ -113,7 +113,7 @@
                 android:id="@+id/imgbtnAddAbono"
                 android:layout_width="@dimen/icon.sm"
                 android:layout_height="@dimen/icon.sm"
-                app:srcCompat="@drawable/ic_plus_box"
+                android:src="@drawable/ic_plus_box"
                 android:tint="@color/gray_600_t"
                 android:background="?attr/selectableItemBackgroundBorderless"/>
         </LinearLayout>

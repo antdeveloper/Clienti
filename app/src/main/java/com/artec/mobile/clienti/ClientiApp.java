@@ -29,6 +29,11 @@ import com.artec.mobile.clienti.clientiInactive.ui.ClientiInactiveView;
 import com.artec.mobile.clienti.detalleVentas.di.DaggerDetalleVentaComponent;
 import com.artec.mobile.clienti.detalleVentas.ui.adapters.OnAbonoClickListener;
 import com.artec.mobile.clienti.domain.di.DomainModule;
+import com.artec.mobile.clienti.indicadores.di.DaggerIndicadoresComponent;
+import com.artec.mobile.clienti.indicadores.di.IndicadoresComponent;
+import com.artec.mobile.clienti.indicadores.di.IndicadoresModule;
+import com.artec.mobile.clienti.indicadores.ui.IndicadoresActivity;
+import com.artec.mobile.clienti.indicadores.ui.IndicadoresView;
 import com.artec.mobile.clienti.libs.di.LibsModule;
 import com.artec.mobile.clienti.login.di.DaggerLoginComponent;
 import com.artec.mobile.clienti.login.di.LoginComponent;
@@ -206,6 +211,17 @@ public class ClientiApp extends Application{
                 .domainModule(domainModule)
                 .libsModule(new LibsModule(dialogFragment.getActivity()))
                 .admonAbonoModule(new AdmonAbonoModule(view))
+                .build();
+    }
+
+    public IndicadoresComponent getIndicadoresComponent(IndicadoresActivity activity,
+                                                            IndicadoresView view){
+        return DaggerIndicadoresComponent
+                .builder()
+                .clientiAppModule(clientiAppModule)
+                .domainModule(domainModule)
+                .libsModule(new LibsModule(activity))
+                .indicadoresModule(new IndicadoresModule(view))
                 .build();
     }
 }

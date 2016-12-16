@@ -16,11 +16,13 @@ import com.artec.mobile.clienti.domain.Util;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.libs.base.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by ANICOLAS on 01/07/2016.
@@ -29,6 +31,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
     Util util;
     private List<Client> clientList;
     private ImageLoader imageLoader;
+    //Arreglo auxiliar para los indicadores
+    private static final List<String> emails = new ArrayList<>();
 
     private OnItemClickListener onItemClickListener;
 
@@ -86,6 +90,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
     public void add(Client client) {
         if (getIndexByEmail(client) == -1){
             clientList.add(client);
+            addEmail(client.getEmail());
             notifyDataSetChanged();
         }else{
             update(client);
@@ -102,6 +107,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
     public void remove(Client client) {
         int index = getIndexByEmail(client);
         clientList.remove(index);
+        deleteEmail(index);
         notifyDataSetChanged();
     }
 
@@ -128,8 +134,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.imgAvatar)
-        //CircleImageView imgAvatar;
-        AppCompatImageView imgAvatar;
+        CircleImageView imgAvatar;
+        //AppCompatImageView imgAvatar;
         @Bind(R.id.txtUser)
         TextView txtUser;
         @Bind(R.id.txtEmail)
@@ -164,5 +170,21 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder>{
                 }
             });
         }
+    }
+
+    /******
+     * Metodos auxiliares para indicadores
+     * *****/
+
+    private void addEmail(String email){
+        emails.add(email);
+    }
+
+    private void deleteEmail(int index){
+        emails.remove(index);
+    }
+
+    public static List<String> getEmails(){
+        return emails;
     }
 }

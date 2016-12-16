@@ -57,6 +57,11 @@
             android:label="@string/clientiInactive.title"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"/>
+        <activity android:name=".indicadores.ui.IndicadoresActivity"
+            android:label="indicadores.title"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

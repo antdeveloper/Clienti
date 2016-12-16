@@ -96,7 +96,7 @@
                     android:id="@+id/imgbtnAddAbono"
                     android:layout_width="@dimen/icon.mdl"
                     android:layout_height="@dimen/icon.mdl"
-                    app:srcCompat="@drawable/ic_plus_box"
+                    android:src="@drawable/ic_plus_box"
                     android:tint="@color/gray_600_t"
                     android:background="?attr/selectableItemBackgroundBorderless"/>
             </LinearLayout>

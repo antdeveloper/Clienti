@@ -40,6 +40,7 @@ import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.libs.Constants;
 import com.artec.mobile.clienti.libs.base.ImageLoader;
 import com.artec.mobile.clienti.utils.UtilsUI;
+import com.artec.mobile.clienti.utils.UtilsValidator;
 import com.google.gson.Gson;
 import com.transitionseverywhere.Fade;
 import com.transitionseverywhere.Transition;
@@ -261,17 +262,49 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
                 return true;
             }
             case R.id.action_save: {
-                mProducto.setName(etName.getText().toString());
-                mProducto.setModelo(etModel.getText().toString());
-                mProducto.setPrecioOriginal(Double.valueOf(etPrecioOriginal.getText().toString()));
-                mProducto.setPrecio(Double.valueOf(etPrecio.getText().toString()));
-                mProducto.setNotas(etNotas.getText().toString());
-                presenter.update(mProducto, "", clientEmail);
+                if (validateFields()) {
+                    mProducto.setName(etName.getText().toString());
+                    mProducto.setModelo(etModel.getText().toString());
+                    mProducto.setPrecioOriginal(etPrecioOriginal.getText().toString().isEmpty()?
+                            0 : Double.valueOf(etPrecioOriginal.getText().toString()));
+                    mProducto.setPrecio(Double.valueOf(etPrecio.getText().toString()));
+                    mProducto.setNotas(etNotas.getText().toString());
+                    presenter.update(mProducto, "", clientEmail);
+                }
                 return true;
             }
         }
 
         return false;
+    }
+
+    private boolean validateFields() {
+        if (etName.getText().toString().isEmpty()){
+            etName.setError(getString(R.string.productos_error_required));
+            etName.requestFocus();
+            return false;
+        }
+        if (etModel.getText().toString().isEmpty()){
+            etModel.setError(getString(R.string.productos_error_required));
+            etModel.requestFocus();
+            return false;
+        }
+        if (!etPrecioOriginal.getText().toString().isEmpty() && UtilsValidator.isInvalidDouble(etPrecioOriginal.getText().toString())){
+            etPrecioOriginal.setError(getString(R.string.productos_error_numInvalid));
+            etPrecioOriginal.requestFocus();
+            return false;
+        }
+        if (etPrecio.getText().toString().isEmpty()){
+            etPrecio.setError(getString(R.string.productos_error_required));
+            etPrecio.requestFocus();
+            return false;
+        }else if (UtilsValidator.isInvalidDouble(etPrecio.getText().toString())){
+            etPrecio.setError(getString(R.string.productos_error_numInvalid));
+            etPrecio.requestFocus();
+            return false;
+        }
+
+        return true;
     }
 
     private void backToDetail() {
@@ -315,6 +348,7 @@ public class DetalleVentaActivity extends AppCompatActivity implements DetalleVe
                         containerEdit.setVisibility(isDetailMode ? View.INVISIBLE : View.VISIBLE);
                         TransitionManager.endTransitions(contentMain);
                         isAnimationInProccess = false;
+                        etName.requestFocus();
                     }
 
                     @Override

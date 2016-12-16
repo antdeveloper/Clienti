@@ -56,6 +56,7 @@ public class AbonoHistoryFragment extends Fragment implements AbonoHistoryFragme
     private void initRecyclerView(){
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        recyclerView.setNestedScrollingEnabled(false);
     }
 
     @Override

@@ -19,6 +19,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by ANICOLAS on 15/11/2016.
@@ -94,7 +95,7 @@ public class ClientiInactiveAdapter extends RecyclerView.Adapter<ClientiInactive
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.imgAvatar)
-        AppCompatImageView imgAvatar;
+        CircleImageView imgAvatar;
         @Bind(R.id.txtUser)
         TextView txtUser;
         @Bind(R.id.txtEmail)

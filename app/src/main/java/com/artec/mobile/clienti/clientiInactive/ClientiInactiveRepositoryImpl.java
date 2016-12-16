@@ -39,8 +39,8 @@ public class ClientiInactiveRepositoryImpl implements ClientiInactiveRepository 
                     public void onGetChilds(DataSnapshot snapshot) {
                         List<Client> clients = new ArrayList<Client>();
                         for (DataSnapshot postSnapshot: snapshot.getChildren()) {
-                            Client university = postSnapshot.getValue(Client.class);
-                            clients.add(university);
+                            Client client = postSnapshot.getValue(Client.class);
+                            clients.add(client);
                         }
                         post(ClientiInactiveEvent.GET_CLIENTS, clients);
                     }

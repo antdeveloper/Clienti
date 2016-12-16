@@ -36,7 +36,6 @@ import android.widget.Toast;
 
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
-import com.artec.mobile.clienti.addAbono.ui.AddAbonoFragment;
 import com.artec.mobile.clienti.admonAbono.ui.AdmonAbonoFragment;
 import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoAux;
 import com.artec.mobile.clienti.admonAbono.utils.AdmonAbonoFrgAux;
@@ -47,6 +46,7 @@ import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.productos.ProductosPresenter;
 import com.artec.mobile.clienti.productos.ui.adapters.ProductosSectionPageAdapter;
+import com.artec.mobile.clienti.utils.UtilsValidator;
 import com.artec.mobile.clienti.ventas.ui.VentasFragment;
 
 import java.io.File;
@@ -86,8 +86,8 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
     ProductosPresenter presenter;
     @Inject
     ProductosSectionPageAdapter adapter;
-    @Inject
-    SharedPreferences sharedPreferences;
+    /*@Inject
+    SharedPreferences sharedPreferences;*/// FIXME: 05/12/2016  borrale
 
     private AlertDialog alertDialog;
     private Uri uriFoto;
@@ -323,6 +323,8 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
                 });
         builder.setView(view);
 
+        isSaving = false;
+
         alertDialog = builder.create();
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
@@ -339,7 +341,8 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
                             producto.setCantidad(Integer.valueOf(etCantidad.getText().toString()));
                             producto.setModelo(etModel.getText().toString());
                             producto.setPrecio(Double.valueOf(etPrecio.getText().toString()));
-                            producto.setPrecioOriginal(Double.valueOf(etPrecioOriginal.getText().toString()));
+                            producto.setPrecioOriginal(etPrecioOriginal.getText().toString().isEmpty()?
+                                    0 : Double.valueOf(etPrecioOriginal.getText().toString()));
                             producto.setFechaVenta(System.currentTimeMillis());
                             producto.setNotas(etNotas.getText().toString());
                             Abono abono = new Abono();
@@ -354,25 +357,38 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
                     private boolean validateFields() {
                         if (etName.getText().toString().isEmpty()){
                             etName.setError(getString(R.string.productos_error_required));
+                            etName.requestFocus();
                             return false;
                         }
                         if (etModel.getText().toString().isEmpty()){
                             etModel.setError(getString(R.string.productos_error_required));
+                            etModel.requestFocus();
                             return false;
                         }
                         if (etCantidad.getText().toString().isEmpty()){
                             etCantidad.setError(getString(R.string.productos_error_required));
+                            etCantidad.requestFocus();
+                            return false;
+                        }
+                        if (UtilsValidator.isInvalidDouble(etAbono.getText().toString())){
+                            etAbono.setError(getString(R.string.productos_error_numInvalid));
+                            etAbono.requestFocus();
+                            return false;
+                        }
+                        if (!etPrecioOriginal.getText().toString().isEmpty() && UtilsValidator.isInvalidDouble(etPrecioOriginal.getText().toString())){
+                            etPrecioOriginal.setError(getString(R.string.productos_error_numInvalid));
+                            etPrecioOriginal.requestFocus();
                             return false;
                         }
                         if (etPrecio.getText().toString().isEmpty()){
                             etPrecio.setError(getString(R.string.productos_error_required));
+                            etPrecio.requestFocus();
+                            return false;
+                        }else if (UtilsValidator.isInvalidDouble(etPrecio.getText().toString())){
+                            etPrecio.setError(getString(R.string.productos_error_numInvalid));
+                            etPrecio.requestFocus();
                             return false;
                         }
-                        /*if (photoPath == null || photoPath.isEmpty()){
-                            Toast.makeText(ProductosActivity.this, R.string.productos_error_notphotoselect,
-                                    Toast.LENGTH_SHORT).show();
-                            return false;
-                        }*/
 
                         return true;
                     }
@@ -583,14 +599,6 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
         Snackbar.make(viewPager, strResource, Snackbar.LENGTH_SHORT).show();
     }
 
-    /*public List<Producto> getProductos() {
-        return productos;
-    }
-
-    public void setProductos(List<Producto> productos) {
-        this.productos = productos;
-    }*/
-
     /******************
      * Metodos auxiliares para admonAdeudosFragment
      * ****************/
@@ -606,17 +614,6 @@ public class ProductosActivity extends AppCompatActivity implements ProductosVie
 
     @Override
     public void abonoAdded(Abono abono) {}
-
-    /*@Override
-    public void abonoUpdated(Abono abono) {}
-
-    @Override
-    public void abonoDeleted(Abono abono) {}
-
-    @Override
-    public Abono getAbono() {
-        return null;
-    }*/
 
     @Override
     public void setProducto(Producto producto) {

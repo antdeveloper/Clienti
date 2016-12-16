@@ -27,6 +27,7 @@ import com.artec.mobile.clienti.R;
 import com.artec.mobile.clienti.addClient.ui.AddClientFragment;
 import com.artec.mobile.clienti.clientiInactive.ui.ClientiInactiveActivity;
 import com.artec.mobile.clienti.entities.Client;
+import com.artec.mobile.clienti.indicadores.ui.IndicadoresActivity;
 import com.artec.mobile.clienti.libs.Constants;
 import com.artec.mobile.clienti.login.ui.LoginActivity;
 import com.artec.mobile.clienti.main.MainPresenter;
@@ -109,6 +110,11 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_indicadores:{
+                Intent intent = new Intent(this, IndicadoresActivity.class);
+                startActivity(intent);
+                break;
+            }
             case R.id.action_logout: {
                 presenter.logout();
                 Intent intent = new Intent(this, LoginActivity.class);

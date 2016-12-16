@@ -28,6 +28,8 @@ public class Client {
     private double deudaTotal;
     @Exclude
     private HashMap<String, ArrayList> productos;
+    @Exclude
+    private List<Producto> productoList;
 
     public Client() {
     }
@@ -89,7 +91,7 @@ public class Client {
         this.pagado = pagado;
     }
     @Exclude
-    public double calcDeudaTotal() {
+    public double calcDeudaTotal() {// FIXME: 19/11/2016
         double result = 0.0;
         if (getProductos() != null) {
                 Gson gson = new Gson();
@@ -105,7 +107,7 @@ public class Client {
         return result;
     }
     @Exclude
-    public double getDeudaTotal() {
+    public double getDeudaTotal() {// FIXME: 19/11/2016
         return this.deudaTotal;
     }
     @Exclude
@@ -123,5 +125,24 @@ public class Client {
     @Exclude
     public boolean isLocalUser() {
         return email.contains(Constants.DOMINIO_CLIENTI);
+    }
+    @Exclude
+    public List<Producto> getProductoList() {
+        return productoList;
+    }
+    @Exclude
+    public void setProductoList(List<Producto> productoList) {
+        this.productoList = productoList;
+    }
+    @Exclude
+    public double calcAdeudoTotal() {
+        double result = 0.0;
+        if (getProductoList() != null) {
+            for (Producto producto : getProductoList()){
+                result += producto.getAdeudo();
+            }
+        }
+        this.deudaTotal = result;
+        return result;
     }
 }

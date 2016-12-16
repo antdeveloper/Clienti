@@ -40,7 +40,7 @@ public class AddAbonoFragment extends DialogFragment implements AddAbonoView,
     @Inject
     AddAbonoPresenter presenter;
 
-    @Bind(R.id.editTxtAbono)
+    @Bind(R.id.etAbono)
     EditText editTxtAbono;
     @Bind(R.id.progressBar)
     ProgressBar progressBar;

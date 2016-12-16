@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -28,6 +29,8 @@ import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.utils.DialogoSelectorFecha;
+import com.artec.mobile.clienti.utils.UtilsUI;
+import com.artec.mobile.clienti.utils.UtilsValidator;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -50,8 +53,8 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
     @Inject
     AdmonAbonoPresenter presenter;
 
-    @Bind(R.id.editTxtAbono)
-    EditText editTxtAbono;
+    @Bind(R.id.etAbono)
+    EditText etAbono;
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
     @Bind(R.id.tvFecha)
@@ -135,7 +138,7 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
                 abono = ((AdmonAbonoEditAux)getActivity()).getAbono();
                 producto = ((AdmonAbonoAux)getActivity()).getProducto();
                 title = getString(R.string.admonAbono_message_titleEdit);
-                editTxtAbono.setText(String.format(Locale.ROOT, "%.2f", abono.getValor()));
+                etAbono.setText(String.format(Locale.ROOT, "%.2f", abono.getValor()));
                 break;
             }
             case MODE_GRAL:{
@@ -144,6 +147,9 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
                 break;
             }
         }
+        etAbono.requestFocus();
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     private void setupDateTextView() {
@@ -175,16 +181,21 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    double valorAbono = Double.valueOf(editTxtAbono.getText().toString().isEmpty() ?
-                            "0" : editTxtAbono.getText().toString());
+                    if (UtilsValidator.isInvalidDouble(etAbono.getText().toString())){
+                        etAbono.setError(getString(R.string.productos_error_numInvalid));
+                        etAbono.requestFocus();
+                        return;
+                    }
+                    double valorAbono = Double.valueOf(etAbono.getText().toString().isEmpty() ?
+                            "0" : etAbono.getText().toString());
                     if (valorAbono == 0) {
-                        editTxtAbono.setText("");
-                        editTxtAbono.setError(getString(R.string.productos_error_required));
+                        etAbono.setText("");
+                        etAbono.setError(getString(R.string.productos_error_required));
                     } else {
                         switch (mode){
                             case MODE_ADD:{
                                 if (valorAbono > producto.getAdeudo()) {
-                                    editTxtAbono.setError(getString(R.string.admonAbono_error_abonoBiger) +
+                                    etAbono.setError(getString(R.string.admonAbono_error_abonoBiger) +
                                             " ($" + producto.getAdeudo() + ")");
                                 } else {
                                     abono = new Abono();
@@ -196,8 +207,8 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
                                 break;
                             }
                             case MODE_EDIT:{
-                                if (valorAbono > producto.getAdeudo()) {
-                                    editTxtAbono.setError(getString(R.string.admonAbono_error_abonoBiger) +
+                                if (valorAbono > producto.getAdeudo()+abono.getValor()) {
+                                    etAbono.setError(getString(R.string.admonAbono_error_abonoBiger) +
                                             " ($" + producto.getAdeudo() + ")");
                                 } else {
                                     abono.setValor(valorAbono);
@@ -210,7 +221,7 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
                             case MODE_GRAL:{
                                 double deudaTotal = getAdeudoTotal();
                                 if (valorAbono > deudaTotal) {
-                                    editTxtAbono.setError(getString(R.string.admonAbono_error_abonoBiger) +
+                                    etAbono.setError(getString(R.string.admonAbono_error_abonoBiger) +
                                             " ($" + deudaTotal + ")");
                                 } else {
                                     presenter.addAbonoGral(productos, valorAbono, mCalendar.getTimeInMillis(), client);
@@ -225,13 +236,14 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
             negativeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dismiss();
+                    clearAndClose();
                 }
             });
 
             neutralButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    UtilsUI.hideKeyboard(getActivity(), etAbono);
                     new AlertDialog.Builder(getActivity(), R.style.DialogFragmentTheme)
                             .setTitle(getString(R.string.admonAbono_title_confirmdelete))
                             .setMessage(getString(R.string.admonAbono_message_confirmdelete))
@@ -246,8 +258,9 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
                 }
             });
 
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(editTxtAbono, InputMethodManager.SHOW_IMPLICIT);
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            }
         }
     }
 
@@ -257,12 +270,12 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
 
     @Override
     public void showInput() {
-        editTxtAbono.setVisibility(View.VISIBLE);
+        etAbono.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideInput() {
-        editTxtAbono.setVisibility(View.GONE);
+        etAbono.setVisibility(View.GONE);
     }
 
     @Override
@@ -280,7 +293,7 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
         Toast.makeText(getActivity(), R.string.admonAbono_message_abonoAdded,
                 Toast.LENGTH_SHORT).show();
         ((AdmonAbonoAux)getActivity()).abonoAdded(abono);
-        dismiss();
+        clearAndClose();
     }
 
     @Override
@@ -288,20 +301,20 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
         Toast.makeText(getActivity(), R.string.admonAbono_message_abonoAdded,
                 Toast.LENGTH_SHORT).show();
         ((AdmonAbonoDetailAux)getActivity()).abonoUpdated(abono);
-        dismiss();
+        clearAndClose();
     }
 
     @Override
     public void abonoDeleted() {
         ((AdmonAbonoDetailAux)getActivity()).abonoDeleted(abono);
-        dismiss();
+        clearAndClose();
     }
 
     @Override
     public void abonoNotAdded() {
-        producto.setAbono(producto.getAbono() - Double.valueOf(editTxtAbono.getText().toString()));
-        editTxtAbono.setText("");
-        editTxtAbono.setError(getString(R.string.addclient_error_add));
+        producto.setAbono(producto.getAbono() - Double.valueOf(etAbono.getText().toString()));
+        etAbono.setText("");
+        etAbono.setError(getString(R.string.addclient_error_add));
     }
 
     public double getAdeudoTotal() {
@@ -332,5 +345,8 @@ public class AdmonAbonoFragment extends DialogFragment implements AdmonAbonoView
         dialogoSelectorFecha.show(getActivity().getSupportFragmentManager(), "selectoFecha");
     }
 
-
+    private void clearAndClose(){
+        UtilsUI.hideKeyboard(getActivity(), etAbono);
+        dismiss();
+    }
 }

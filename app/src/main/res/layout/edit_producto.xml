@@ -124,7 +124,7 @@
                     android:id="@+id/imgPhotoProduct"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/img_mdl"
-                    app:srcCompat="@drawable/ic_file_image"
+                    android:src="@drawable/ic_file_image"
                     android:adjustViewBounds="true"
                     android:layout_gravity="center"/>
                 <LinearLayout
