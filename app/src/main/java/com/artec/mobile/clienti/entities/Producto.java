@@ -172,4 +172,8 @@ public class Producto {
         }
         return sortedMap;
     }
+    @Exclude
+    public Date getFechaDate(){
+        return new Date(this.fechaVenta);
+    }
 }

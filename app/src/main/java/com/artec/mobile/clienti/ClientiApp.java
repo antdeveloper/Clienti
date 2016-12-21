@@ -215,13 +215,14 @@ public class ClientiApp extends Application{
     }
 
     public IndicadoresComponent getIndicadoresComponent(IndicadoresActivity activity,
-                                                            IndicadoresView view){
+                                                        IndicadoresView view, FragmentManager manager,
+                                                        Fragment[] fragments, String[] titles){
         return DaggerIndicadoresComponent
                 .builder()
                 .clientiAppModule(clientiAppModule)
                 .domainModule(domainModule)
                 .libsModule(new LibsModule(activity))
-                .indicadoresModule(new IndicadoresModule(view))
+                .indicadoresModule(new IndicadoresModule(view, titles, fragments, manager))
                 .build();
     }
 }

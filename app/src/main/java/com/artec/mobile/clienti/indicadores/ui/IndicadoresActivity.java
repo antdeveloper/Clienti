@@ -1,49 +1,33 @@
 package com.artec.mobile.clienti.indicadores.ui;
 
-import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 
 import com.artec.mobile.clienti.ClientiApp;
 import com.artec.mobile.clienti.R;
-import com.artec.mobile.clienti.entities.Abono;
 import com.artec.mobile.clienti.entities.Client;
-import com.artec.mobile.clienti.entities.IndicadorAbonoSemana;
 import com.artec.mobile.clienti.entities.Producto;
 import com.artec.mobile.clienti.indicadores.IndicadoresPresenter;
 import com.artec.mobile.clienti.indicadores.events.IndicadoresEvent;
-import com.artec.mobile.clienti.indicadores.utils.DayAxisValueFormatter;
-import com.artec.mobile.clienti.indicadores.utils.MyAxisValueFormatter;
-import com.artec.mobile.clienti.indicadores.utils.XYMarkerView;
+import com.artec.mobile.clienti.indicadores.utils.ChartFragmentAux;
+import com.artec.mobile.clienti.indicadores.utils.IndicadoresAux;
 import com.artec.mobile.clienti.main.ui.adapters.MainAdapter;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.MPPointF;
+import com.artec.mobile.clienti.productos.ui.adapters.ProductosSectionPageAdapter;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,21 +40,25 @@ import butterknife.ButterKnife;
  */
 
 public class IndicadoresActivity extends AppCompatActivity implements IndicadoresView,
-        OnChartValueSelectedListener {
+        IndicadoresAux {
 
-    @Bind(R.id.bchAbonos)
-    BarChart bchAbonos;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.tabs)
+    TabLayout tabs;
+    @Bind(R.id.viewPager)
+    ViewPager viewPager;
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
     @Bind(R.id.container)
-    RelativeLayout container;
+    CoordinatorLayout container;
 
+    @Inject
+    ProductosSectionPageAdapter adapter;
     @Inject
     IndicadoresPresenter presenter;
 
     private ClientiApp app;
-
-    protected RectF mOnValueSelectedRectF = new RectF();
 
     private ArrayList<Client> clients;
     private ArrayList<Producto> productos;
@@ -82,9 +70,9 @@ public class IndicadoresActivity extends AppCompatActivity implements Indicadore
         setContentView(R.layout.activity_indicadores);
         ButterKnife.bind(this);
 
-        app = (ClientiApp)getApplication();
+        app = (ClientiApp) getApplication();
         setupInjection();
-        //setupChart();
+        setupNavigation();
 
         this.clients = new ArrayList<>();
         this.productos = new ArrayList<>();
@@ -95,67 +83,44 @@ public class IndicadoresActivity extends AppCompatActivity implements Indicadore
         }
     }
 
+    private void setupNavigation() {
+        toolbar.setTitle(R.string.indicadores_title);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        viewPager.setOffscreenPageLimit(2);
+        viewPager.setAdapter(adapter);
+        tabs.setupWithViewPager(viewPager);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                if (!((ChartFragmentAux)adapter.getItem(position)).hasData()) {
+                    /*((ChartFragmentAux) adapter.getItem(position)).refreshChart();
+                } else {*/
+                    ((ChartFragmentAux)adapter.getItem(position)).setupChart();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
+    }
+
     private void setupInjection() {
-        app.getIndicadoresComponent(this, this).inject(this);
-    }
+        String[] titles = new String[]{getString(R.string.indicadores_chAbono_title),
+                getString(R.string.indicadores_chInversion_title),
+                getString(R.string.indicadores_chGanancia_title)};
 
-    private void setupChart(){
-        bchAbonos.setOnChartValueSelectedListener(this);
-        bchAbonos.setDrawBarShadow(false);
-        bchAbonos.setDrawValueAboveBar(true);
-        bchAbonos.getDescription().setEnabled(false);
-        //Max values will be 60, if more that these, no will draw
-        bchAbonos.setMaxVisibleValueCount(60);
-        bchAbonos.setPinchZoom(false);
-        bchAbonos.setDrawGridBackground(false);
+        Fragment[] fragments = new Fragment[]{new ChartAbonoFragment(), new ChartInversionesFragment(),
+                new ChartGananciasFragment()};
 
-        IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(bchAbonos);
-
-        XAxis xAxis = bchAbonos.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        //xAxis.setTypeface(mTfLight);
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(2f); // only intervals of 1 day
-        xAxis.setLabelCount(7);
-        xAxis.setValueFormatter(xAxisFormatter);
-
-        IAxisValueFormatter custom = new MyAxisValueFormatter();
-
-        YAxis leftAxis = bchAbonos.getAxisLeft();
-        //leftAxis.setTypeface(mTfLight);
-        leftAxis.setLabelCount(8, false);
-        leftAxis.setValueFormatter(custom);
-        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-        leftAxis.setSpaceTop(15f);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        YAxis rightAxis = bchAbonos.getAxisRight();
-        rightAxis.setDrawGridLines(false);
-        //rightAxis.setTypeface(mTfLight);
-        rightAxis.setLabelCount(8, false);
-        rightAxis.setValueFormatter(custom);
-        rightAxis.setSpaceTop(15f);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        Legend l = bchAbonos.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setFormSize(9f);
-        l.setTextSize(11f);
-        l.setXEntrySpace(4f);
-
-        XYMarkerView mv = new XYMarkerView(this, xAxisFormatter);
-        mv.setChartView(bchAbonos); // For bounds control
-        bchAbonos.setMarker(mv); // Set the marker to the chart
-
-        setData();
-    }
-
-    private void getData() {
-        presenter.onGetProducts(MainAdapter.getEmails().get(indexClient));
+        app.getIndicadoresComponent(this, this, getSupportFragmentManager(), fragments, titles).inject(this);
     }
 
     @Override
@@ -167,6 +132,26 @@ public class IndicadoresActivity extends AppCompatActivity implements Indicadore
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{
+                super.onBackPressed();
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void getData() {
+        presenter.onGetProducts(MainAdapter.getEmails().get(indexClient));
+        if (indexClient == MainAdapter.getEmails().size()-1){
+            progressBar.setProgress(100);
+        } else {
+            progressBar.setProgress((indexClient + 1) * (100 / MainAdapter.getEmails().size()));
+        }
     }
 
     @Override
@@ -182,12 +167,12 @@ public class IndicadoresActivity extends AppCompatActivity implements Indicadore
     @Override
     public void onGetProducts(List<Producto> productos) {
         indexClient++;
-        if (productos == null){
+        if (productos == null) {
             if (indexClient < MainAdapter.getEmails().size()) {
                 getData();
             } else {
                 indexClient = 0;
-                setupChart();
+                ((ChartFragmentAux)adapter.getItem(viewPager.getCurrentItem())).setupChart();// FIXME: 15/12/2016
             }
             return;
         }
@@ -200,137 +185,17 @@ public class IndicadoresActivity extends AppCompatActivity implements Indicadore
             getData();
         } else {
             indexClient = 0;
-            setupChart();
+            ((ChartFragmentAux)adapter.getItem(viewPager.getCurrentItem())).setupChart();// FIXME: 15/12/2016
         }
     }
 
     @Override
     public void onError(int type, String error) {
-        switch (type){
+        switch (type) {
             case IndicadoresEvent.ERROR:
                 showSnackbar(error);
                 break;
         }
-    }
-
-    // FIXME: 19/11/2016
-    public static class WeekComparator implements Comparator<Abono> {
-
-        /*@Override
-        public int compare(Date o1, Date o2) {
-            int result = getWeekOfYear(o1) - getWeekOfYear(o2);
-            if (result == 0) {
-                result = o1.compareTo(o2);
-            }
-            return result;
-        }*/
-
-        @Override
-        public int compare(Abono lhs, Abono rhs) {
-            int result = getWeekOfYear(lhs.getFechaDate()) - getWeekOfYear(rhs.getFechaDate());
-            if (result == 0) {
-                result = lhs.getFechaDate().compareTo(rhs.getFechaDate());
-            }
-            return result;
-        }
-    }
-    // FIXME: 19/11/2016
-    protected static int getWeekOfYear(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return cal.get(Calendar.WEEK_OF_YEAR);
-    }
-
-    private void setData() {
-        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-
-        Calendar calendar = Calendar.getInstance();
-        int weeksOfYear = calendar.getActualMaximum(Calendar.WEEK_OF_YEAR);
-        ArrayList<IndicadorAbonoSemana> abonoSemanas = new ArrayList<>();
-        for (int i=1; i<=weeksOfYear; i++){
-            abonoSemanas.add(new IndicadorAbonoSemana());
-        }
-        ArrayList<Abono> abonos = new ArrayList<>();
-        for (Client client : clients){
-            if (client.getProductoList() != null){
-                for (Producto producto : client.getProductoList()){
-                    if (producto.getAbonos() != null){
-                        for (int i = 0; i < producto.getAbonos().values().size(); i++) {
-                            abonos.add((Abono) producto.getAbonos().values().toArray()[i]);
-                        }
-                    }
-                }
-            }
-        }
-        int woy = -1;
-        Collections.sort(abonos, new WeekComparator());
-        for (Abono abono : abonos) {
-            if (woy != getWeekOfYear(abono.getFechaDate())) {
-                woy = getWeekOfYear(abono.getFechaDate());
-                abonoSemanas.get(woy).addAbono(abono);
-                abonoSemanas.get(woy).setNumeroSemana(woy);
-            }else {
-                abonoSemanas.get(woy).addAbono(abono);
-            }
-        }
-
-
-        for (int i = getWeekOfYear(calendar.getTime())-8; i <= getWeekOfYear(calendar.getTime()); i++){
-            int index = i;
-            if (i < 0){
-                index = weeksOfYear-i;
-            }
-            yVals1.add(new BarEntry(i, (float)abonoSemanas.get(index).getCantidad()));
-        }
-
-        BarDataSet set1;
-
-        if (bchAbonos.getData() != null &&
-                bchAbonos.getData().getDataSetCount() > 0) {
-            set1 = (BarDataSet) bchAbonos.getData().getDataSetByIndex(0);
-            set1.setValues(yVals1);
-            bchAbonos.getData().notifyDataChanged();
-            bchAbonos.notifyDataSetChanged();
-        } else {
-            set1 = new BarDataSet(yVals1, "Ingresos en las últimas 10 semanas");
-            set1.setColors(ContextCompat.getColor(this, R.color.colorPrimary));
-            //set1.setColors(ColorTemplate.MATERIAL_COLORS);
-
-            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-            dataSets.add(set1);
-
-            BarData data = new BarData(dataSets);
-            data.setValueTextSize(10f);
-            //data.setValueTypeface(mTfLight);
-            data.setBarWidth(0.9f);
-
-            bchAbonos.setData(data);
-        }
-        bchAbonos.invalidate();
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        if (e == null)
-            return;
-
-        RectF bounds = mOnValueSelectedRectF;
-        bchAbonos.getBarBounds((BarEntry) e, bounds);
-        MPPointF position = bchAbonos.getPosition(e, YAxis.AxisDependency.LEFT);
-
-        Log.i("bounds", bounds.toString());
-        Log.i("position", position.toString());
-
-        Log.i("x-index",
-                "low: " + bchAbonos.getLowestVisibleX() + ", high: "
-                        + bchAbonos.getHighestVisibleX());
-
-        MPPointF.recycleInstance(position);
-    }
-
-    @Override
-    public void onNothingSelected() {
     }
 
     private void showSnackbar(String msg) {
@@ -347,5 +212,13 @@ public class IndicadoresActivity extends AppCompatActivity implements Indicadore
 
     private void showSnackbar(String msg, int duration) {
         Snackbar.make(container, msg, duration).show();
+    }
+
+    /***
+     * Metodos auxiliares para las graficas de los fragments
+     * **/
+    @Override
+    public ArrayList<Client> getClients() {
+        return clients;
     }
 }

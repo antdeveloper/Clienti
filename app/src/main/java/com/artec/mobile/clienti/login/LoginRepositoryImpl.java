@@ -35,7 +35,7 @@ public class LoginRepositoryImpl implements LoginRepository{
 
                 @Override
                 public void onError(String error) {
-                    postEvent(LoginEvent.onSignInError, error, null);
+                    postEvent(LoginEvent.onSignInError, error);
                 }
             });
         }else{
@@ -87,6 +87,10 @@ public class LoginRepositoryImpl implements LoginRepository{
 
     private void postEvent(int type){
         postEvent(type, null, null, null);
+    }
+
+    private void postEvent(int type, String error){
+        postEvent(type, error, null, null);
     }
 
     private void postEvent(int type, String currentUserEmail, String username){

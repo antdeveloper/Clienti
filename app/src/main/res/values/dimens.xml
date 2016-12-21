@@ -20,4 +20,5 @@
     <dimen name="recyclerview.paddingBottom">72dp</dimen>
     <dimen name="margin.dialog">16dp</dimen>
     <dimen name="padding.smx">24dp</dimen>
+    <dimen name="padding.md">48dp</dimen>
 </resources>

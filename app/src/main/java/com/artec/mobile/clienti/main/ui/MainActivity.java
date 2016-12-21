@@ -143,6 +143,11 @@ public class MainActivity extends AppCompatActivity implements MainView, OnItemC
 
     private void getAdeudo() {
         if (adapter != null && adapter.getItemCount() > 0) {
+            if (indexClient == adapter.getItemCount()-1){
+                progressBar.setProgress(100);
+            } else {
+                progressBar.setProgress((indexClient+1)*(100/adapter.getItemCount()));
+            }
             mClient = adapter.getClientList().get(indexClient);
             presenter.onGetAdeudo(mClient.getEmail());
         }
